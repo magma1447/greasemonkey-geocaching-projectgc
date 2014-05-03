@@ -203,7 +203,7 @@ function CachePage_Logbook(jNode) {
 
 		// Show them
 		if(latestLogs.length == 5) {
-			var images = latestLogs.join(latestLogs);
+			var images = latestLogs.join('');
 			// $('#ctl00_ContentBody_diffTerr').append('<dl><dt> Latest logs:</dt><dd><span>' + images + '</span></dd></dl>');
 			$('#ctl00_ContentBody_size p').addClass('NoBottomSpacing');
 			$('#ctl00_ContentBody_size').append('<p class="AlignCenter NoBottomSpacing">Latest logs:<span>' + images + '</span></p>');
