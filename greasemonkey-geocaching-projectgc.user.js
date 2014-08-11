@@ -1,4 +1,4 @@
-// ==UserScript==
+﻿// ==UserScript==
 // @name        Geocaching.com + Project-GC
 // @namespace   PGC
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
@@ -18,6 +18,7 @@ pgcApiUrl = 'http://project-gc.com/api/gm/v1/';
 externalLinkIcon = 'http://maxcdn.project-gc.com/images/external_small.png';
 loggedIn = GM_getValue('loggedIn');
 subscription = GM_getValue('subscription');
+gccomUsername = GM_getValue('gccomUsername');
 // -Global variables
 
 
@@ -26,11 +27,7 @@ if(window.top == window.self) {
 	Main();
 }
 
-
 function Main() {
-
-
-
 
 	// Always
 	CheckPGCLogin();
@@ -42,10 +39,7 @@ function Main() {
 	} else if(path.match(/^\/seek\/cache_logbook\.aspx.*/) != null) {
 		Logbook();
 	}
-
 }
-
-
 
 // Check that we are logged in at PGC, and that it's with the same username
 function CheckPGCLogin() {
@@ -60,31 +54,39 @@ function CheckPGCLogin() {
 			loggedIn = ret['data']['loggedIn'];
 			subscription = ret['data']['subscription'];
 
-			var text = '<div class="ProfileWidget" style="margin-right: 10px;"><div id="pgc_signedIn"><a href="http://project-gc.com/"><img class="Avatar NoBottomSpacing" style="width: auto;" src="http://maxcdn.project-gc.com/images/logo_gc_4.png" title="Project-GC"></a>';
+			var text = '<div  style="margin-right: 10px;">';
+			text = text + '<a href="http://project-gc.com/"><img width="50" height="20" src="http://maxcdn.project-gc.com/images/logo_gc_4.png" title="Project-GC"></a> ';
+			
 
 			if(loggedIn === false) {
-				text = text + '<p class="SignedInText">Not logged in</p>';
+				text = text + 'Not logged in';
 			} else if(pgcUsername == gccomUsername) {
-				text = text + '<p class="SignedInText">Logged in as: <strong>' + pgcUsername + '</strong></p>';
+				text = text + '<strong>' + pgcUsername + '</strong>';
 			} else {
-				text = text + '<p class="SignedInText" style="color: red">Logged in as: <strong>' + pgcUsername + '</strong></p>';
+				text = text + '<strong><font color="red">' + pgcUsername + '</font></strong>';
 			}
 
 			if(subscription) {
-				text = text + '<p>Subscription: Yes</p>';
-			} else {
-				text = text + '<p>Subscription: No</p>';
-			}
+				text = text + '<img height=10 width=10 src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Golden_star.svg/120px-Golden_star.svg.png"</a>';
+			} 
 
-			text = text + '</div></div>';
-			$('#ctl00_siteHeader div.container').append(text);
+			text = text + '</div>';
+
+			var div=$('#ctl00_divSignedIn');
+			if (div === null) {
+				 div = $('#ctl00_divNotSignedIn');
+			}
+			
+			div.append(text);
 
 
 			// Save the login value
 			GM_setValue('loggedIn', loggedIn);
 			GM_setValue('subscription', subscription);
+			GM_setValue('pgcUsername', pgcUsername);
 		}
 	});
+	GM_setValue('gccomUsername', gccomUsername);
 }
 
 
@@ -183,6 +185,26 @@ function CachePage() {
 	// });
 	$('#cacheDetails').append('<div>' + $('#ctl00_ContentBody_lblFindCounts').html() + '</div>');
 
+	// add dropdown with VGPS-links
+	var vgps = '<li> <img width=16 height=16 src="http://maxcdn.project-gc.com/images/mobile_telephone_32.png"> Add to V-GPS <br>';
+	vgps = vgps + '<select>';
+	vgps = vgps + '<option value="10">All my caches</option>';
+	vgps = vgps + '<option value="12">Project 360</option>';
+	vgps = vgps + '</select>';	
+	vgps=vgps+'</li>'
+	$('.CacheDetailNavigation ul').append(vgps);
+	
+	var gccomUsername = GM_getValue('gccomUsername');
+	var mapUrl = 'http://project-gc.com/Maps/mapcompare/?profile_name='+gccomUsername+
+	'&nonefound=on&ownfound=on&location=' + latitude + ','+longitude + 
+	'&max_distance=5&submit=Filter';
+	
+	$('#uxlrgMap .CDMapWidget .WidgetHeader').append(
+		'<a target="_blank" href="'+mapUrl+'&onefound=on">View on Project-GC</a>');	
+
+	$('#uxlrgMap .CDMapWidget .WidgetHeader').append(
+		' <a target="_blank" href="'+mapUrl+'">(not found)</a>');	
+	
 }
 
 function CachePage_Logbook(jNode) {
