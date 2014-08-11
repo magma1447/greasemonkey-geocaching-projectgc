@@ -144,7 +144,7 @@ function CachePage() {
 
 
 	// Make it easier to copy the gccode
-	$('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').html('<p style="font-size: 125%; margin-bottom: 0px;">' + gccode + '</p><input type="text" value="http://coord.info/' + gccode + '" onClick="this.setSelectionRange(0, this.value.length)">');
+	$('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').html('<div style="; margin-right: 15px; margin-bottom: 10px"><p style="font-size: 125%; margin-bottom: 0px">' + gccode + '</p><input size="30" type="text" value="http://coord.info/' + gccode + '" onClick="this.setSelectionRange(0, this.value.length)"><br></div>');
 
 
 	// Remove the UTM coordinates
@@ -190,7 +190,7 @@ function CachePage() {
 	vgps = vgps + '<select>';
 	vgps = vgps + '<option value="10">All my caches</option>';
 	vgps = vgps + '<option value="12">Project 360</option>';
-	vgps = vgps + '</select>';	
+vgps = vgps + '</select>';
 	vgps=vgps+'</li>'
 	$('.CacheDetailNavigation ul').append(vgps);
 	
