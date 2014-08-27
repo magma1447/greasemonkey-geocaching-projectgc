@@ -14,7 +14,10 @@
 
 
 // Global variables
-pgcApiUrl = 'http://project-gc.com/api/gm/v1/';
+
+
+pgcUrl = 'http://project-gc.com/';
+pgcApiUrl = pgcUrl + 'api/gm/v1/';
 externalLinkIcon = 'http://maxcdn.project-gc.com/images/external_small.png';
 loggedIn = GM_getValue('loggedIn');
 subscription = GM_getValue('subscription');
@@ -55,7 +58,7 @@ function CheckPGCLogin() {
 			subscription = ret['data']['subscription'];
 
 			var text = '<div  style="margin-right: 10px;">';
-			text = text + '<a href="http://project-gc.com/"><img width="50" height="20" src="http://maxcdn.project-gc.com/images/logo_gc_4.png" title="Project-GC"></a> ';
+			text = text + '<a href="'+pgcUrl+'"><img width="50" height="20" src="http://maxcdn.project-gc.com/images/logo_gc_4.png" title="Project-GC"></a> ';
 			
 
 			if(loggedIn === false) {
@@ -86,20 +89,41 @@ function CheckPGCLogin() {
 			GM_setValue('pgcUsername', pgcUsername);
 		}
 	});
+	
 	GM_setValue('gccomUsername', gccomUsername);
 }
 
+function getGcCodeFromPage()
+{
+	var gccode = $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoCode').html();
+	return gccode;
+}
+
+function addToVGPS()
+{
+	var gccode = GM_getValue('gccode');
+    listId = $('#comboVGPS').val();
+    url = pgcApiUrl + 'AddToVGPSList?listId='+listId+'&caches='+gccode+'&sectionName=GM-script';
+	GM_xmlhttpRequest({
+		method: "GET",
+		url: url,
+		onload: function(response) {
+		    alert(response.responseText);
+		    
+			var ret = JSON.parse(response.responseText);			
+		}
+	});
+}
 
 function CachePage() {
-	var gccode = $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoCode').html();
+	var gccode = getGcCodeFromPage();
+	GM_setValue('gccode', gccode);
 	latestLogs = [];
 
 	// Append link to Profile Stats after the cache owners name
 	var cacheOwnerDiv = $('#ctl00_ContentBody_mcd1');
 	var placedBy = $('#ctl00_ContentBody_mcd1 a').html();
-	cacheOwnerDiv.append('<a href="http://project-gc.com/ProfileStats/' + encodeURIComponent(placedBy) + '"><img src="' + externalLinkIcon + '" title="PGC Profile Stats"></a>');
-
-
+	cacheOwnerDiv.append('<a href="'+pgcUrl+'ProfileStats/' + encodeURIComponent(placedBy) + '"><img src="' + externalLinkIcon + '" title="PGC Profile Stats"></a>');
 
 	// Append links to Profile Stats for every geocacher who has logged the cache as well
 	// Though this is ajax, so we need some magic
@@ -111,7 +135,7 @@ function CachePage() {
 	if(subscription) {
 		GM_xmlhttpRequest({
 			method: "GET",
-			url: pgcApiUrl + 'GetCacheDataGccode?gccode=' + gccode,
+			url: pgcApiUrl + 'GetCacheDataFromGccode?gccode=' + gccode,
 			onload: function(response) {
 				var ret = JSON.parse(response.responseText);
 				var cacheData = ret['data'];
@@ -184,18 +208,9 @@ function CachePage() {
 	// 	}
 	// });
 	$('#cacheDetails').append('<div>' + $('#ctl00_ContentBody_lblFindCounts').html() + '</div>');
-
-	// add dropdown with VGPS-links
-	var vgps = '<li> <img width=16 height=16 src="http://maxcdn.project-gc.com/images/mobile_telephone_32.png"> Add to V-GPS <br>';
-	vgps = vgps + '<select>';
-	vgps = vgps + '<option value="10">All my caches</option>';
-	vgps = vgps + '<option value="12">Project 360</option>';
-vgps = vgps + '</select>';
-	vgps=vgps+'</li>'
-	$('.CacheDetailNavigation ul').append(vgps);
 	
 	var gccomUsername = GM_getValue('gccomUsername');
-	var mapUrl = 'http://project-gc.com/Maps/mapcompare/?profile_name='+gccomUsername+
+	var mapUrl = pgcUrl+'Maps/mapcompare/?profile_name='+gccomUsername+
 	'&nonefound=on&ownfound=on&location=' + latitude + ','+longitude + 
 	'&max_distance=5&submit=Filter';
 	
@@ -204,14 +219,40 @@ vgps = vgps + '</select>';
 
 	$('#uxlrgMap .CDMapWidget .WidgetHeader').append(
 		' <a target="_blank" href="'+mapUrl+'">(not found)</a>');	
-	
+		
+	GM_xmlhttpRequest({
+		method: "GET",
+		url: pgcApiUrl + 'GetExistingVGPSLists',
+		onload: function(response) {
+			var ret = JSON.parse(response.responseText);
+			var vgpsList = ret['data'];
+        	var vgps = '<li> <img width=16 height=16 src="http://maxcdn.project-gc.com/images/mobile_telephone_32.png"> Add to V-GPS <br>';
+        	vgps = vgps + '<select id="comboVGPS">';
+			for  (var id in vgpsList)
+            {
+                var name = vgpsList[id];
+            	vgps = vgps + '<option value="'+id+'">'+name+'</option>';
+            }			
+        	vgps = vgps + '</select>';	
+        	vgps = vgps + '<button id="btnaddToVGPS">*</button>';
+        	vgps = vgps+'</li>'
+        	$('.CacheDetailNavigation ul').append(vgps);
+        	
+        	$('#btnaddToVGPS').click(function(event)
+        	{
+        	   event.preventDefault();
+        	   addToVGPS(); 
+        	}
+        	);
+		}
+	});
 }
 
 function CachePage_Logbook(jNode) {
 	// Add Profile stats link after each user
 	var profileName = $(jNode).find('p.logOwnerProfileName strong a').html();
 	if(profileName != null) {
-		var profileName = $(jNode).find('p.logOwnerProfileName strong a').append('<a href="http://project-gc.com/ProfileStats/' + encodeURIComponent(profileName) + '"><img src="' + externalLinkIcon + '" title="PGC Profile Stats"></a>');
+		var profileName = $(jNode).find('p.logOwnerProfileName strong a').append('<a href="'+pgcUrl+'ProfileStats/' + encodeURIComponent(profileName) + '"><img src="' + externalLinkIcon + '" title="PGC Profile Stats"></a>');
 	}
 
 	// Save to latest logs
