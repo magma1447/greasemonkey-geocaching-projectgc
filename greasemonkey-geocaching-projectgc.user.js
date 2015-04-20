@@ -16,7 +16,8 @@
 // Global variables
 
 
-pgcUrl = 'http://project-gc.com/';
+// pgcUrl = 'http://project-gc.com/';
+pgcUrl = 'http://g.gc.1447.se/';
 pgcApiUrl = pgcUrl + 'api/gm/v1/';
 externalLinkIcon = 'http://maxcdn.project-gc.com/images/external_small.png';
 loggedIn = GM_getValue('loggedIn');
@@ -237,14 +238,20 @@ function CachePage() {
 		url: pgcApiUrl + 'GetExistingVGPSLists',
 		onload: function(response) {
 			var ret = JSON.parse(response.responseText);
-			var vgpsList = ret['data'];
+			var vgpsLists = ret['data']['lists'];
+			var selected = ret['data']['selected'];
+
         	var html = '<li> <img width=16 height=16 src="http://maxcdn.project-gc.com/images/mobile_telephone_32.png"> Add to V-GPS <br>';
         	html = html + '<select id="comboVGPS">';
-			for (var listId in vgpsList) {
-				var list = vgpsList[listId];
+			for (var listId in vgpsLists) {
+				var list = vgpsLists[listId];
 				var listName = list.name;
 
-            	html = html + '<option value="' + listId + '">' + listName + '</option>';
+				if(selected == listId) {
+	            	html = html + '<option value="' + listId + '" selected="selected">' + listName + '</option>';
+	            } else {
+	            	html = html + '<option value="' + listId + '">' + listName + '</option>';
+	            }
             }
         	html = html + '</select>';
         	html = html + '<button id="btnaddToVGPS">+</button>';
@@ -257,8 +264,7 @@ function CachePage() {
         	{
         	   event.preventDefault();
         	   addToVGPS();
-        	}
-        	);
+        	});
 		}
 	});
 }
