@@ -1,4 +1,4 @@
-﻿// ==UserScript==
+// ==UserScript==
 // @name        Geocaching.com + Project-GC
 // @namespace   PGC
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
@@ -16,13 +16,16 @@
 // Global variables
 
 
-pgcUrl = 'http://project-gc.com/';
+// pgcUrl = 'http://project-gc.com/';
+pgcUrl = 'http://g.gc.1447.se/';
 pgcApiUrl = pgcUrl + 'api/gm/v1/';
 externalLinkIcon = 'http://maxcdn.project-gc.com/images/external_small.png';
 loggedIn = GM_getValue('loggedIn');
 subscription = GM_getValue('subscription');
+pgcUsername = GM_getValue('pgcUsername');
 gccomUsername = GM_getValue('gccomUsername');
 // -Global variables
+
 
 
 // Don't run the script for iframes
@@ -46,41 +49,40 @@ function Main() {
 
 // Check that we are logged in at PGC, and that it's with the same username
 function CheckPGCLogin() {
-	var gccomUsername = $('#ctl00_divSignedIn p.SignedInText strong a').html();
+	var gccomUsername = $('#ctl00_divSignedIn .li-user-info span').html();
 
 	GM_xmlhttpRequest({
 		method: "GET",
 		url: pgcApiUrl + 'GetMyUsername',
 		onload: function(response) {
 			var ret = JSON.parse(response.responseText);
-			var pgcUsername = ret['data']['username'];
+
+			pgcUsername = ret['data']['username'];
 			loggedIn = ret['data']['loggedIn'];
 			subscription = ret['data']['subscription'];
 
-			var text = '<div  style="margin-right: 10px;">';
-			text = text + '<a href="'+pgcUrl+'"><img width="50" height="20" src="http://maxcdn.project-gc.com/images/logo_gc_4.png" title="Project-GC"></a> ';
-			
+			var html = '<a href="' + pgcUrl + '"><img width="50" height="20" src="http://maxcdn.project-gc.com/images/logo_gc_4.png" title="Project-GC"></a> ';
+
 
 			if(loggedIn === false) {
-				text = text + 'Not logged in';
+				html = html + 'Not logged in';
 			} else if(pgcUsername == gccomUsername) {
-				text = text + '<strong>' + pgcUsername + '</strong>';
+				html = html + '<strong>' + pgcUsername + '</strong>';
 			} else {
-				text = text + '<strong><font color="red">' + pgcUsername + '</font></strong>';
+				html = html + '<strong><font color="red">' + pgcUsername + '</font></strong>';
 			}
 
 			if(subscription) {
-				text = text + '<img height=10 width=10 src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Golden_star.svg/120px-Golden_star.svg.png"</a>';
-			} 
-
-			text = text + '</div>';
-
-			var div=$('#ctl00_divSignedIn');
-			if (div === null) {
-				 div = $('#ctl00_divNotSignedIn');
+				html = html + '<img height=10 width=10 src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Golden_star.svg/120px-Golden_star.svg.png"</a>';
 			}
-			
-			div.append(text);
+
+
+			if($('#ctl00_divSignedIn ul')) {
+				$('#ctl00_divSignedIn ul').append('<li>' + html + '</li>');
+			} else {
+				$('#ctl00_divNotSignedIn').append('<div>' + html + '</div>');	// FIXME - Not working
+			}
+
 
 
 			// Save the login value
@@ -89,7 +91,7 @@ function CheckPGCLogin() {
 			GM_setValue('pgcUsername', pgcUsername);
 		}
 	});
-	
+
 	GM_setValue('gccomUsername', gccomUsername);
 }
 
@@ -103,14 +105,14 @@ function addToVGPS()
 {
 	var gccode = GM_getValue('gccode');
     listId = $('#comboVGPS').val();
-    url = pgcApiUrl + 'AddToVGPSList?listId='+listId+'&caches='+gccode+'&sectionName=GM-script';
+    url = pgcApiUrl + 'AddToVGPSList?listId='+listId+'&gccode='+gccode+'&sectionName=GM-script';
 	GM_xmlhttpRequest({
 		method: "GET",
 		url: url,
 		onload: function(response) {
 		    alert(response.responseText);
-		    
-			var ret = JSON.parse(response.responseText);			
+
+			var ret = JSON.parse(response.responseText);
 		}
 	});
 }
@@ -127,7 +129,7 @@ function CachePage() {
 
 	// Append links to Profile Stats for every geocacher who has logged the cache as well
 	// Though this is ajax, so we need some magic
-	waitForKeyElements ('#cache_logs_table tr', CachePage_Logbook);
+	waitForKeyElements('#cache_logs_table tr', CachePage_Logbook);
 
 
 
@@ -145,7 +147,7 @@ function CachePage() {
 				var fpp = parseInt(cacheData['favorite_points_pct']);
 				var fpw = parseInt(cacheData['favorite_points_wilson']);
 
-				$('#ctl00_divContentMain div.span-17 div.span-6.right.last div.favorite.right').append('<p>' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W</p>');
+				$('#ctl00_divContentMain div.span-17 div.span-6.right.last div.favorite.right').append('<p>(' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W)</p>');
 
 
 				// Add PGC location
@@ -176,10 +178,12 @@ function CachePage() {
 	$('#ctl00_ContentBody_LocationSubPanel').remove();
 
 	// Remove ads
-	$('#ctl00_ContentBody_uxBanManWidget').remove();
+	// PGC can't really do this officially
+	// $('#ctl00_ContentBody_uxBanManWidget').remove();
 
 	// Remove disclaimer
-	$('#ctl00_divContentMain div.span-17 div.Note.Disclaimer').remove();
+	// PGC can't really do this officially
+	// $('#ctl00_divContentMain div.span-17 div.Note.Disclaimer').remove();
 
 	// Hide download links
 	$('<p style="cursor: pointer;" onclick="$(\'#ctl00_divContentMain div.DownloadLinks\').toggle();"><span class="arrow">▼</span>Print and Downloads</p>').insertAfter('#ctl00_ContentBody_CacheInformationTable div.LocationData');
@@ -208,40 +212,45 @@ function CachePage() {
 	// 	}
 	// });
 	$('#cacheDetails').append('<div>' + $('#ctl00_ContentBody_lblFindCounts').html() + '</div>');
-	
+
+
 	var gccomUsername = GM_getValue('gccomUsername');
 	var mapUrl = pgcUrl+'Maps/mapcompare/?profile_name='+gccomUsername+
-	'&nonefound=on&ownfound=on&location=' + latitude + ','+longitude + 
+	'&nonefound=on&ownfound=on&location=' + latitude + ','+longitude +
 	'&max_distance=5&submit=Filter';
-	
-	$('#uxlrgMap .CDMapWidget .WidgetHeader').append(
-		'<a target="_blank" href="'+mapUrl+'&onefound=on">View on Project-GC</a>');	
 
-	$('#uxlrgMap .CDMapWidget .WidgetHeader').append(
-		' <a target="_blank" href="'+mapUrl+'">(not found)</a>');	
-		
+	$('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').append(
+		'<a target="_blank" href="'+mapUrl+'&onefound=on">View on Project-GC</a>');
+
+	$('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').append(
+		' <a target="_blank" href="'+mapUrl+'">(not found)</a>');
+
 	GM_xmlhttpRequest({
 		method: "GET",
 		url: pgcApiUrl + 'GetExistingVGPSLists',
 		onload: function(response) {
+			console.log(response);
 			var ret = JSON.parse(response.responseText);
 			var vgpsList = ret['data'];
-        	var vgps = '<li> <img width=16 height=16 src="http://maxcdn.project-gc.com/images/mobile_telephone_32.png"> Add to V-GPS <br>';
-        	vgps = vgps + '<select id="comboVGPS">';
-			for  (var id in vgpsList)
-            {
-                var name = vgpsList[id];
-            	vgps = vgps + '<option value="'+id+'">'+name+'</option>';
-            }			
-        	vgps = vgps + '</select>';	
-        	vgps = vgps + '<button id="btnaddToVGPS">*</button>';
-        	vgps = vgps+'</li>'
-        	$('.CacheDetailNavigation ul').append(vgps);
-        	
+        	var html = '<li> <img width=16 height=16 src="http://maxcdn.project-gc.com/images/mobile_telephone_32.png"> Add to V-GPS <br>';
+        	html = html + '<select id="comboVGPS">';
+			for (var listId in vgpsList) {
+				var list = vgpsList[listId];
+				var listName = list.name;
+
+            	html = html + '<option value="' + listId + '">' + listName + '</option>';
+            }
+        	html = html + '</select>';
+        	html = html + '<button id="btnaddToVGPS">+</button>';
+        	html = html + '</li>'
+
+        	$('div.CacheDetailNavigation ul:first').append(html);
+
+
         	$('#btnaddToVGPS').click(function(event)
         	{
         	   event.preventDefault();
-        	   addToVGPS(); 
+        	   addToVGPS();
         	}
         	);
 		}
@@ -277,7 +286,7 @@ function CachePage_Logbook(jNode) {
 
 
 function Logbook() {
-	waitForKeyElements ('#AllLogs tr', CachePage_Logbook);
+	waitForKeyElements('#AllLogs tr', CachePage_Logbook);
 }
 
 function Logbook_Logbook(jNode) {
