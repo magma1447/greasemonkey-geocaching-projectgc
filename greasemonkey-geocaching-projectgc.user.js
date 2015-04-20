@@ -213,22 +213,29 @@ function CachePage() {
 	$('#cacheDetails').append('<div>' + $('#ctl00_ContentBody_lblFindCounts').html() + '</div>');
 
 
+	// Add link to PGC gallery
+	if(subscription) {
+		var html = '<a href="' + pgcUrl + 'Tools/Gallery?gccode=' + gccode + '&submit=Filter"><img src="' + externalLinkIcon + '" title="Project-GC"></a> ';
+		$('.CacheDetailNavigation ul li:first').append(html);
+	}
+
+
+
 	var gccomUsername = GM_getValue('gccomUsername');
-	var mapUrl = pgcUrl+'Maps/mapcompare/?profile_name='+gccomUsername+
-	'&nonefound=on&ownfound=on&location=' + latitude + ','+longitude +
+	var mapUrl = pgcUrl+'Maps/mapcompare/?profile_name=' + gccomUsername +
+	'&nonefound=on&ownfound=on&location=' + latitude + ',' + longitude +
 	'&max_distance=5&submit=Filter';
 
 	$('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').append(
-		'<a target="_blank" href="'+mapUrl+'&onefound=on">View on Project-GC</a>');
+		'<a target="_blank" href="' + mapUrl + '&onefound=on">View on Project-GC</a>');
 
 	$('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').append(
-		' <a target="_blank" href="'+mapUrl+'">(not found)</a>');
+		' <a target="_blank" href="' + mapUrl + '">(not found)</a>');
 
 	GM_xmlhttpRequest({
 		method: "GET",
 		url: pgcApiUrl + 'GetExistingVGPSLists',
 		onload: function(response) {
-			console.log(response);
 			var ret = JSON.parse(response.responseText);
 			var vgpsList = ret['data'];
         	var html = '<li> <img width=16 height=16 src="http://maxcdn.project-gc.com/images/mobile_telephone_32.png"> Add to V-GPS <br>';
