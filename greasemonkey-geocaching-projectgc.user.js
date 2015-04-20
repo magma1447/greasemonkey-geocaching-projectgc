@@ -16,8 +16,7 @@
 // Global variables
 
 
-// pgcUrl = 'http://project-gc.com/';
-pgcUrl = 'http://g.gc.1447.se/';
+pgcUrl = 'http://project-gc.com/';
 pgcApiUrl = pgcUrl + 'api/gm/v1/';
 externalLinkIcon = 'http://maxcdn.project-gc.com/images/external_small.png';
 loggedIn = GM_getValue('loggedIn');
