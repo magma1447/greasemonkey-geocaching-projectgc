@@ -174,25 +174,32 @@
                     var result = JSON.parse(response.responseText),
                         cacheData = result.data,
                         location = [],
-                        // Add FP/FP%/FPW below the current FP
-                        fp = parseInt(cacheData.favorite_points, 10),
-                        fpp = parseInt(cacheData.favorite_points_pct, 10),
-                        fpw = parseInt(cacheData.favorite_points_wilson, 10);
+                        fp = 0,
+                        fpp = 0,
+                        fpw = 0;
+
+                    // Add FP/FP%/FPW below the current FP
+                    if (result.status === 'OK' && cacheData !== false) {
+                        fp = parseInt(+cacheData.favorite_points, 10),
+                            fpp = parseInt(+cacheData.favorite_points_pct, 10),
+                            fpw = parseInt(+cacheData.favorite_points_wilson, 10);
+
+                        // Add PGC location
+                        if (cacheData.country.length > 0) {
+                            location.push(cacheData.country);
+                        }
+                        if (cacheData.region.length > 0) {
+                            location.push(cacheData.region);
+                        }
+                        if (cacheData.county.length > 0) {
+                            location.push(cacheData.county);
+                        }
+                        location = location.join(' / ');
+                        $('#ctl00_ContentBody_Location').html('<span>' + location + '</span>');
+                    }
 
                     $('#ctl00_divContentMain div.span-17 div.span-6.right.last div.favorite.right').append('<p>(' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W)</p>');
 
-                    // Add PGC location
-                    if (cacheData.country.length > 0) {
-                        location.push(cacheData.country);
-                    }
-                    if (cacheData.region.length > 0) {
-                        location.push(cacheData.region);
-                    }
-                    if (cacheData.county.length > 0) {
-                        location.push(cacheData.county);
-                    }
-                    location = location.join(' / ');
-                    $('#ctl00_ContentBody_Location').html('<span>' + location + '</span>');
                 }
             });
         }
@@ -245,8 +252,8 @@
 
         // Add number of finds to the top
         // $('#ctl00_ContentBody_lblFindCounts').find('img').each(function() {
-        // 	if($(this).attr('src') == '/images/logtypes/2.png') {	// Found
-        // 	}
+        //  if($(this).attr('src') == '/images/logtypes/2.png') {   // Found
+        // }
         // });
         $('#cacheDetails').append('<div>' + $('#ctl00_ContentBody_lblFindCounts').html() + '</div>');
 
