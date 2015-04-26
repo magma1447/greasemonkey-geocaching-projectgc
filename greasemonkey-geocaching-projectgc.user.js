@@ -216,6 +216,9 @@
         // PGC can't really do this officially
         // $('#ctl00_divContentMain div.span-17 div.Note.Disclaimer').remove();
 
+        // Remove the useless "Geocache Description"
+        $('h3.CacheDescriptionHeader').remove();
+
         // Hide download links
         $('<p style="cursor: pointer;" onclick="$(\'#ctl00_divContentMain div.DownloadLinks\').toggle();"><span class="arrow">▼</span>Print and Downloads</p>').insertAfter('#ctl00_ContentBody_CacheInformationTable div.LocationData');
         $('#ctl00_divContentMain div.DownloadLinks').hide();
