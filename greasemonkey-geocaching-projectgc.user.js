@@ -259,8 +259,8 @@
 
 
 
-        var gccomUsername = GM_getValue('gccomUsername');
-        var mapUrl = pgcUrl + 'Maps/mapcompare/?profile_name=' + gccomUsername +
+        var gccomUsername = GM_getValue('gccomUsername'),
+            mapUrl = pgcUrl + 'Maps/mapcompare/?profile_name=' + gccomUsername +
             '&nonefound=on&ownfound=on&location=' + latitude + ',' + longitude +
             '&max_distance=5&submit=Filter';
 
@@ -277,18 +277,20 @@
                 var result = JSON.parse(response.responseText),
                     vgpsLists = result.data.lists,
                     selected = result.data.selected,
-                    html = '<li> <img width=16 height=16 src="http://maxcdn.project-gc.com/images/mobile_telephone_32.png"> Add to V-GPS <br>';
+                    selectedContent,
+                    html = '<li><img width="16" height="16" src="http://maxcdn.project-gc.com/images/mobile_telephone_32.png"> Add to V-GPS <br />',
+                    listId, list;
+
                 html += '<select id="comboVGPS">';
-                console.log('result', result);
-                for (var listId in vgpsLists) {
-                    var list = vgpsLists[listId];
-                    if (selected == listId) {
-                        selected = ' selected="selected"';
+                for (listId in vgpsLists) {
+                    selectedContent = '';
+                    if (+selected === +listId) {
+                        selectedContent = ' selected="selected"';
                     }
-                    html += '<option value="' + listId + '"' + selected + '>' + list.name + '</option>';
+                    html += '<option value="' + listId + '"' + selectedContent + '>' + vgpsLists[listId].name + '</option>';
                 }
                 html += '</select>';
-                html += '<button id="btnaddToVGPS">+</button>';
+                html += '&nbsp;<button id="btnaddToVGPS">+</button>';
                 html += '</li>';
 
                 $('div.CacheDetailNavigation ul:first').append(html);
