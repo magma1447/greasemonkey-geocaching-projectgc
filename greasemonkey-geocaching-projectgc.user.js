@@ -204,11 +204,13 @@
 
                     // Add challenge checkers
                     if(challengeCheckerTagIds.length > 0) {
-                    	var html = '<div id="PGC_ChallengeCheckers">';
+                    	var html = '';
+
+                    	html += '<div id="PGC_ChallengeCheckers">';
                     	for(var i = 0 ; i < challengeCheckerTagIds.length ; i++) {
-                    		html = html + '<a href="http://project-gc.com/Challenges//' + challengeCheckerTagIds[i] + '"><img src="http://maxcdn.project-gc.com/Images/Checker/' + challengeCheckerTagIds[i] + '" title="Project-GC Challenge checker" alt="PGC Checker"></a>';
+                    		html += '<a href="http://project-gc.com/Challenges//' + challengeCheckerTagIds[i] + '"><img src="http://maxcdn.project-gc.com/Images/Checker/' + challengeCheckerTagIds[i] + '" title="Project-GC Challenge checker" alt="PGC Checker"></a>';
                     	}
-                    	html = html + '</div>';
+                    	html += '</div>';
 	                    $('#ctl00_ContentBody_CacheInformationTable').append(html)
 	                }
 
