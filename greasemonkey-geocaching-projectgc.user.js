@@ -204,10 +204,8 @@
 
                     // Add challenge checkers
                     if(challengeCheckerTagIds.length > 0) {
-                    	console.log('1');
                     	var html = '<div id="PGC_ChallengeCheckers">';
                     	for(var i = 0 ; i < challengeCheckerTagIds.length ; i++) {
-                    		console.log(challengeCheckerTagIds[i]);
                     		html = html + '<a href="http://project-gc.com/Challenges//' + challengeCheckerTagIds[i] + '"><img src="http://maxcdn.project-gc.com/Images/Checker/' + challengeCheckerTagIds[i] + '" title="Project-GC Challenge checker" alt="PGC Checker"></a>';
                     	}
                     	html = html + '</div>';
