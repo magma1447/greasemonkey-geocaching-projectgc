@@ -1,4 +1,4 @@
-﻿/* global $: true */
+/* global $: true */
 /* global waitForKeyElements: true */
 /* global GM_xmlhttpRequest: true */
 /* global GM_getValue: true */
@@ -155,7 +155,8 @@
     function CachePage() {
         var gccode = getGcCodeFromPage(),
             cacheOwnerDiv = $('#ctl00_ContentBody_mcd1'),
-            placedBy = $('#ctl00_ContentBody_mcd1 a').html();
+            placedBy = $('#ctl00_ContentBody_mcd1 a').html()
+            ;
 
         GM_setValue('gccode', gccode);
 
@@ -172,7 +173,8 @@
                 url: pgcApiUrl + 'GetCacheDataFromGccode?gccode=' + encodeURIComponent(gccode),
                 onload: function(response) {
                     var result = JSON.parse(response.responseText),
-                        cacheData = result.data,
+                        cacheData = result.data.cacheData,
+                        challengeCheckerTagIds = result.data.challengeCheckerTagIds,
                         location = [],
                         fp = 0,
                         fpp = 0,
@@ -199,6 +201,18 @@
                     }
 
                     $('#ctl00_divContentMain div.span-17 div.span-6.right.last div.favorite.right').append('<p>(' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W)</p>');
+
+                    // Add challenge checkers
+                    if(challengeCheckerTagIds.length > 0) {
+                    	console.log('1');
+                    	var html = '<div id="PGC_ChallengeCheckers">';
+                    	for(var i = 0 ; i < challengeCheckerTagIds.length ; i++) {
+                    		console.log(challengeCheckerTagIds[i]);
+                    		html = html + '<a href="http://project-gc.com/Challenges//' + challengeCheckerTagIds[i] + '"><img src="http://maxcdn.project-gc.com/Images/Checker/' + challengeCheckerTagIds[i] + '" title="Project-GC Challenge checker" alt="PGC Checker"></a>';
+                    	}
+                    	html = html + '</div>';
+	                    $('#ctl00_ContentBody_CacheInformationTable').append(html)
+	                }
 
                 }
             });
