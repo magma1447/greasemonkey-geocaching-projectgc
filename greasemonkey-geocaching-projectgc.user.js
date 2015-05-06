@@ -286,10 +286,10 @@
             '&max_distance=5&submit=Filter';
 
         $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').append(
-            '<a target="_blank" href="' + mapUrl + '&onefound=on">View on Project-GC</a>');
+            ' <a target="_blank" href="' + mapUrl + '">Project-GC Map</a>');
 
         $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').append(
-            ' <a target="_blank" href="' + mapUrl + '">(not found)</a>');
+            '<a target="_blank" href="' + mapUrl + '&onefound=on">(incl found)</a>');
 
         GM_xmlhttpRequest({
             method: "GET",
