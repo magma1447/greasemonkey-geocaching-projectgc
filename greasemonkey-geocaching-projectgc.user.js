@@ -9,7 +9,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.2.2
+// @version     1.2.3
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -170,9 +170,6 @@
 
         GM_setValue('gccode', gccode);
 
-        // Append link to Profile Stats for the cache owner
-        $('#ctl00_ContentBody_mcd1 a').append('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(placedBy) + '"><img src="' + externalLinkIcon + '" title="PGC Profile Stats"></a>');
-
         // Remove unneccessary message owner text
         $('#ctl00_ContentBody_lnkMessageOwner').html('');
 
@@ -193,11 +190,23 @@
                 onload: function(response) {
                     var result = JSON.parse(response.responseText),
                         cacheData = result.data.cacheData,
+                        cacheOwner = result.data.owner,
                         challengeCheckerTagIds = result.data.challengeCheckerTagIds,
                         location = [],
                         fp = 0,
                         fpp = 0,
                         fpw = 0;
+
+
+                    // If placed by != owner, show the real owner as well.
+                    if(placedBy != cacheOwner) {
+                    	$('#ctl00_ContentBody_mcd1 span.message__owner').before(' (' + cacheOwner + ')');
+                    }
+
+			        // Append link to Profile Stats for the cache owner
+			        // Need to real cache owner name from PGC since the web only has placed by
+			        $('#ctl00_ContentBody_mcd1 span.message__owner').before('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(cacheOwner) + '"><img src="' + externalLinkIcon + '" title="PGC Profile Stats"></a>');
+
 
                     // Add FP/FP%/FPW below the current FP
                     if (result.status === 'OK' && cacheData !== false) {
@@ -286,10 +295,6 @@
 
 
         // Add number of finds to the top
-        // $('#ctl00_ContentBody_lblFindCounts').find('img').each(function() {
-        //  if($(this).attr('src') == '/images/logtypes/2.png') {   // Found
-        // }
-        // });
         $('#cacheDetails').append('<div>' + $('#ctl00_ContentBody_lblFindCounts').html() + '</div>');
 
 

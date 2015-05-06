@@ -31,6 +31,8 @@ Planned features:
 * Add a settings form, triggered from an arrow right of the PGC-username in the header.
 * Rotate the "Print and Downloads" arrow when it's collapsed.
 * Make added items look better.
+* Autodecrypt hints
+* Remove decryption key widget (id=ctl00_ContentBody_EncryptionKey)
 
 License:
 The client side script (this script) is MIT licensed (license file commited in repository). However, the server side API is property of Ground Zero Communications AB.
