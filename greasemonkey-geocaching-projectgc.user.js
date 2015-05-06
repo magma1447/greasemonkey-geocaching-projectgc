@@ -9,7 +9,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.2.0
+// @version     1.2.1
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -30,6 +30,7 @@
         pgcUsername = GM_getValue('pgcUsername'),
         gccomUsername = GM_getValue('gccomUsername'),
         latestLogs = [],
+        latestLogsAlert = false,
         path = window.location.pathname;
 
     // Don't run the script for iframes
@@ -355,18 +356,31 @@
         // Save to latest logs
         if (latestLogs.length < 5) {
             var logType = $(jNode).find('div.LogType strong img').attr('src');
-            if (logType == '/images/logtypes/3.png') { // dnf
-                latestLogs.push('<img src="' + logType + '">');
-            } else if (logType == '/images/logtypes/2.png') { // found
-                latestLogs.push('<img src="' + logType + '">');
-            }
 
-            // Show them
+            // First entry is undefined, due to ajax
+            if(logType) {
+	            latestLogs.push('<img src="' + logType + '">');
+
+	            // 2 = found, 3 = dnf, 4 = note, 5 = archive, 22 = disable, 24 = publish, 45 = nm, 46 = owner maintenance, 68 = reviewer note
+	            var logTypeId = logType.replace(/.*logtypes\/(.*)\.png/, "$1");
+
+		        if(latestLogs.length == 1) {
+		        	if(logTypeId == 3 || logTypeId == 5 || logTypeId == 22 || logTypeId == 45 || logTypeId == 68) {
+			        	latestLogsAlert = true;
+		        	}
+		        }
+	        }
+
+
+            // Show latest logs
             if (latestLogs.length == 5) {
                 var images = latestLogs.join('');
-                // $('#ctl00_ContentBody_diffTerr').append('<dl><dt> Latest logs:</dt><dd><span>' + images + '</span></dd></dl>');
                 $('#ctl00_ContentBody_size p').addClass('NoBottomSpacing');
-                $('#ctl00_ContentBody_size').append('<p class="AlignCenter NoBottomSpacing">Latest logs: <span>' + images + '</span></p>');
+                if(latestLogsAlert) {
+	                $('#ctl00_ContentBody_size').append('<p class="AlignCenter NoBottomSpacing OldWarning"><strong>Latest logs:</strong> <span>' + images + '</span></p>');
+                } else {
+	                $('#ctl00_ContentBody_size').append('<p class="AlignCenter NoBottomSpacing">Latest logs: <span>' + images + '</span></p>');
+	            }
 
             }
         }

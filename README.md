@@ -15,7 +15,7 @@ Existing features:
 * Adds challenge checker links if a checker exists at Project-GC.
 * Adds address for the coordinates (Google reverse geocoding).
 * Clones number of logs per type to the top.
-* Clones "latest logs" to the top.
+* Add a "latest logs" to the top.
 * Add links to Profile stats for cache owner.
 * Add links to Profile stats for every profile in the logbooks.
 * Adds a copy friendly link to the geocache page.
