@@ -9,12 +9,13 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.1.2
+// @version     1.1.4
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
 // @grant       GM_setValue
 // @grant       GM_getValue
+// @license		The MIT License (MIT)
 // ==/UserScript==
 
 'use strict';
@@ -83,12 +84,14 @@
                 }
 
                 if (subscription) {
-                    subscriptionContent = 'Premium';
+                    subscriptionContent = 'Paid membersip';
+                } else {
+                	subscriptionContent = 'Missing membership';
                 }
 
-                html = '<a class="SignedInProfileLink" href="' + pgcUrl + '" title="Project-GC">\
+                html = '<a class="SignedInProfileLink" href="' + pgcUrl + 'ProfileStats/' + pgcUsername + '" title="Project-GC">\
                             <span class="avatar">\
-                                <img src="http://project-gc.com/favicon.ico" alt="Logo" width="30" height="30" style="border-radius:100%border-width:0px;">\
+                                <img src="http://project-gc.com/favicon.ico" alt="Logo" width="30" height="30" style="border-radius:100%; border-width:0px;">\
                             </span>\
                             <span class="li-user-info">\
                                 <span>' + loggedInContent + '</span>\
@@ -155,15 +158,17 @@
      */
     function CachePage() {
         var gccode = getGcCodeFromPage(),
-            cacheOwnerDiv = $('#ctl00_ContentBody_mcd1'),
             placedBy = $('#ctl00_ContentBody_mcd1 a').html();
 
         GM_setValue('gccode', gccode);
 
-        // Append links to Profile Stats for every geocacher who has logged the cache as well
-        cacheOwnerDiv.append('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(placedBy) + '"><img src="' + externalLinkIcon + '" title="PGC Profile Stats"></a>');
+        // Append link to Profile Stats for the cache owner
+        $('#ctl00_ContentBody_mcd1 a').append('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(placedBy) + '"><img src="' + externalLinkIcon + '" title="PGC Profile Stats"></a>');
 
-        // Though this is ajax, so we need some magic
+        // Remove unneccessary message owner text
+        $('#ctl00_ContentBody_lnkMessageOwner').html('');
+
+        // Since the logbook is ajax, so we need some magic
         waitForKeyElements('#cache_logs_table tr', CachePage_Logbook);
 
         // Get cache data from PGC
@@ -289,7 +294,7 @@
             ' <a target="_blank" href="' + mapUrl + '">Project-GC map</a>');
 
         $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').append(
-            '<a target="_blank" href="' + mapUrl + '&onefound=on"> (incl found)</a>');
+            ' (<a target="_blank" href="' + mapUrl + '&onefound=on">incl found</a>)');
 
         GM_xmlhttpRequest({
             method: "GET",
