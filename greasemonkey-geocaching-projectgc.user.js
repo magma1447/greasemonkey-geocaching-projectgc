@@ -9,7 +9,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.1.4
+// @version     1.2.0
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -158,7 +158,14 @@
      */
     function CachePage() {
         var gccode = getGcCodeFromPage(),
-            placedBy = $('#ctl00_ContentBody_mcd1 a').html();
+            placedBy = $('#ctl00_ContentBody_mcd1 a').html(),
+            lastUpdated = $('#ctl00_ContentBody_bottomSection p small time').get(1),
+            lastFound = $('#ctl00_ContentBody_bottomSection p small time').get(2);
+
+
+    	lastUpdated = (lastUpdated) ? lastUpdated.dateTime : false;
+    	lastFound = (lastFound) ? lastFound.dateTime : false;
+
 
         GM_setValue('gccode', gccode);
 
@@ -172,10 +179,16 @@
         waitForKeyElements('#cache_logs_table tr', CachePage_Logbook);
 
         // Get cache data from PGC
+        var url = pgcApiUrl + 'GetCacheDataFromGccode&gccode=' + gccode;
+        if(lastUpdated)
+        	url += '&lastUpdated=' + lastUpdated;
+        if(lastFound)
+        	url += '&lastFound=' + lastFound;
+
         if (GM_getValue('subscription')) {
             GM_xmlhttpRequest({
                 method: "GET",
-                url: pgcApiUrl + 'GetCacheDataFromGccode?gccode=' + encodeURIComponent(gccode),
+                url: url,
                 onload: function(response) {
                     var result = JSON.parse(response.responseText),
                         cacheData = result.data.cacheData,
