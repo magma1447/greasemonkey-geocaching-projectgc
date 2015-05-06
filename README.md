@@ -10,7 +10,7 @@ Compatibily:
 * Requires Tampermonkey to run in Chrome.
 
 Existing features:
-* Add to VGPS.
+* Add to VGPS form.
 * Adds Favorite points (FP/FP%/FPW).
 * Adds challenge checker links if a checker exists at Project-GC.
 * Adds address for the coordinates (Google reverse geocoding).

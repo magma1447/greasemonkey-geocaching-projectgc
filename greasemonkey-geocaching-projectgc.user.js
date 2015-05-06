@@ -9,7 +9,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.1.1
+// @version     1.1.2
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -130,6 +130,7 @@
             listId = $('#comboVGPS').val(),
             msg,
             url = pgcApiUrl + 'AddToVGPSList?listId=' + listId + '&gccode=' + gccode + '&sectionName=GM-script';
+
         GM_xmlhttpRequest({
             method: "GET",
             url: url,
@@ -155,8 +156,7 @@
     function CachePage() {
         var gccode = getGcCodeFromPage(),
             cacheOwnerDiv = $('#ctl00_ContentBody_mcd1'),
-            placedBy = $('#ctl00_ContentBody_mcd1 a').html()
-            ;
+            placedBy = $('#ctl00_ContentBody_mcd1 a').html();
 
         GM_setValue('gccode', gccode);
 
@@ -240,7 +240,7 @@
         // Remove the useless "Geocache Description"
         $('h3.CacheDescriptionHeader').remove();
 
-        // Hide download links
+        // Collapse download links
         $('<p style="cursor: pointer;" onclick="$(\'#ctl00_divContentMain div.DownloadLinks\').toggle();"><span class="arrow">▼</span>Print and Downloads</p>').insertAfter('#ctl00_ContentBody_CacheInformationTable div.LocationData');
         $('#ctl00_divContentMain div.DownloadLinks').hide();
 
@@ -286,10 +286,10 @@
             '&max_distance=5&submit=Filter';
 
         $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').append(
-            ' <a target="_blank" href="' + mapUrl + '">Project-GC Map</a>');
+            ' <a target="_blank" href="' + mapUrl + '">Project-GC map</a>');
 
         $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').append(
-            '<a target="_blank" href="' + mapUrl + '&onefound=on">(incl found)</a>');
+            '<a target="_blank" href="' + mapUrl + '&onefound=on"> (incl found)</a>');
 
         GM_xmlhttpRequest({
             method: "GET",
