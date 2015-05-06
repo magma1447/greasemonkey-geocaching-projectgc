@@ -21,6 +21,7 @@ Existing features:
 * Adds a copy friendly link to the geocache page.
 * Adds link to Project-GC gallery.
 * Minor adjustments to slim the web.
+* Adds country/region/county data from Project-GC.
 
 Planned features:
 * Remove from VGPS (and indicate if it's in the VGPS or not).
