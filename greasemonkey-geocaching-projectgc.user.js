@@ -9,7 +9,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.2.3
+// @version     1.2.4
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -230,7 +230,8 @@
                         $('#ctl00_ContentBody_Location').html('<span style="text-decoration: line-through;">' + gccomLocationData + '</span><br><span>' + location + '</span>');
                     }
 
-                    $('#ctl00_divContentMain div.span-17 div.span-6.right.last div.favorite.right').append('<p>(' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W)</p>');
+                    // $('#ctl00_divContentMain div.span-17 div.span-6.right.last div.favorite.right').append('<p style="text-align: center; background-color: #f0edeb;">(' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W)</p>');
+                    $('#uxFavContainerLink').append('<p style="text-align: center; background-color: #f0edeb;">(' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W)</p>');
 
                     // Add challenge checkers
                     if(challengeCheckerTagIds.length > 0) {
