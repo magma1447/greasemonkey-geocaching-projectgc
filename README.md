@@ -30,13 +30,14 @@ Existing features:
 * Add links to gallery from bookmark lists, from geocache pages.
 * Add links to plot bookmark lists on maps, from geocache pages.
 * Add links to Profile stats for bookmark list owners, from geocache pages.
+* Autodecrypt hints.
 
 Planned features:
 * Remove from VGPS (and indicate if it's in the VGPS or not).
 * Add a settings form, triggered from an arrow right of the PGC-username in the header.
 * Rotate the "Print and Downloads" arrow when it's collapsed.
-* Autodecrypt hints
-* Remove decryption key widget (id=ctl00_ContentBody_EncryptionKey)
+* If unread message exists at Project-GC.com, show so at Geocaching.com.
+* If unread news exists at Project-GC.com, show so at Geocaching.com.
 
 License:
 The client side script (this script) is MIT licensed (license file commited in repository). However, the server side API is property of Ground Zero Communications AB.

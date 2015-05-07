@@ -9,7 +9,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.2.7
+// @version     1.2.8
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -349,6 +349,16 @@
         	var url = 'http://project-gc.com/ProfileStats/' + encodeURIComponent(owner);
         	$(this).children(':nth-child(3)').append( '&nbsp;<a href="' + url + '"><img src="' + externalLinkIcon + '" title="Project-GC Profile stats"></a>' );
         });
+
+
+		// Decrypt the hint
+		var rot13array;function createROT13array(){for(var a=0,b=[],a=0;26>a;a++)b["abcdefghijklmnopqrstuvwxyz".charAt(a)]="abcdefghijklmnopqrstuvwxyz".charAt((a+13)%26);for(a=0;26>a;a++)b["abcdefghijklmnopqrstuvwxyz".charAt(a).toUpperCase()]="abcdefghijklmnopqrstuvwxyz".charAt((a+13)%26).toUpperCase();return b}function convertROT13String(a){var b=0,d=a.length,e="";rot13array||(rot13array=createROT13array());for(b=0;b<d;b++)e+=convertROT13Char(a.charAt(b));return e}
+		function convertROT13Char(a){return"A"<=a&&"Z">=a||"a"<=a&&"z">=a?rot13array[a]:a}
+		function convertROTStringWithBrackets(a){var b="",d="",e=!0,c=0,g=a.length,f=!1;rot13array||(rot13array=createROT13array());for(c=0;c<g;c++)if(b=a.charAt(c),c<g-4&&"<br/>"==a.toLowerCase().substr(c,4))d+="<br>",c+=3;else if(c<g-3&&"<br>"==a.toLowerCase().substr(c,4))d+="<br>",c+=3;else{if("["==b&&!f)f=!0;else if("]"==b&&f)f=!1;else if("<"==b&&e)e=!1;else if(">"==b&&!e)e=!0;else if(" "!=b)if("&"==b){var h=/\&[^;]*\;/.exec(a.substr(c,a.length-c))[0];h&&(d+=h,c+=h.length-1,b="")}else e&&!f&&(b=convertROT13Char(b));d+=b}return d};
+		var lnkDH = $('#ctl00_ContentBody_lnkDH');
+		$('#div_hint').html(convertROTStringWithBrackets($('#div_hint').html()));
+		var linkText = ((lnkDH.attr('title') == 'Decrypt') ? 'Encrypt' : 'Decrypt');
+		lnkDH.text(linkText).attr('title', linkText);
 
 
         // VGPS form
