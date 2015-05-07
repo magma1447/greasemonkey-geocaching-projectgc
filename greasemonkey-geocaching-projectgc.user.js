@@ -9,7 +9,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.2.6
+// @version     1.2.7
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -26,6 +26,7 @@
         pgcApiUrl = pgcUrl + 'api/gm/v1/',
         externalLinkIcon = 'http://maxcdn.project-gc.com/images/external_small.png',
         galleryLinkIcon = 'http://maxcdn.project-gc.com/images/pictures_16.png',
+        mapLinkIcon = 'http://maxcdn.project-gc.com/images/map_app_16.png',
         loggedIn = GM_getValue('loggedIn'),
         subscription = GM_getValue('subscription'),
         pgcUsername = GM_getValue('pgcUsername'),
@@ -253,11 +254,9 @@
         }
 
 
-        // Remove unneccessary message owner text
-        $('#ctl00_ContentBody_lnkMessageOwner').html('');
-
 
         // Tidy the web
+        $('#ctl00_ContentBody_lnkMessageOwner').html('');
         $('#cacheDetails').removeClass('BottomSpacing');
     	$('#ctl00_divContentMain p.Clear').css('margin', '0');
     	$('div.Note.PersonalCacheNote').css('margin', '0');
@@ -332,6 +331,24 @@
             $('.CacheDetailNavigation ul li:first').append(html);
         }
 
+
+        // Add map links for each bookmarklist
+        $('ul.BookmarkList li').each(function() {
+        	var guid = $(this).children(':nth-child(1)').attr('href').replace(/.*\?guid=(.*)/, "$1");
+        	var owner = $(this).children(':nth-child(3)').text();
+
+	        // Add the map link
+	        var url = 'http://project-gc.com/Tools/MapBookmarklist?owner_name=' + encodeURIComponent(owner) + '&guid=' + encodeURIComponent(guid);
+        	$(this).children(':nth-child(1)').append( '&nbsp;<a href="' + url + '"><img src="' + mapLinkIcon + '" title="Map with Project-GC"></a>' );
+
+        	// Add gallery link for the bookmark list
+        	var url = 'http://project-gc.com/Tools/Gallery?bml_owner=' + encodeURIComponent(owner) + '&bml_guid=' + encodeURIComponent(guid) +'&submit=Filter';
+        	$(this).children(':nth-child(1)').append( '&nbsp;<a href="' + url + '"><img src="' + galleryLinkIcon + '" title="Project-GC Gallery"></a>' );
+
+        	// Add profile stats link to the owner
+        	var url = 'http://project-gc.com/ProfileStats/' + encodeURIComponent(owner);
+        	$(this).children(':nth-child(3)').append( '&nbsp;<a href="' + url + '"><img src="' + externalLinkIcon + '" title="Project-GC Profile stats"></a>' );
+        });
 
 
         // VGPS form
