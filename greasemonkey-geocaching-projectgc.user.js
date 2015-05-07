@@ -9,7 +9,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.2.10
+// @version     1.2.11
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -87,7 +87,7 @@
                 }
 
                 if (subscription) {
-                    subscriptionContent = 'Paid membersip';
+                    subscriptionContent = 'Paid membership';
                 } else {
                     subscriptionContent = 'Missing membership';
                 }
