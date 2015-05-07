@@ -9,7 +9,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.2.4
+// @version     1.2.5
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -254,6 +254,22 @@
         $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').
         html('<div style="margin-right: 15px; margin-bottom: 10px;"><p style="font-size: 125%; margin-bottom: 0">' + gccode + '</p>' +
             '<input size="25" type="text" value="http://coord.info/' + encodeURIComponent(gccode) + '" onclick="this.setSelectionRange(0, this.value.length);"></div>');
+        $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').css('font-weight', 'inherit').css('margin-right', '40px');
+        $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel div').css('margin', '0px');
+        $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel div p').css('font-weight', 'bold');
+
+
+        // Add PGC Map links
+        var gccomUsername = GM_getValue('gccomUsername'),
+            mapUrl = pgcUrl + 'Maps/mapcompare/?profile_name=' + gccomUsername +
+            '&nonefound=on&ownfound=on&location=' + latitude + ',' + longitude +
+            '&max_distance=5&submit=Filter';
+
+        $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').append(
+        	'<div style="margin-bottom: 8px;"><a target="_blank" href="' + mapUrl + '">Project-GC map</a> (<a target="_blank" href="' + mapUrl + '&onefound=on">incl found</a>)</div>'
+        	);
+
+
 
 
         // Remove the UTM coordinates
@@ -307,17 +323,6 @@
 
 
 
-        var gccomUsername = GM_getValue('gccomUsername'),
-            mapUrl = pgcUrl + 'Maps/mapcompare/?profile_name=' + gccomUsername +
-            '&nonefound=on&ownfound=on&location=' + latitude + ',' + longitude +
-            '&max_distance=5&submit=Filter';
-
-        $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').append(
-            ' <a target="_blank" href="' + mapUrl + '">Project-GC map</a>');
-
-        $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').append(
-            ' (<a target="_blank" href="' + mapUrl + '&onefound=on">incl found</a>)');
-
         GM_xmlhttpRequest({
             method: "GET",
             url: pgcApiUrl + 'GetExistingVGPSLists',
@@ -326,10 +331,10 @@
                     vgpsLists = result.data.lists,
                     selected = result.data.selected,
                     selectedContent,
-                    html = '<li><img width="16" height="16" src="http://maxcdn.project-gc.com/images/mobile_telephone_32.png"> Add to V-GPS <br />',
+                    html = '<li><img width="16" height="16" src="http://maxcdn.project-gc.com/images/mobile_telephone_32.png"> <strong>Add to VGPS</strong><br />',
                     listId, list;
 
-                html += '<select id="comboVGPS">';
+                html += '<select id="comboVGPS" style="width: 138px;">';
                 for (listId in vgpsLists) {
                     selectedContent = '';
                     if (+selected === +listId) {

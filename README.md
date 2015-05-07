@@ -18,10 +18,11 @@ Existing features:
 * Add a "latest logs" to the top.
 * Add links to Profile stats for cache owner.
 * Add links to Profile stats for every profile in the logbooks.
-* Adds a copy friendly link to the geocache page.
+* Adds a copy friendly link to the geocache page, and copy friendly gccode.
 * Adds link to Project-GC gallery.
 * Minor adjustments to slim the web.
 * Adds country/region/county data from Project-GC.
+* Show the real cache owner name after the "placed by".
 
 Planned features:
 * Remove from VGPS (and indicate if it's in the VGPS or not).
