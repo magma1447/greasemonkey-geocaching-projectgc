@@ -9,13 +9,13 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.2.9
+// @version     1.2.10
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
 // @grant       GM_setValue
 // @grant       GM_getValue
-// @license		The MIT License (MIT)
+// @license     The MIT License (MIT)
 // ==/UserScript==
 
 'use strict';
@@ -48,9 +48,9 @@
         CheckPGCLogin();
 
         if (path.match(/^\/geocache\/.*/) !== null) {
-            CachePage();
+            Page_CachePage();
         } else if (path.match(/^\/seek\/cache_logbook\.aspx.*/) !== null) {
-            Logbook();
+            Page_Logbook();
         }
 
     }
@@ -89,7 +89,7 @@
                 if (subscription) {
                     subscriptionContent = 'Paid membersip';
                 } else {
-                	subscriptionContent = 'Missing membership';
+                    subscriptionContent = 'Missing membership';
                 }
 
                 html = '<a class="SignedInProfileLink" href="' + pgcUrl + 'ProfileStats/' + pgcUsername + '" title="Project-GC">\
@@ -157,9 +157,9 @@
     }
 
     /**
-     * CachePage
+     * Page_CachePage
      */
-    function CachePage() {
+    function Page_CachePage() {
         var gccode = getGcCodeFromPage(),
             placedBy = $('#ctl00_ContentBody_mcd1 a').html(),
             lastUpdated = $('#ctl00_ContentBody_bottomSection p small time').get(1),
@@ -173,8 +173,8 @@
         GM_setValue('gccode', gccode);
 
 
-        // Since the logbook is ajax, so we need some magic
-        waitForKeyElements('#cache_logs_table tr', CachePage_Logbook);
+        // Since everything in the logbook is ajax, we need to wait for the elements
+        waitForKeyElements('#cache_logs_table tr', Logbook);
 
 
         // Get cache data from PGC
@@ -233,7 +233,7 @@
 	                    $('#ctl00_ContentBody_Location').html('<span style="text-decoration: line-through;">' + gccomLocationData + '</span><br><span>' + location + '</span>');
 
 	                    // $('#ctl00_divContentMain div.span-17 div.span-6.right.last div.favorite.right').append('<p style="text-align: center; background-color: #f0edeb;">(' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W)</p>');
-	                    $('#uxFavContainerLink').append('<p style="text-align: center; background-color: #f0edeb;">(' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W)</p>');
+	                    $('#uxFavContainerLink').append('<p style="text-align: center; background-color: #f0edeb;">PGC: ' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W</p>');
 
 	                    // Add challenge checkers
 	                    if(challengeCheckerTagIds.length > 0) {
@@ -287,9 +287,11 @@
         // $('#ctl00_ContentBody_CacheInformationTable div.LocationData div.span-9 p.NoBottomSpacing br').remove();
         $('#ctl00_ContentBody_LocationSubPanel').html();
 
+
         // Remove ads
         // PGC can't really do this officially
         // $('#ctl00_ContentBody_uxBanManWidget').remove();
+
 
         // Remove disclaimer
         // PGC can't really do this officially
@@ -297,7 +299,8 @@
 
 
         // Collapse download links
-        $('<p style="cursor: pointer;" onclick="$(\'#ctl00_divContentMain div.DownloadLinks\').toggle();"><span class="arrow">▼</span>Print and Downloads</p>').insertAfter('#ctl00_ContentBody_CacheInformationTable div.LocationData');
+        // http://www.w3schools.com/charsets/ref_utf_geometric.asp (x25BA, x25BC)
+        $('<p style="cursor: pointer; margin: 0;" onclick="$(\'#ctl00_divContentMain div.DownloadLinks\').toggle();"><span class="arrow">&#x25BA;</span>Print and Downloads</p>').insertAfter('#ctl00_ContentBody_CacheInformationTable div.LocationData');
         $('#ctl00_divContentMain div.DownloadLinks').hide();
 
 
@@ -326,7 +329,7 @@
 
         // Add link to PGC gallery
         if (subscription) {
-            var html = '<a href="' + pgcUrl + 'Tools/Gallery?gccode=' + gccode + '&submit=Filter"><img src="' + galleryLinkIcon + '" title="Project-GC"></a> ';
+            var html = '<a href="' + pgcUrl + 'Tools/Gallery?gccode=' + gccode + '&submit=Filter"><img src="' + galleryLinkIcon + '" title="Project-GC Gallery"></a> ';
             $('.CacheDetailNavigation ul li:first').append(html);
         }
 
@@ -394,9 +397,19 @@
         });
     }
 
-    function CachePage_Logbook(jNode) {
 
-        // Add Profile stats and gallekry links after each user
+    function Page_Logbook() {
+    	// Since everything in the logbook is ajax, we need to wait for the elements
+        waitForKeyElements('#AllLogs tr', Logbook);
+        waitForKeyElements('#PersonalLogs tr', Logbook);
+        waitForKeyElements('#FriendLogs tr', Logbook);
+    }
+
+
+
+    function Logbook(jNode) {
+
+        // Add Profile stats and gallery links after each user
         var profileNameElm = $(jNode).find('p.logOwnerProfileName strong a');
         var profileName = profileNameElm.html();
 
@@ -412,7 +425,7 @@
 
             // First entry is undefined, due to ajax
             if(logType) {
-	            latestLogs.push('<img src="' + logType + '">');
+	            latestLogs.push('<img src="' + logType + '" style="margin-bottom: -4px;">');
 
 	            // 2 = found, 3 = dnf, 4 = note, 5 = archive, 22 = disable, 24 = publish, 45 = nm, 46 = owner maintenance, 68 = reviewer note
 	            var logTypeId = logType.replace(/.*logtypes\/(.*)\.png/, "$1");
@@ -440,15 +453,5 @@
             }
         }
     }
-
-
-    function Logbook() {
-        waitForKeyElements('#AllLogs tr', CachePage_Logbook);
-    }
-
-    // Not used?
-    // function Logbook_Logbook(jNode) {
-    //     CachePage_Logbook(jNode);
-    // }
 
 }());

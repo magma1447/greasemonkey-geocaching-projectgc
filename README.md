@@ -21,9 +21,9 @@ Existing features:
 * Adds a copy friendly link to the geocache page, and copy friendly gccode.
 * Adds link to Project-GC gallery.
 * Minor adjustments to tidy the web.
-** Remove rot13 decrypt widget.
-** Remove "Description" text.
-** Remove some spacings.
+  * Remove rot13 decrypt widget.
+  * Remove "Description" text.
+  * Change some spacings.
 * Adds country/region/county data from Project-GC.
 * Show the real cache owner name after the "placed by".
 * Add links to PGC profile gallery for each name in the logbook.
