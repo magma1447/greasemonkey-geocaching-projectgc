@@ -20,18 +20,20 @@ Existing features:
 * Add links to Profile stats for every profile in the logbooks.
 * Adds a copy friendly link to the geocache page, and copy friendly gccode.
 * Adds link to Project-GC gallery.
-* Minor adjustments to slim the web.
+* Minor adjustments to tidy the web.
+** Remove rot13 decrypt widget.
+** Remove "Description" text.
+** Remove some spacings.
 * Adds country/region/county data from Project-GC.
 * Show the real cache owner name after the "placed by".
+* Add links to PGC profile gallery for each name in the logbook.
 
 Planned features:
 * Remove from VGPS (and indicate if it's in the VGPS or not).
-* Add links to profile galleries as well.
 * Add links to gallery from bookmark lists.
 * Add links to plot bookmark lists on maps.
 * Add a settings form, triggered from an arrow right of the PGC-username in the header.
 * Rotate the "Print and Downloads" arrow when it's collapsed.
-* Make added items look better.
 * Autodecrypt hints
 * Remove decryption key widget (id=ctl00_ContentBody_EncryptionKey)
 

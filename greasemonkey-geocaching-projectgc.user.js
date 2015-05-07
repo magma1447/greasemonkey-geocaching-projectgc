@@ -9,7 +9,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.2.5
+// @version     1.2.6
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -25,6 +25,7 @@
     var pgcUrl = 'http://project-gc.com/',
         pgcApiUrl = pgcUrl + 'api/gm/v1/',
         externalLinkIcon = 'http://maxcdn.project-gc.com/images/external_small.png',
+        galleryLinkIcon = 'http://maxcdn.project-gc.com/images/pictures_16.png',
         loggedIn = GM_getValue('loggedIn'),
         subscription = GM_getValue('subscription'),
         pgcUsername = GM_getValue('pgcUsername'),
@@ -170,11 +171,10 @@
 
         GM_setValue('gccode', gccode);
 
-        // Remove unneccessary message owner text
-        $('#ctl00_ContentBody_lnkMessageOwner').html('');
 
         // Since the logbook is ajax, so we need some magic
         waitForKeyElements('#cache_logs_table tr', CachePage_Logbook);
+
 
         // Get cache data from PGC
         var url = pgcApiUrl + 'GetCacheDataFromGccode&gccode=' + gccode;
@@ -198,56 +198,71 @@
                         fpw = 0;
 
 
-                    // If placed by != owner, show the real owner as well.
-                    if(placedBy != cacheOwner) {
-                    	$('#ctl00_ContentBody_mcd1 span.message__owner').before(' (' + cacheOwner + ')');
+                    if(result.status == 'OK' && cacheData !== false) {
+
+
+	                    // If placed by != owner, show the real owner as well.
+	                    if(placedBy != cacheOwner) {
+	                    	$('#ctl00_ContentBody_mcd1 span.message__owner').before(' (' + cacheOwner + ')');
+	                    }
+
+				        // Append link to Profile Stats for the cache owner
+				        // Need to real cache owner name from PGC since the web only has placed by
+				        $('#ctl00_ContentBody_mcd1 span.message__owner').before('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(cacheOwner) + '"><img src="' + externalLinkIcon + '" title="PGC Profile Stats"></a>');
+
+
+	                    // Add FP/FP%/FPW below the current FP
+	                    fp = parseInt(+cacheData.favorite_points, 10),
+	                        fpp = parseInt(+cacheData.favorite_points_pct, 10),
+	                        fpw = parseInt(+cacheData.favorite_points_wilson, 10);
+
+	                    // Add PGC location
+	                    if (cacheData.country.length > 0) {
+	                        location.push(cacheData.country);
+	                    }
+	                    if (cacheData.region.length > 0) {
+	                        location.push(cacheData.region);
+	                    }
+	                    if (cacheData.county.length > 0) {
+	                        location.push(cacheData.county);
+	                    }
+	                    location = location.join(' / ');
+
+	                    var gccomLocationData = $('#ctl00_ContentBody_Location').html();
+	                    $('#ctl00_ContentBody_Location').html('<span style="text-decoration: line-through;">' + gccomLocationData + '</span><br><span>' + location + '</span>');
+
+	                    // $('#ctl00_divContentMain div.span-17 div.span-6.right.last div.favorite.right').append('<p style="text-align: center; background-color: #f0edeb;">(' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W)</p>');
+	                    $('#uxFavContainerLink').append('<p style="text-align: center; background-color: #f0edeb;">(' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W)</p>');
+
+	                    // Add challenge checkers
+	                    if(challengeCheckerTagIds.length > 0) {
+	                    	var html = '';
+
+	                    	html += '<div id="PGC_ChallengeCheckers">';
+	                    	for(var i = 0 ; i < challengeCheckerTagIds.length ; i++) {
+	                    		html += '<a href="http://project-gc.com/Challenges//' + challengeCheckerTagIds[i] + '"><img src="http://maxcdn.project-gc.com/Images/Checker/' + challengeCheckerTagIds[i] + '" title="Project-GC Challenge checker" alt="PGC Checker"></a>';
+	                    	}
+	                    	html += '</div>';
+		                    $('#ctl00_ContentBody_CacheInformationTable').append(html)
+		                }
+
                     }
-
-			        // Append link to Profile Stats for the cache owner
-			        // Need to real cache owner name from PGC since the web only has placed by
-			        $('#ctl00_ContentBody_mcd1 span.message__owner').before('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(cacheOwner) + '"><img src="' + externalLinkIcon + '" title="PGC Profile Stats"></a>');
-
-
-                    // Add FP/FP%/FPW below the current FP
-                    if (result.status === 'OK' && cacheData !== false) {
-                        fp = parseInt(+cacheData.favorite_points, 10),
-                            fpp = parseInt(+cacheData.favorite_points_pct, 10),
-                            fpw = parseInt(+cacheData.favorite_points_wilson, 10);
-
-                        // Add PGC location
-                        if (cacheData.country.length > 0) {
-                            location.push(cacheData.country);
-                        }
-                        if (cacheData.region.length > 0) {
-                            location.push(cacheData.region);
-                        }
-                        if (cacheData.county.length > 0) {
-                            location.push(cacheData.county);
-                        }
-                        location = location.join(' / ');
-
-                        var gccomLocationData = $('#ctl00_ContentBody_Location').html();
-                        $('#ctl00_ContentBody_Location').html('<span style="text-decoration: line-through;">' + gccomLocationData + '</span><br><span>' + location + '</span>');
-                    }
-
-                    // $('#ctl00_divContentMain div.span-17 div.span-6.right.last div.favorite.right').append('<p style="text-align: center; background-color: #f0edeb;">(' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W)</p>');
-                    $('#uxFavContainerLink').append('<p style="text-align: center; background-color: #f0edeb;">(' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W)</p>');
-
-                    // Add challenge checkers
-                    if(challengeCheckerTagIds.length > 0) {
-                    	var html = '';
-
-                    	html += '<div id="PGC_ChallengeCheckers">';
-                    	for(var i = 0 ; i < challengeCheckerTagIds.length ; i++) {
-                    		html += '<a href="http://project-gc.com/Challenges//' + challengeCheckerTagIds[i] + '"><img src="http://maxcdn.project-gc.com/Images/Checker/' + challengeCheckerTagIds[i] + '" title="Project-GC Challenge checker" alt="PGC Checker"></a>';
-                    	}
-                    	html += '</div>';
-	                    $('#ctl00_ContentBody_CacheInformationTable').append(html)
-	                }
 
                 }
             });
         }
+
+
+        // Remove unneccessary message owner text
+        $('#ctl00_ContentBody_lnkMessageOwner').html('');
+
+
+        // Tidy the web
+        $('#cacheDetails').removeClass('BottomSpacing');
+    	$('#ctl00_divContentMain p.Clear').css('margin', '0');
+    	$('div.Note.PersonalCacheNote').css('margin', '0');
+        $('h3.CacheDescriptionHeader').remove();
+        $('#ctl00_ContentBody_EncryptionKey').remove();
 
 
         // Make it easier to copy the gccode
@@ -270,8 +285,6 @@
         	);
 
 
-
-
         // Remove the UTM coordinates
         // $('#ctl00_ContentBody_CacheInformationTable div.LocationData div.span-9 p.NoBottomSpacing br').remove();
         $('#ctl00_ContentBody_LocationSubPanel').html();
@@ -284,15 +297,13 @@
         // PGC can't really do this officially
         // $('#ctl00_divContentMain div.span-17 div.Note.Disclaimer').remove();
 
-        // Remove the useless "Geocache Description"
-        $('h3.CacheDescriptionHeader').remove();
 
         // Collapse download links
         $('<p style="cursor: pointer;" onclick="$(\'#ctl00_divContentMain div.DownloadLinks\').toggle();"><span class="arrow">▼</span>Print and Downloads</p>').insertAfter('#ctl00_ContentBody_CacheInformationTable div.LocationData');
         $('#ctl00_divContentMain div.DownloadLinks').hide();
 
 
-        // Turn the coordinates into an address
+        // Resolve the coordinates into an address
         var coordinates = $('#ctl00_ContentBody_lnkConversions').attr('href'),
             latitude = coordinates.replace(/.*lat=([^&]*)&lon=.*/, "$1"),
             longitude = coordinates.replace(/.*&lon=([^&]*)&.*/, "$1"),
@@ -317,12 +328,13 @@
 
         // Add link to PGC gallery
         if (subscription) {
-            var html = '<a href="' + pgcUrl + 'Tools/Gallery?gccode=' + gccode + '&submit=Filter"><img src="' + externalLinkIcon + '" title="Project-GC"></a> ';
+            var html = '<a href="' + pgcUrl + 'Tools/Gallery?gccode=' + gccode + '&submit=Filter"><img src="' + galleryLinkIcon + '" title="Project-GC"></a> ';
             $('.CacheDetailNavigation ul li:first').append(html);
         }
 
 
 
+        // VGPS form
         GM_xmlhttpRequest({
             method: "GET",
             url: pgcApiUrl + 'GetExistingVGPSLists',
@@ -358,13 +370,15 @@
 
     function CachePage_Logbook(jNode) {
 
-        // Add Profile stats link after each user
+        // Add Profile stats and gallekry links after each user
         var profileNameElm = $(jNode).find('p.logOwnerProfileName strong a');
         var profileName = profileNameElm.html();
 
         if (typeof profileName !== 'undefined') {
-            profileName = profileNameElm.append('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(profileName) + '"><img src="' + externalLinkIcon + '" title="PGC Profile Stats"></a>');
+            profileName = profileNameElm.append('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(profileName) + '"><img src="' + externalLinkIcon + '" title="PGC Profile Stats"></a>')
+            	.append('<a href="' + pgcUrl + 'Tools/Gallery?profile_name=' + encodeURIComponent(profileName) + '&submit=Filter"><img src="' + galleryLinkIcon + '" title="PGC Gallery"></a>');
         }
+
 
         // Save to latest logs
         if (latestLogs.length < 5) {
@@ -388,11 +402,13 @@
             // Show latest logs
             if (latestLogs.length == 5) {
                 var images = latestLogs.join('');
-                $('#ctl00_ContentBody_size p').addClass('NoBottomSpacing');
+
+                $('#ctl00_ContentBody_size p').removeClass('AlignCenter').addClass('NoBottomSpacing');
+
                 if(latestLogsAlert) {
-	                $('#ctl00_ContentBody_size').append('<p class="AlignCenter NoBottomSpacing OldWarning"><strong>Latest logs:</strong> <span>' + images + '</span></p>');
+	                $('#ctl00_ContentBody_size').append('<p class="NoBottomSpacing OldWarning"><strong>Latest logs:</strong> <span>' + images + '</span></p>');
                 } else {
-	                $('#ctl00_ContentBody_size').append('<p class="AlignCenter NoBottomSpacing">Latest logs: <span>' + images + '</span></p>');
+	                $('#ctl00_ContentBody_size').append('<p class="NoBottomSpacing">Latest logs: <span>' + images + '</span></p>');
 	            }
 
             }
