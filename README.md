@@ -1,7 +1,7 @@
 greasemonkey-geocaching-projectgc
 =================================
 
-Adds links and data to Geocaching.com to make it collaborate with PGC.
+Adds links and data to Geocaching.com to make it collaborate with Project-GC.com.
 
 Some (most) features are for paying members at Project-GC only.
 
@@ -10,7 +10,7 @@ Compatibily:
 * Requires Tampermonkey to run in Chrome.
 
 Existing features:
-* Add to VGPS form.
+* Add to/remove from VGPS form.
 * Adds Favorite points (FP/FP%/FPW).
 * Adds challenge checker links if a checker exists at Project-GC.
 * Adds address for the coordinates (Google reverse geocoding).
@@ -33,7 +33,6 @@ Existing features:
 * Autodecrypt hints.
 
 Planned features:
-* Remove from VGPS (and indicate if it's in the VGPS or not).
 * If unread message exists at Project-GC.com, show so at Geocaching.com.
 * If unread news exists at Project-GC.com, show so at Geocaching.com.
 

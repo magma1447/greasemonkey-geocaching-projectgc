@@ -9,7 +9,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.3.1
+// @version     1.4.0
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -240,11 +240,43 @@
             url: url,
             onload: function(response) {
                 var result = JSON.parse(response.responseText);
-                msg = 'Geocache not added to Virtual-GPS :(';
-                if (result.status === 'OK') {
-                    msg = 'Geocache added to Virtual-GPS!';
-                }
+                var msg = (result.status === 'OK') ? 'Geocache added to Virtual-GPS!' : 'Geocache not added to Virtual-GPS :(';
+
+                $('#btnAddToVGPS').css('display', 'none');
+                $('#btnRemoveFromVGPS').css('display', '');
+
                 alert(msg);
+
+                return true;
+            },
+            onerror: function(response) {
+                console.log(response);
+                return false;
+            }
+        });
+    }
+
+    /**
+     * removeFromVGPS
+     */
+    function removeFromVGPS() {
+        var gccode = GM_getValue('gccode'),
+            listId = $('#comboVGPS').val(),
+            msg,
+            url = pgcApiUrl + 'RemoveFromVGPSList?listId=' + listId + '&gccode=' + gccode;
+
+        GM_xmlhttpRequest({
+            method: "GET",
+            url: url,
+            onload: function(response) {
+                var result = JSON.parse(response.responseText);
+                var msg = (result.status === 'OK') ? 'Geocache removed from Virtual-GPS!' : 'Geocache not removed from Virtual-GPS :(';
+
+                $('#btnAddToVGPS').css('display', '');
+                $('#btnRemoveFromVGPS').css('display', 'none');
+
+                alert(msg);
+
                 return true;
             },
             onerror: function(response) {
@@ -483,12 +515,14 @@
         if(IsSettingEnabled('showVGPS')) {
             GM_xmlhttpRequest({
                 method: "GET",
-                url: pgcApiUrl + 'GetExistingVGPSLists',
+                url: pgcApiUrl + 'GetExistingVGPSLists?gccode=' + gccode,
                 onload: function(response) {
                     var result = JSON.parse(response.responseText),
                         vgpsLists = result.data.lists,
                         selected = result.data.selected,
+                        existsIn = result.data.existsIn,
                         selectedContent,
+                        existsContent,
                         html = '<li><img width="16" height="16" src="http://maxcdn.project-gc.com/images/mobile_telephone_32.png"> <strong>Add to VGPS</strong><br />',
                         listId, list;
 
@@ -498,17 +532,42 @@
                         if (+selected === +listId) {
                             selectedContent = ' selected="selected"';
                         }
-                        html += '<option value="' + listId + '"' + selectedContent + '>' + vgpsLists[listId].name + '</option>';
+
+                        existsContent = '';
+                        if(existsIn.indexOf(listId) > -1) {
+                        	existsContent = ' data-exists="true"';
+                        }
+                        html += '<option value="' + listId + '"' + selectedContent + existsContent + '>' + vgpsLists[listId].name + '</option>';
                     }
                     html += '</select>';
-                    html += '&nbsp;<button id="btnaddToVGPS">+</button>';
+                    if(existsIn.indexOf( String(selected) ) == -1) {
+	                    html += '&nbsp;<button id="btnAddToVGPS">+</button>';
+	                    html += '&nbsp;<button id="btnRemoveFromVGPS" style="display: none;">-</button>';
+	                } else {
+	                    html += '&nbsp;<button id="btnAddToVGPS" style="display: none;">+</button>';
+	                    html += '&nbsp;<button id="btnRemoveFromVGPS">-</button>';
+	                }
                     html += '</li>';
 
                     $('div.CacheDetailNavigation ul:first').append(html);
 
-                    $('#btnaddToVGPS').click(function(event) {
+                    $('#comboVGPS').change(function(event) {
+                    	selected = $(this).find(':selected').val();
+                    	if(existsIn.indexOf( String(selected) ) == -1) {
+			                $('#btnAddToVGPS').css('display', '');
+			                $('#btnRemoveFromVGPS').css('display', 'none');
+                    	} else {
+			                $('#btnAddToVGPS').css('display', 'none');
+			                $('#btnRemoveFromVGPS').css('display', '');
+                    	}
+                    });
+                    $('#btnAddToVGPS').click(function(event) {
                         event.preventDefault();
                         addToVGPS();
+                    });
+                    $('#btnRemoveFromVGPS').click(function(event) {
+                        event.preventDefault();
+                        removeFromVGPS();
                     });
                 }
             });
