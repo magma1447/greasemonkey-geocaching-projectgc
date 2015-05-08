@@ -15,6 +15,7 @@
 // @grant       GM_xmlhttpRequest
 // @grant       GM_setValue
 // @grant       GM_getValue
+// @grant       GM_deleteValue
 // @license     The MIT License (MIT)
 // ==/UserScript==
 
@@ -33,7 +34,7 @@
         gccomUsername = GM_getValue('gccomUsername'),
         latestLogs = [],
         latestLogsAlert = false,
-        disabledFunctions = [],
+        settings = {},
         path = window.location.pathname;
 
     // Don't run the script for iframes
@@ -58,46 +59,61 @@
 
     function GetSettingsItems() {
         var items = {
-            showVGPS : 'Show Virtual GPS',
-            addChallengeCheckers: 'Add challenge checkers',
-            makeCopyFriendly: 'Make copy friendly GC-Code and link',
-            addPgcMapLinks: 'Add PGC map links',
-            addLatestLogs: 'Add latest logs',
-            cloneLogsPerType: 'Clone number of logs per type',
-            addPGCLocation: 'Add PGC Location',
-            addAddress: 'Add reverse geocoded address',
-            removeUTM: 'Remove UTM coordinates',
-            addPgcFp: 'Add FP from PGC',
-            profileStatsLinks: 'Add links to Profile stats',
-            tidy: 'Tidy the web a bit',
-            collapseDownloads: 'Collapse download links',
-            addPgcGalleryLinks: 'Add links to PGC gallery',
-            addMapBookmarkListLinks: 'Add links for bookmark lists',
-            decryptHints: 'Automatically decrypt hints'
+            showVGPS: { title: 'Show Virtual GPS', default: true },
+            addChallengeCheckers: { title: 'Add challenge checkers', default: true },
+            makeCopyFriendly: { title: 'Make copy friendly GC-Code and link', default: true },
+            addPgcMapLinks: { title: 'Add PGC map links', default: true },
+            addLatestLogs: { title: 'Add latest logs', default: true },
+            cloneLogsPerType: { title: 'Clone number of logs per type', default: true },
+            addPGCLocation: { title: 'Add PGC Location', default: true },
+            addAddress: { title: 'Add reverse geocoded address', default: true },
+            removeUTM: { title: 'Remove UTM coordinates', default: true },
+            addPgcFp: { title: 'Add FP from PGC', default: true },
+            profileStatsLinks: { title: 'Add links to Profile stats', default: true },
+            tidy: { title: 'Tidy the web a bit', default: true },
+            collapseDownloads: { title: 'Collapse download links', default: false },
+            addPgcGalleryLinks: { title: 'Add links to PGC gallery', default: true },
+            addMapBookmarkListLinks: { title: 'Add links for bookmark lists', default: true },
+            decryptHints: { title: 'Automatically decrypt hints', default: true }
             };
         return items;
     }
 
     function ReadSettings() {
-        disabledFunctions = GM_getValue('disabledFunctions');
-        disabledFunctions = (typeof(disabledFunctions) != 'undefined') ? JSON.parse(disabledFunctions) : [];
+        settings = GM_getValue('settings');
+        if(typeof(settings) != 'undefined') {
+        	settings = JSON.parse(settings);
+        } else {
+        	settings = [];
+        }
+
+        var items = GetSettingsItems();
+        for(var item in items) {
+        	if(typeof(settings[item]) == 'undefined') {
+        		settings[item] = items[item].default;
+        	}
+        }
     }
 
     function SaveSettings() {
-        disabledFunctions = [];
+    	GM_deleteValue('disabledFunctions');	// Legacy
+
+        settings = {};
 
         var items = GetSettingsItems();
         for(var item in items) {
             var checked = $('#pgcUserMenuForm input[name="' + item + '"]').is(':checked');
-            if(checked == false) {
-                disabledFunctions.push(item);
-            }
+            settings[item] = (checked) ? 1 : 0;
         }
 
-        var json = JSON.stringify(disabledFunctions);
-        GM_setValue('disabledFunctions', json);
+        var json = JSON.stringify(settings);
+        GM_setValue('settings', json);
 
         $('#pgcUserMenuWarning').css('display', 'inherit');
+    }
+
+    function IsSettingEnabled(setting) {
+    	return settings[setting];
     }
 
 
@@ -162,10 +178,10 @@
 
                 var items = GetSettingsItems();
                 for(var item in items) {
-                    if(disabledFunctions.indexOf(item) == -1) {
-                        html += '<li><label><input type="checkbox" name="' + item + '" checked="checked">&nbsp;' + items[item] + '</label></li>';
+                    if(IsSettingEnabled(item)) {
+                        html += '<li><label><input type="checkbox" name="' + item + '" checked="checked">&nbsp;' + items[item].title + '</label></li>';
                     } else {
-                        html += '<li><label><input type="checkbox" name="' + item + '">&nbsp;' + items[item] + '</label></li>';
+                        html += '<li><label><input type="checkbox" name="' + item + '">&nbsp;' + items[item].title + '</label></li>';
                     }
                 }
 
@@ -291,13 +307,13 @@
 
                         // Append link to Profile Stats for the cache owner
                         // Need to real cache owner name from PGC since the web only has placed by
-                        if(disabledFunctions.indexOf('profileStatsLinks') == -1) {
+                        if(IsSettingEnabled('profileStatsLinks')) {
                             $('#ctl00_ContentBody_mcd1 span.message__owner').before('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(cacheOwner) + '"><img src="' + externalLinkIcon + '" title="PGC Profile Stats"></a>');
                         }
 
 
                         // Add FP/FP%/FPW below the current FP
-                        if(disabledFunctions.indexOf('addPgcFp') == -1) {
+                        if(IsSettingEnabled('addPgcFp')) {
                             fp = parseInt(+cacheData.favorite_points, 10),
                                 fpp = parseInt(+cacheData.favorite_points_pct, 10),
                                 fpw = parseInt(+cacheData.favorite_points_wilson, 10);
@@ -306,7 +322,7 @@
 
 
                         // Add PGC location
-                        if(disabledFunctions.indexOf('addPGCLocation') == -1) {
+                        if(IsSettingEnabled('addPGCLocation')) {
                             if (cacheData.country.length > 0) {
                                 location.push(cacheData.country);
                             }
@@ -324,7 +340,7 @@
 
 
                         // Add challenge checkers
-                        if(disabledFunctions.indexOf('addChallengeCheckers') == -1 && challengeCheckerTagIds.length > 0) {
+                        if(IsSettingEnabled('addChallengeCheckers') && challengeCheckerTagIds.length > 0) {
                             var html = '';
 
 	                    	html += '<div id="checkerWidget" class="CacheDetailNavigationWidget TopSpacing BottomSpacing"><h3 class="WidgetHeader">Checker(s)</h3><div class="WidgetBody" id="PGC_ChallengeCheckers">';
@@ -342,7 +358,7 @@
 
 
         // Tidy the web
-        if(disabledFunctions.indexOf('tidy') == -1) {
+        if(IsSettingEnabled('tidy')) {
             $('#ctl00_ContentBody_lnkMessageOwner').html('');
             $('#ctl00_divContentMain p.Clear').css('margin', '0');
             $('div.Note.PersonalCacheNote').css('margin', '0');
@@ -352,7 +368,7 @@
 
 
         // Make it easier to copy the gccode
-        if(disabledFunctions.indexOf('makeCopyFriendly') == -1) {
+        if(IsSettingEnabled('makeCopyFriendly')) {
             $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').
             html('<div style="margin-right: 15px; margin-bottom: 10px;"><p style="font-size: 125%; margin-bottom: 0">' + gccode + '</p>' +
                 '<input size="25" type="text" value="http://coord.info/' + encodeURIComponent(gccode) + '" onclick="this.setSelectionRange(0, this.value.length);"></div>');
@@ -363,7 +379,7 @@
 
 
         // Add PGC Map links
-        if(disabledFunctions.indexOf('addPgcMapLinks') == -1) {
+        if(IsSettingEnabled('addPgcMapLinks')) {
             var coordinates = $('#ctl00_ContentBody_lnkConversions').attr('href'),
                 latitude = coordinates.replace(/.*lat=([^&]*)&lon=.*/, "$1"),
                 longitude = coordinates.replace(/.*&lon=([^&]*)&.*/, "$1");
@@ -380,7 +396,7 @@
 
         // Remove the UTM coordinates
         // $('#ctl00_ContentBody_CacheInformationTable div.LocationData div.span-9 p.NoBottomSpacing br').remove();
-        if(disabledFunctions.indexOf('removeUTM') == -1) {
+        if(IsSettingEnabled('removeUTM')) {
             $('#ctl00_ContentBody_LocationSubPanel').html();
         }
 
@@ -397,14 +413,14 @@
 
         // Collapse download links
         // http://www.w3schools.com/charsets/ref_utf_geometric.asp (x25BA, x25BC)
-        if(disabledFunctions.indexOf('collapseDownloads') == -1) {
+        if(IsSettingEnabled('collapseDownloads')) {
             $('<p style="cursor: pointer; margin: 0;" id="DownloadLinksToggle" onclick="$(\'#ctl00_divContentMain div.DownloadLinks, #DownloadLinksToggle .arrow\').toggle();"><span class="arrow">&#x25BA;</span><span class="arrow open">&#x25BC;</span>Print and Downloads</p>').insertAfter('#ctl00_ContentBody_CacheInformationTable div.LocationData');
             $('#ctl00_divContentMain div.DownloadLinks, #DownloadLinksToggle .arrow.open').hide();
         }
 
 
         // Resolve the coordinates into an address
-        if(disabledFunctions.indexOf('addAddress') == -1) {
+        if(IsSettingEnabled('addAddress')) {
             var coordinates = $('#ctl00_ContentBody_lnkConversions').attr('href'),
                 latitude = coordinates.replace(/.*lat=([^&]*)&lon=.*/, "$1"),
                 longitude = coordinates.replace(/.*&lon=([^&]*)&.*/, "$1"),
@@ -426,20 +442,20 @@
 
 
         // Add number of finds per type to the top
-        if(disabledFunctions.indexOf('cloneLogsPerType') == -1) {
+        if(IsSettingEnabled('cloneLogsPerType')) {
             $('#ctl00_ContentBody_CacheInformationTable').before('<div>' + $('#ctl00_ContentBody_lblFindCounts').html() + '</div>');
         }
 
 
         // Add link to PGC gallery
-        if (subscription && disabledFunctions.indexOf('addPgcGalleryLinks') == -1) {
+        if (subscription && IsSettingEnabled('addPgcGalleryLinks')) {
             var html = '<a href="' + pgcUrl + 'Tools/Gallery?gccode=' + gccode + '&submit=Filter"><img src="' + galleryLinkIcon + '" title="Project-GC Gallery"></a> ';
             $('.CacheDetailNavigation ul li:first').append(html);
         }
 
 
         // Add map links for each bookmarklist
-        if(disabledFunctions.indexOf('addMapBookmarkListLinks') == -1) {
+        if(IsSettingEnabled('addMapBookmarkListLinks')) {
             $('ul.BookmarkList li').each(function() {
                 var guid = $(this).children(':nth-child(1)').attr('href').replace(/.*\?guid=(.*)/, "$1");
                 var owner = $(this).children(':nth-child(3)').text();
@@ -464,7 +480,7 @@
 
 
         // VGPS form
-        if(disabledFunctions.indexOf('showVGPS') == -1) {
+        if(IsSettingEnabled('showVGPS')) {
             GM_xmlhttpRequest({
                 method: "GET",
                 url: pgcApiUrl + 'GetExistingVGPSLists',
@@ -512,7 +528,7 @@
     function Logbook(jNode) {
 
         // Add Profile stats and gallery links after each user
-        if(disabledFunctions.indexOf('profileStatsLinks') == -1) {
+        if(IsSettingEnabled('profileStatsLinks')) {
             var profileNameElm = $(jNode).find('p.logOwnerProfileName strong a');
             var profileName = profileNameElm.html();
 
@@ -543,7 +559,7 @@
 
 
             // Show latest logs
-            if(disabledFunctions.indexOf('addLatestLogs') == -1) {
+            if(IsSettingEnabled('addLatestLogs')) {
                 if (latestLogs.length == 5) {
                     var images = latestLogs.join('');
 
