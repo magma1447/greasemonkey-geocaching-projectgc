@@ -9,7 +9,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.2.11
+// @version     1.2.12
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -60,7 +60,12 @@
      */
     function CheckPGCLogin() {
 
-        gccomUsername = $('#ctl00_divSignedIn .li-user-info span').html();
+    	gccomUsername = false;
+    	if( $('#ctl00_divSignedIn').length ) {
+	        gccomUsername = $('#ctl00_divSignedIn .li-user-info span').html();
+    	} else if( $('ul.profile-panel-menu').length ) {
+    		gccomUsername = $('ul.profile-panel-menu .li-user-info span:nth-child(2)').text();
+    	}
         GM_setValue('gccomUsername', gccomUsername);
 
         GM_xmlhttpRequest({
@@ -92,20 +97,21 @@
                     subscriptionContent = 'Missing membership';
                 }
 
+
                 html = '<a class="SignedInProfileLink" href="' + pgcUrl + 'ProfileStats/' + pgcUsername + '" title="Project-GC">\
                             <span class="avatar">\
                                 <img src="http://project-gc.com/favicon.ico" alt="Logo" width="30" height="30" style="border-radius:100%; border-width:0px;">\
                             </span>\
                             <span class="li-user-info">\
-                                <span>' + loggedInContent + '</span>\
+                                <span style="display: block;">' + loggedInContent + '</span>\
                                 <span class="cache-count">' + subscriptionContent + '</span>\
                             </span>\
                         </a>';
 
-                if ($('#ctl00_divSignedIn ul')) {
-                    $('#ctl00_divSignedIn ul').prepend('<li class="li-user">' + html + '</li>');
-                } else {
-                    $('#ctl00_divNotSignedIn').append('<div>' + html + '</div>'); // FIXME - Not working
+                if ( $('#ctl00_divSignedIn ul.logged-in-user').length ) {	// The default look of the header bar
+                    $('#ctl00_divSignedIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
+                } else if( $('ul.profile-panel-menu').length ) {	// Special case for https://www.geocaching.com/account/settings/preferences
+                	$('ul.profile-panel-menu').prepend('<li class="li-user">' + html + '</li>');
                 }
 
                 // Save the login value
