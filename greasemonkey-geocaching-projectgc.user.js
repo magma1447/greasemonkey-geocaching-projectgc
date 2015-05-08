@@ -460,15 +460,7 @@
 
 
         // Decrypt the hint
-        var rot13array;function createROT13array(){for(var a=0,b=[],a=0;26>a;a++)b["abcdefghijklmnopqrstuvwxyz".charAt(a)]="abcdefghijklmnopqrstuvwxyz".charAt((a+13)%26);for(a=0;26>a;a++)b["abcdefghijklmnopqrstuvwxyz".charAt(a).toUpperCase()]="abcdefghijklmnopqrstuvwxyz".charAt((a+13)%26).toUpperCase();return b}function convertROT13String(a){var b=0,d=a.length,e="";rot13array||(rot13array=createROT13array());for(b=0;b<d;b++)e+=convertROT13Char(a.charAt(b));return e}
-        function convertROT13Char(a){return"A"<=a&&"Z">=a||"a"<=a&&"z">=a?rot13array[a]:a}
-        function convertROTStringWithBrackets(a){var b="",d="",e=!0,c=0,g=a.length,f=!1;rot13array||(rot13array=createROT13array());for(c=0;c<g;c++)if(b=a.charAt(c),c<g-4&&"<br/>"==a.toLowerCase().substr(c,4))d+="<br>",c+=3;else if(c<g-3&&"<br>"==a.toLowerCase().substr(c,4))d+="<br>",c+=3;else{if("["==b&&!f)f=!0;else if("]"==b&&f)f=!1;else if("<"==b&&e)e=!1;else if(">"==b&&!e)e=!0;else if(" "!=b)if("&"==b){var h=/\&[^;]*\;/.exec(a.substr(c,a.length-c))[0];h&&(d+=h,c+=h.length-1,b="")}else e&&!f&&(b=convertROT13Char(b));d+=b}return d};
-        if(disabledFunctions.indexOf('decryptHints') == -1) {
-            var lnkDH = $('#ctl00_ContentBody_lnkDH');
-            $('#div_hint').html(convertROTStringWithBrackets($('#div_hint').html()));
-            var linkText = ((lnkDH.attr('title') == 'Decrypt') ? 'Encrypt' : 'Decrypt');
-            lnkDH.text(linkText).attr('title', linkText);
-        }
+        unsafeWindow.dht();
 
 
         // VGPS form
