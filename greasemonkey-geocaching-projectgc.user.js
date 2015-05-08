@@ -434,7 +434,7 @@
 
             // First entry is undefined, due to ajax
             if(logType) {
-	            latestLogs.push('<img src="' + logType + '" style="margin-bottom: -4px;">');
+	            latestLogs.push('<img src="' + logType + '" style="margin-bottom: -4px; margin-right: 1px;">');
 
 	            // 2 = found, 3 = dnf, 4 = note, 5 = archive, 22 = disable, 24 = publish, 45 = nm, 46 = owner maintenance, 68 = reviewer note
 	            var logTypeId = logType.replace(/.*logtypes\/(.*)\.png/, "$1");
