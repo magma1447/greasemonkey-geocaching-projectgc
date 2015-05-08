@@ -9,7 +9,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.2.12
+// @version     1.2.13
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -279,6 +279,9 @@
 
 
         // Add PGC Map links
+        var coordinates = $('#ctl00_ContentBody_lnkConversions').attr('href'),
+            latitude = coordinates.replace(/.*lat=([^&]*)&lon=.*/, "$1"),
+            longitude = coordinates.replace(/.*&lon=([^&]*)&.*/, "$1");
         var gccomUsername = GM_getValue('gccomUsername'),
             mapUrl = pgcUrl + 'Maps/mapcompare/?profile_name=' + gccomUsername +
             '&nonefound=on&ownfound=on&location=' + latitude + ',' + longitude +
