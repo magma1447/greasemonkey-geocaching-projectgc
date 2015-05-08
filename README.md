@@ -39,6 +39,12 @@ Planned features:
 * If unread message exists at Project-GC.com, show so at Geocaching.com.
 * If unread news exists at Project-GC.com, show so at Geocaching.com.
 
+Known issues:
+* Project-GC settings dialog should use the user-expanded class if possible.
+* Project-GC settings dialog should close when clicking outside of it (when that works, remove cancel button).
+* Project-GC settings button doesn't show the arrow properly.
+* Project-GC settings form doesn't have the correct css on https://www.geocaching.com/account/settings/profile .
+
 License:
 The client side script (this script) is MIT licensed (license file commited in repository). However, the server side API is property of Ground Zero Communications AB.
 

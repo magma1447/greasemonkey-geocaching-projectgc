@@ -9,7 +9,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.2.12
+// @version     1.3.0
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -33,6 +33,7 @@
         gccomUsername = GM_getValue('gccomUsername'),
         latestLogs = [],
         latestLogsAlert = false,
+        settings = [],
         path = window.location.pathname;
 
     // Don't run the script for iframes
@@ -106,7 +107,27 @@
                                 <span style="display: block;">' + loggedInContent + '</span>\
                                 <span class="cache-count">' + subscriptionContent + '</span>\
                             </span>\
-                        </a>';
+                        </a>\
+                        <button id="pgcUserMenuButton" type="button" class="li-user-toggle" onclick="$(\'#pgcUserMenu\').show();">\
+                    		<svg version="1.1" viewBox="0 0 13 8" height="8px" width="13px" xmlns="http://www.w3.org/2000/svg"><title>Open Menu</title><g fill-rule="evenodd" fill="none" stroke-width="1" stroke="none"><g transform="translate(-1277.000000, -25.000000)" class="arrow"><path transform="translate(1283.254319, 28.582435) scale(1, -1) rotate(-90.000000) translate(-1283.254319, -28.582435) " d="M1280.43401 23.3387013C1280.20315 23.5702719 1280.20315 23.945803 1280.43401 24.1775793L1284.82138 28.5825631 1280.43401 32.9873411C1280.20315 33.2191175 1280.20315 33.5944429 1280.43401 33.8262192 1280.54934 33.9420045 1280.70072 34 1280.8519 34 1281.00307 34 1281.15425 33.9422102 1281.26978 33.8262192L1286.07462 29.0018993C1286.30548 28.7701229 1286.30548 28.3947975 1286.07462 28.1630212L1281.26958 23.3387013C1281.03872 23.106925 1280.66487 23.106925 1280.43401 23.3387013Z"/></g></g></svg>\
+                		</button>\
+                		<ul id="pgcUserMenu">\
+	        				<form id="pgcUserMenuForm" style="color: #5f452a;">\
+	                			<li><label><input type="checkbox">&nbsp;Show Virtual GPS</label></li>\
+	                			<li><label><input type="checkbox">&nbsp;Add challenge checkers</label></li>\
+	                			<li><label><input type="checkbox">&nbsp;Add copy friendly GC-Code and link</label></li>\
+	                			<li><label><input type="checkbox">&nbsp;Add PGC map links</label></li>\
+	                			<li><label><input type="checkbox">&nbsp;Add Latest logs</label></li>\
+	                			<li><label><input type="checkbox">&nbsp;Clone number of logs per type</label></li>\
+	                			<li><label><input type="checkbox">&nbsp;Add PGC location</label></li>\
+	                			<li><label><input type="checkbox">&nbsp;Add reverse geocoded address</label></li>\
+	                			<li>\
+	                				<button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); $(\'#pgcUserMenu\').hide(); return false;">Cancel</button>\
+	                				&nbsp;<button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); return false;">Reset</button>&nbsp;\
+	                				<button onclick="return false;">Save</button>\
+                				</li>\
+	        				</form>\
+                        </ul>';
 
                 if ( $('#ctl00_divSignedIn ul.logged-in-user').length ) {	// The default look of the header bar
                     $('#ctl00_divSignedIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
