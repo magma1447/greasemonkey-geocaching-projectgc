@@ -9,7 +9,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.4.0
+// @version     1.4.1
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -74,7 +74,8 @@
             collapseDownloads: { title: 'Collapse download links', default: false },
             addPgcGalleryLinks: { title: 'Add links to PGC gallery', default: true },
             addMapBookmarkListLinks: { title: 'Add links for bookmark lists', default: true },
-            decryptHints: { title: 'Automatically decrypt hints', default: true }
+            decryptHints: { title: 'Automatically decrypt hints', default: true },
+            addElevation: { title: 'Add elevation', default: true }
             };
         return items;
     }
@@ -351,6 +352,13 @@
                                 fpw = parseInt(+cacheData.favorite_points_wilson, 10);
                             $('#uxFavContainerLink').append('<p style="text-align: center; background-color: #f0edeb;">PGC: ' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W</p>');
                         }
+
+
+				        // Add elevation
+				        if(IsSettingEnabled('addElevation')) {
+				        	// Metres above mean sea level = mamsl
+				        	$('#uxLatLonLink').after('<span> (' + cacheData['elevation'] + ' mamsl)</span>');
+				        }
 
 
                         // Add PGC location
