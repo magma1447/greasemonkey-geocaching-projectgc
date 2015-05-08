@@ -35,7 +35,6 @@ Existing features:
 Planned features:
 * Remove from VGPS (and indicate if it's in the VGPS or not).
 * Add a settings form, triggered from an arrow right of the PGC-username in the header.
-* Rotate the "Print and Downloads" arrow when it's collapsed.
 * If unread message exists at Project-GC.com, show so at Geocaching.com.
 * If unread news exists at Project-GC.com, show so at Geocaching.com.
 

@@ -300,6 +300,9 @@
 
 
         // Add PGC Map links
+        var coordinates = $('#ctl00_ContentBody_lnkConversions').attr('href'),
+            latitude = coordinates.replace(/.*lat=([^&]*)&lon=.*/, "$1"),
+            longitude = coordinates.replace(/.*&lon=([^&]*)&.*/, "$1");
         var gccomUsername = GM_getValue('gccomUsername'),
             mapUrl = pgcUrl + 'Maps/mapcompare/?profile_name=' + gccomUsername +
             '&nonefound=on&ownfound=on&location=' + latitude + ',' + longitude +
@@ -327,8 +330,8 @@
 
         // Collapse download links
         // http://www.w3schools.com/charsets/ref_utf_geometric.asp (x25BA, x25BC)
-        $('<p style="cursor: pointer; margin: 0;" onclick="$(\'#ctl00_divContentMain div.DownloadLinks\').toggle();"><span class="arrow">&#x25BA;</span>Print and Downloads</p>').insertAfter('#ctl00_ContentBody_CacheInformationTable div.LocationData');
-        $('#ctl00_divContentMain div.DownloadLinks').hide();
+        $('<p style="cursor: pointer; margin: 0;" id="DownloadLinksToggle" onclick="$(\'#ctl00_divContentMain div.DownloadLinks, #DownloadLinksToggle .arrow\').toggle();"><span class="arrow">&#x25BA;</span><span class="arrow open">&#x25BC;</span>Print and Downloads</p>').insertAfter('#ctl00_ContentBody_CacheInformationTable div.LocationData');
+        $('#ctl00_divContentMain div.DownloadLinks, #DownloadLinksToggle .arrow.open').hide();
 
 
         // Resolve the coordinates into an address
@@ -452,7 +455,7 @@
 
             // First entry is undefined, due to ajax
             if(logType) {
-	            latestLogs.push('<img src="' + logType + '" style="margin-bottom: -4px;">');
+	            latestLogs.push('<img src="' + logType + '" style="margin-bottom: -4px; margin-right: 1px;">');
 
 	            // 2 = found, 3 = dnf, 4 = note, 5 = archive, 22 = disable, 24 = publish, 45 = nm, 46 = owner maintenance, 68 = reviewer note
 	            var logTypeId = logType.replace(/.*logtypes\/(.*)\.png/, "$1");
