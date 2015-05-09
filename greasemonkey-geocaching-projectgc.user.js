@@ -96,15 +96,13 @@
         }
     }
 
-    function SaveSettings() {
-    	GM_deleteValue('disabledFunctions');	// Legacy
-
+    function SaveSettings(e) {
+        GM_deleteValue('disabledFunctions');	// Legacy
+        e.preventDefault();
         settings = {};
 
-        var items = GetSettingsItems();
-        for(var item in items) {
-            var checked = $('#pgcUserMenuForm input[name="' + item + '"]').is(':checked');
-            settings[item] = (checked) ? 1 : 0;
+        for(var item in GetSettingsItems()) {
+            settings[item] = !!$('#pgcUserMenuForm input[name="' + item + '"]').is(':checked');
         }
 
         var json = JSON.stringify(settings);
@@ -191,7 +189,7 @@
                         <li>\
                             <button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); $(\'#pgcUserMenu\').hide(); return false;">Cancel</button>\
                             &nbsp;<button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); return false;">Reset</button>\
-                            &nbsp;<button id="pgcUserMenuSave" onclick="return false;">Save</button>\
+                            &nbsp;<button id="pgcUserMenuSave">Save</button>\
                         </li>\
                         <li id="pgcUserMenuWarning" style="display: none;"><small class="OldWarning">Reload the page to activate the new settings.</small></li>\
                     </form>\
@@ -203,8 +201,8 @@
                     $('ul.profile-panel-menu').prepend('<li class="li-user">' + html + '</li>');
                 }
 
-                $('#pgcUserMenuSave').click(function() {
-                    SaveSettings();
+                $('#pgcUserMenuSave').click(function(e) {
+                    SaveSettings(e);
                 });
 
 
