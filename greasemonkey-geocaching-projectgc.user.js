@@ -177,7 +177,7 @@
                 var html = '\
                 <a class="SignedInProfileLink" href="' + pgcUrl + 'ProfileStats/' + pgcUsername + '" title="Project-GC">\
                     <span class="avatar">\
-                        <img src="http://project-gc.com/favicon.ico" alt="Logo" width="30" height="30" style="border-radius:100%; border-width:0px;">\
+                        <img src="http://project-gc.com/favicon.ico" alt="Logo" width="30" height="30" style="border-radius:100%; border-width:0;">\
                     </span>\
                     <span class="li-user-info">\
                         <span style="display: block;">' + loggedInContent + '</span>\
