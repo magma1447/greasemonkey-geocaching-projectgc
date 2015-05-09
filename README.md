@@ -39,7 +39,6 @@ Planned features:
 
 Known issues:
 * Project-GC settings dialog should use the user-expanded class if possible.
-* Project-GC settings dialog should close when clicking outside of it (when that works, remove the cancel button).
 * Project-GC settings button doesn't show the arrow properly.
 * Project-GC settings form should be more organized.
 
