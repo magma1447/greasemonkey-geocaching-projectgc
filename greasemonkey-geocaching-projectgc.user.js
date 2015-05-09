@@ -148,18 +148,19 @@
 
                 if (loggedIn === false) {
                     loggedInContent = 'Not logged in';
-                } else if (pgcUsername == gccomUsername) {
-                    loggedInContent = '<strong>' + pgcUsername + '</strong>';
                 } else {
-                    loggedInContent = '<strong><font color="red">' + pgcUsername + '</font></strong>';
-                }
+                    if (pgcUsername == gccomUsername) {
+                        loggedInContent = '<strong>' + pgcUsername + '</strong>';
+                    } else {
+                        loggedInContent = '<strong style="color: red;">' + pgcUsername + '</strong>';
+                    }
 
-                if (subscription) {
-                    subscriptionContent = 'Paid membership';
-                } else {
-                    subscriptionContent = 'Missing membership';
+                    if (subscription) {
+                        subscriptionContent = 'Paid membership';
+                    } else {
+                        subscriptionContent = 'Missing membership';
+                    }
                 }
-
 
                 var html = '\
                 <a class="SignedInProfileLink" href="' + pgcUrl + 'ProfileStats/' + pgcUsername + '" title="Project-GC">\
