@@ -437,7 +437,7 @@
         // Remove the UTM coordinates
         // $('#ctl00_ContentBody_CacheInformationTable div.LocationData div.span-9 p.NoBottomSpacing br').remove();
         if(IsSettingEnabled('removeUTM')) {
-            $('#ctl00_ContentBody_LocationSubPanel').html();
+            $('#ctl00_ContentBody_LocationSubPanel').html('');
         }
 
 
