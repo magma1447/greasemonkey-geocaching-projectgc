@@ -357,7 +357,7 @@
 				        // Add elevation
 				        if(IsSettingEnabled('addElevation')) {
 				        	// Metres above mean sea level = mamsl
-				        	$('#uxLatLonLink').after('<span> (' + cacheData['elevation'] + ' mamsl)</span>');
+				        	($('#uxLatLonLink').length > 0 ? $('#uxLatLonLink') : $('#uxLatLon').parent()).after('<span> (' + cacheData['elevation'] + ' mamsl)</span>');
 				        }
 
 
