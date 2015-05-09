@@ -190,22 +190,21 @@
                 <ul id="pgcUserMenu">\
                     <form id="pgcUserMenuForm" style="color: #5f452a;">';
 
-                var items = GetSettingsItems();
+                var items = GetSettingsItems(),
+                    isChecked = '';
                 for(var item in items) {
-                    if(IsSettingEnabled(item)) {
-                        html += '<li><label><input type="checkbox" name="' + item + '" checked="checked">&nbsp;' + items[item].title + '</label></li>';
-                    } else {
-                        html += '<li><label><input type="checkbox" name="' + item + '">&nbsp;' + items[item].title + '</label></li>';
-                    }
+                    isChecked = IsSettingEnabled(item) ? ' checked="checked"' : '';
+                    // Explicitly set the styles as some pages (i.e. https://www.geocaching.com/account/settings/profile) are missing the required css.
+                    html += '<li style="margin: .5em 1em; white-space: nowrap;"><label style="font-weight: inherit;"><input type="checkbox" name="' + item + '"' + isChecked + '>&nbsp;' + items[item].title + '</label></li>';
                 }
 
                 html += '\
-                        <li>\
+                        <li style="margin: .5em 1em;">\
                             <button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); $(\'#pgcUserMenu\').hide(); return false;">Cancel</button>\
                             &nbsp;<button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); return false;">Reset</button>\
                             &nbsp;<button id="pgcUserMenuSave">Save</button>\
                         </li>\
-                        <li id="pgcUserMenuWarning" style="display: none;"><small class="OldWarning">Reload the page to activate the new settings.</small></li>\
+                        <li id="pgcUserMenuWarning" style="display: none; margin: .5em 1em;"><small class="OldWarning">Reload the page to activate the new settings.</small></li>\
                     </form>\
                 </ul>';
 
