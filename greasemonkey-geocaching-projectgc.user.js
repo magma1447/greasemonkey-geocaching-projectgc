@@ -475,7 +475,7 @@
                         return false;
                     }
                     var formattedAddress = result.results[0].formatted_address;
-                    $('#ctl00_ContentBody_LocationSubPanel').html(formattedAddress + '<br />');
+                    $('#ctl00_ContentBody_LocationSubPanel').append(formattedAddress + '<br />');
                 }
             });
         }
