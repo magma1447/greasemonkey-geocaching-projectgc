@@ -75,7 +75,8 @@
             addPgcGalleryLinks: { title: 'Add links to PGC gallery', default: true },
             addMapBookmarkListLinks: { title: 'Add links for bookmark lists', default: true },
             decryptHints: { title: 'Automatically decrypt hints', default: true },
-            addElevation: { title: 'Add elevation', default: true }
+            addElevation: { title: 'Add elevation', default: true },
+            imperial: { title: 'Use imperial units', default: false }
             };
         return items;
     }
@@ -115,6 +116,19 @@
 
     function IsSettingEnabled(setting) {
     	return settings[setting];
+    }
+
+
+    function MetersToFeet(meters) {
+    	return Math.round(meters * 3.28084);
+    }
+
+    function FormatDistance(distance) {
+        distance = parseInt(distance, 10);
+        distance = IsSettingEnabled('imperial') ? MetersToFeet(distance) : distance;
+        distance = distance.toLocaleString();
+        
+        return distance;
     }
 
 
@@ -328,7 +342,8 @@
                         location = [],
                         fp = 0,
                         fpp = 0,
-                        fpw = 0;
+                        fpw = 0,
+                        elevation = '';
 
 
                     if(result.status == 'OK' && cacheData !== false) {
@@ -355,12 +370,13 @@
                         }
 
 
-				        // Add elevation
-				        if(IsSettingEnabled('addElevation')) {
-				        	// Metres above mean sea level = mamsl
-				        	($('#uxLatLonLink').length > 0 ? $('#uxLatLonLink') : $('#uxLatLon').parent()).after('<span> (' + cacheData['elevation'] + ' mamsl)</span>');
-				        }
+                        // Add elevation (Metres above mean sea level = mamsl)
+                        if(IsSettingEnabled('addElevation')) {
+                            elevation = FormatDistance(cacheData['elevation']);
+                            elevation += IsSettingEnabled('imperial') ? ' famsl' : ' mamsl';
 
+                            ($('#uxLatLonLink').length > 0 ? $('#uxLatLonLink') : $('#uxLatLon').parent()).after('<span> (' + elevation + ')</span>');
+                        }
 
                         // Add PGC location
                         if(IsSettingEnabled('addPGCLocation')) {

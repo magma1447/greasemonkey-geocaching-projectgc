@@ -1,4 +1,4 @@
-greasemonkey-geocaching-projectgc
+﻿greasemonkey-geocaching-projectgc
 =================================
 
 Adds links and data to Geocaching.com to make it collaborate with Project-GC.com.
@@ -31,7 +31,7 @@ Existing features:
 * Add links to plot bookmark lists on maps, from geocache pages.
 * Add links to Profile stats for bookmark list owners, from geocache pages.
 * Autodecrypt hints.
-* Add metres above mean sea level.
+* Add metres/feet above mean sea level.
 
 Planned features:
 * If unread message exists at Project-GC.com, show so at Geocaching.com.
