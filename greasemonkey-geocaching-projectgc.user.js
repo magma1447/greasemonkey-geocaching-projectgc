@@ -666,29 +666,24 @@
             // First entry is undefined, due to ajax
             if (logType) {
                 latestLogs.push('<img src="' + logType + '" style="margin-bottom: -4px; margin-right: 1px;">');
-
                 // 2 = found, 3 = dnf, 4 = note, 5 = archive, 22 = disable, 24 = publish, 45 = nm, 46 = owner maintenance, 68 = reviewer note
-                var logTypeId = logType.replace(/.*logtypes\/(.*)\.png/, "$1");
-
-                if (latestLogs.length == 1) {
-                    if (logTypeId == 3 || logTypeId == 5 || logTypeId == 22 || logTypeId == 45 || logTypeId == 68) {
-                        latestLogsAlert = true;
-                    }
+                var logTypeId = +logType.replace(/.*logtypes\/(\d+)\.png/, "$1");
+                if (latestLogs.length === 1 && $.inArray(logTypeId, [3, 5, 22, 45, 68]) !== -1) {
+                    latestLogsAlert = true;
                 }
             }
 
             // Show latest logs
-            if (IsSettingEnabled('addLatestLogs')) {
-                if (latestLogs.length == 5) {
-                    var images = latestLogs.join('');
+            // TODO : Fix this code => latestLogs.length === 5 but it's < 5 higher...
+            if (IsSettingEnabled('addLatestLogs') && latestLogs.length === 5) {
+                var images = latestLogs.join('');
 
-                    $('#ctl00_ContentBody_size p').removeClass('AlignCenter').addClass('NoBottomSpacing');
+                $('#ctl00_ContentBody_size p').removeClass('AlignCenter').addClass('NoBottomSpacing');
 
-                    if (latestLogsAlert) {
-                        $('#ctl00_ContentBody_size').append('<p class="NoBottomSpacing OldWarning"><strong>Latest logs:</strong> <span>' + images + '</span></p>');
-                    } else {
-                        $('#ctl00_ContentBody_size').append('<p class="NoBottomSpacing">Latest logs: <span>' + images + '</span></p>');
-                    }
+                if (latestLogsAlert) {
+                    $('#ctl00_ContentBody_size').append('<p class="NoBottomSpacing OldWarning"><strong>Latest logs:</strong> <span>' + images + '</span></p>');
+                } else {
+                    $('#ctl00_ContentBody_size').append('<p class="NoBottomSpacing">Latest logs: <span>' + images + '</span></p>');
                 }
             }
         }
