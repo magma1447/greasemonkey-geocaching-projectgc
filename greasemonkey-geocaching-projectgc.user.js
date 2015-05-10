@@ -125,7 +125,7 @@
         distance = parseInt(distance, 10);
         distance = IsSettingEnabled('imperial') ? MetersToFeet(distance) : distance;
         distance = distance.toLocaleString();
-        
+
         return distance;
     }
 
@@ -531,7 +531,9 @@
 
 
         // Decrypt the hint
-        unsafeWindow.dht();
+        if(IsSettingEnabled('decryptHints')) {
+	        unsafeWindow.dht();
+	    }
 
 
         // VGPS form
