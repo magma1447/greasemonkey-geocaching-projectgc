@@ -370,10 +370,19 @@
 
                         // Add elevation (Metres above mean sea level = mamsl)
                         if(IsSettingEnabled('addElevation')) {
-                            elevation = FormatDistance(cacheData['elevation']);
-                            elevation += IsSettingEnabled('imperial') ? ' famsl' : ' mamsl';
+                            var formattedElevation = FormatDistance(cacheData['elevation']);
+                            var elevationUnit = IsSettingEnabled('imperial') ? 'ft' : 'm';
+                            var elevationArrow = (cacheData['elevation'] >= 0) ? '&#x21a5;' : '&#x21a7;';
 
-                            ($('#uxLatLonLink').length > 0 ? $('#uxLatLonLink') : $('#uxLatLon').parent()).after('<span> (' + elevation + ')</span>');
+                            elevation = formattedElevation + ' ' + elevationUnit + ' ' + elevationArrow;
+
+                            if(cacheData['elevation'] >= 0) {
+                            	var html = '<span> (' + elevation + ')</span>';
+                            } else {
+                            	var html = '<span class="OldWarning"> (' + elevation + ')</span>';
+                            }
+
+                            ($('#uxLatLonLink').length > 0 ? $('#uxLatLonLink') : $('#uxLatLon').parent()).after(html);
                         }
 
                         // Add PGC location
