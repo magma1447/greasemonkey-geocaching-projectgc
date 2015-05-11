@@ -33,14 +33,6 @@ Existing features:
 * Autodecrypt hints.
 * Add metres/feet above mean sea level.
 
-Planned features:
-* If unread message exists at Project-GC.com, show so at Geocaching.com.
-* If unread news exists at Project-GC.com, show so at Geocaching.com.
-
-Known issues:
-* Project-GC settings dialog should use the user-expanded class if possible.
-* Project-GC settings form should be more organized.
-
 License:
 The client side script (this script) is MIT licensed (license file commited in repository). However, the server side API is property of Ground Zero Communications AB.
 
