@@ -12,7 +12,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.5-dev
+// @version     1.4.2
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -467,7 +467,7 @@
 
         // Tidy the web
         if (IsSettingEnabled('tidy')) {
-            $('#ctl00_ContentBody_lnkMessageOwner').html('');
+            $('#lnkMessageOwner').html('');
             $('#ctl00_divContentMain p.Clear').css('margin', '0');
             $('div.Note.PersonalCacheNote').css('margin', '0');
             $('h3.CacheDescriptionHeader').remove();
