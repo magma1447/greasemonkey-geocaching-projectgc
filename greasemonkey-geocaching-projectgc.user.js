@@ -12,7 +12,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.4.2
+// @version     1.5.0-dev
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -31,10 +31,10 @@
         externalLinkIcon = 'http://maxcdn.project-gc.com/images/external_small.png',
         galleryLinkIcon = 'http://maxcdn.project-gc.com/images/pictures_16.png',
         mapLinkIcon = 'http://maxcdn.project-gc.com/images/map_app_16.png',
-        loggedIn = GM_getValue('loggedIn'),
-        subscription = GM_getValue('subscription'),
-        pgcUsername = GM_getValue('pgcUsername'),
-        gccomUsername = GM_getValue('gccomUsername'),
+        loggedIn = null,
+        subscription = null,
+        pgcUsername = null,
+        gccomUsername = null,
         latestLogs = [],
         latestLogsAlert = false,
         settings = {},
@@ -45,14 +45,12 @@
         Main();
     }
 
-    /**
-     * Router
-     */
     function Main() {
-
         ReadSettings();
         CheckPGCLogin();
+    }
 
+    function Router() {
         if (path.match(/^\/geocache\/.*/) !== null) {
             Page_CachePage();
         } else if (path.match(/^\/seek\/cache_logbook\.aspx.*/) !== null) {
@@ -189,21 +187,12 @@
      * Check that we are logged in at PGC, and that it's with the same username
      */
     function CheckPGCLogin() {
-
-        gccomUsername = false;
-        if ($('#ctl00_divSignedIn').length) {
-            gccomUsername = $('#ctl00_divSignedIn .li-user-info span').html();
-        } else if ($('ul.profile-panel-menu').length) {
-            gccomUsername = $('ul.profile-panel-menu .li-user-info span:nth-child(2)').text();
-        }
-        GM_setValue('gccomUsername', gccomUsername);
-
         GM_xmlhttpRequest({
             method: "GET",
             url: pgcApiUrl + 'GetMyUsername',
             onload: function(response) {
-                var result = JSON.parse(response.responseText),
-                    html, loggedInContent, subscriptionContent = '';
+                var result = JSON.parse(response.responseText);
+
                 if (result.status !== 'OK') {
                     alert(response.responseText);
                     return false;
@@ -213,76 +202,85 @@
                 loggedIn = !!result.data.loggedIn;
                 subscription = !!result.data.subscription;
 
-                if (loggedIn === false) {
-                    loggedInContent = 'Not logged in';
-                } else {
-                    if (pgcUsername == gccomUsername) {
-                        loggedInContent = '<strong>' + pgcUsername + '</strong>';
-                    } else {
-                        loggedInContent = '<strong style="color: red;">' + pgcUsername + '</strong>';
-                    }
-
-                    if (subscription) {
-                        subscriptionContent = 'Paid membership';
-                    } else {
-                        subscriptionContent = 'Missing membership';
-                    }
-                }
-
-                var html = '\
-                <div onclick="$(\'#pgcUserMenu, #pgcSettingsOverlay\').toggle();" style="position: fixed; top: 0; bottom: 0; left: 0; right: 0; z-index:1004; display: none;" id="pgcSettingsOverlay"></div>\
-                <a class="SignedInProfileLink" href="' + pgcUrl + 'ProfileStats/' + pgcUsername + '" title="Project-GC">\
-                    <span class="avatar">\
-                        <img src="http://project-gc.com/favicon.ico" alt="Logo" width="30" height="30" style="border-radius:100%; border-width:0;">\
-                    </span>\
-                    <span class="li-user-info">\
-                        <span style="display: block;">' + loggedInContent + '</span>\
-                        <span class="cache-count">' + subscriptionContent + '</span>\
-                    </span>\
-                </a>\
-                <button id="pgcUserMenuButton" type="button" class="li-user-toggle" onclick="$(\'#pgcUserMenu, #pgcSettingsOverlay\').toggle();">\
-                    <svg width="12px" height="7px" viewBox="0 0 12 7" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g class="arrow" transform="translate(-1277.000000, -25.000000)" stroke="#FFFFFF" fill="#FFFFFF"><path d="M1280.43401,23.3387013 C1280.20315,23.5702719 1280.20315,23.945803 1280.43401,24.1775793 L1284.82138,28.5825631 L1280.43401,32.9873411 C1280.20315,33.2191175 1280.20315,33.5944429 1280.43401,33.8262192 C1280.54934,33.9420045 1280.70072,34 1280.8519,34 C1281.00307,34 1281.15425,33.9422102 1281.26978,33.8262192 L1286.07462,29.0018993 C1286.30548,28.7701229 1286.30548,28.3947975 1286.07462,28.1630212 L1281.26958,23.3387013 C1281.03872,23.106925 1280.66487,23.106925 1280.43401,23.3387013 Z" id="Dropdown-arrow" sketch:type="MSShapeGroup" transform="translate(1283.254319, 28.582435) scale(1, -1) rotate(-90.000000) translate(-1283.254319, -28.582435) "></path></g></g></svg>\
-                </button>\
-                <ul id="pgcUserMenu" style="z-index: 1005;">\
-                    <form id="pgcUserMenuForm" style="color: #5f452a;">';
-
-                var items = GetSettingsItems(),
-                    isChecked = '';
-                for (var item in items) {
-                    isChecked = IsSettingEnabled(item) ? ' checked="checked"' : '';
-                    // Explicitly set the styles as some pages (i.e. https://www.geocaching.com/account/settings/profile) are missing the required css.
-                    html += '<li style="margin: .5em 1em; white-space: nowrap;"><label style="font-weight: inherit;"><input type="checkbox" name="' + item + '"' + isChecked + '>&nbsp;' + items[item].title + '</label></li>';
-                }
-
-                html += '\
-                        <li style="margin: .5em 1em;">\
-                            <button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); $(\'#pgcUserMenu\').hide(); return false;">Cancel</button>\
-                            &nbsp;<button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); return false;">Reset</button>\
-                            &nbsp;<button id="pgcUserMenuSave">Save</button>\
-                        </li>\
-                        <li id="pgcUserMenuWarning" style="display: none; margin: .5em 1em;"><small class="OldWarning">Reload the page to activate the new settings.</small></li>\
-                    </form>\
-                </ul>';
-
-                if ($('#ctl00_divSignedIn ul.logged-in-user').length) { // The default look of the header bar
-                    $('#ctl00_divSignedIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
-                } else if ($('ul.profile-panel-menu').length) { // Special case for https://www.geocaching.com/account/settings/preferences
-                    $('ul.profile-panel-menu').prepend('<li class="li-user">' + html + '</li>');
-                }
-
-                $('#pgcUserMenuSave').click(function(e) {
-                    SaveSettings(e);
-                });
-
-                // Save the login value
-                GM_setValue('loggedIn', loggedIn);
-                GM_setValue('subscription', subscription);
-                GM_setValue('pgcUsername', pgcUsername);
+                BuildPGCUserMenu();
+                Router();
             },
             onerror: function(response) {
                 alert(response);
                 return false;
             }
+        });
+    }
+
+    function BuildPGCUserMenu() {
+    	var loggedInContent, html, subscriptionContent;
+
+        gccomUsername = false;
+        if ($('#ctl00_divSignedIn').length) {
+            gccomUsername = $('#ctl00_divSignedIn .li-user-info span').html();
+        } else if ($('ul.profile-panel-menu').length) {
+            gccomUsername = $('ul.profile-panel-menu .li-user-info span:nth-child(2)').text();
+        }
+
+        if (loggedIn === false) {
+            loggedInContent = 'Not logged in';
+        } else {
+            if (pgcUsername == gccomUsername) {
+                loggedInContent = '<strong>' + pgcUsername + '</strong>';
+            } else {
+                loggedInContent = '<strong style="color: red;">' + pgcUsername + '</strong>';
+            }
+
+            if (subscription) {
+                subscriptionContent = 'Paid membership';
+            } else {
+                subscriptionContent = 'Missing membership';
+            }
+        }
+
+        var html = '\
+        <div onclick="$(\'#pgcUserMenu, #pgcSettingsOverlay\').toggle();" style="position: fixed; top: 0; bottom: 0; left: 0; right: 0; z-index:1004; display: none;" id="pgcSettingsOverlay"></div>\
+        <a class="SignedInProfileLink" href="' + pgcUrl + 'ProfileStats/' + pgcUsername + '" title="Project-GC">\
+            <span class="avatar">\
+                <img src="http://project-gc.com/favicon.ico" alt="Logo" width="30" height="30" style="border-radius:100%; border-width:0;">\
+            </span>\
+            <span class="li-user-info">\
+                <span style="display: block;">' + loggedInContent + '</span>\
+                <span class="cache-count">' + subscriptionContent + '</span>\
+            </span>\
+        </a>\
+        <button id="pgcUserMenuButton" type="button" class="li-user-toggle" onclick="$(\'#pgcUserMenu, #pgcSettingsOverlay\').toggle();">\
+            <svg width="12px" height="7px" viewBox="0 0 12 7" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g class="arrow" transform="translate(-1277.000000, -25.000000)" stroke="#FFFFFF" fill="#FFFFFF"><path d="M1280.43401,23.3387013 C1280.20315,23.5702719 1280.20315,23.945803 1280.43401,24.1775793 L1284.82138,28.5825631 L1280.43401,32.9873411 C1280.20315,33.2191175 1280.20315,33.5944429 1280.43401,33.8262192 C1280.54934,33.9420045 1280.70072,34 1280.8519,34 C1281.00307,34 1281.15425,33.9422102 1281.26978,33.8262192 L1286.07462,29.0018993 C1286.30548,28.7701229 1286.30548,28.3947975 1286.07462,28.1630212 L1281.26958,23.3387013 C1281.03872,23.106925 1280.66487,23.106925 1280.43401,23.3387013 Z" id="Dropdown-arrow" sketch:type="MSShapeGroup" transform="translate(1283.254319, 28.582435) scale(1, -1) rotate(-90.000000) translate(-1283.254319, -28.582435) "></path></g></g></svg>\
+        </button>\
+        <ul id="pgcUserMenu" style="z-index: 1005;">\
+            <form id="pgcUserMenuForm" style="color: #5f452a;">';
+
+        var items = GetSettingsItems(),
+            isChecked = '';
+        for (var item in items) {
+            isChecked = IsSettingEnabled(item) ? ' checked="checked"' : '';
+            // Explicitly set the styles as some pages (i.e. https://www.geocaching.com/account/settings/profile) are missing the required css.
+            html += '<li style="margin: .5em 1em; white-space: nowrap;"><label style="font-weight: inherit;"><input type="checkbox" name="' + item + '"' + isChecked + '>&nbsp;' + items[item].title + '</label></li>';
+        }
+
+        html += '\
+                <li style="margin: .5em 1em;">\
+                    <button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); $(\'#pgcUserMenu\').hide(); return false;">Cancel</button>\
+                    &nbsp;<button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); return false;">Reset</button>\
+                    &nbsp;<button id="pgcUserMenuSave">Save</button>\
+                </li>\
+                <li id="pgcUserMenuWarning" style="display: none; margin: .5em 1em;"><small class="OldWarning">Reload the page to activate the new settings.</small></li>\
+            </form>\
+        </ul>';
+
+        if ($('#ctl00_divSignedIn ul.logged-in-user').length) { // The default look of the header bar
+            $('#ctl00_divSignedIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
+        } else if ($('ul.profile-panel-menu').length) { // Special case for https://www.geocaching.com/account/settings/preferences
+            $('ul.profile-panel-menu').prepend('<li class="li-user">' + html + '</li>');
+        }
+
+        $('#pgcUserMenuSave').click(function(e) {
+            SaveSettings(e);
         });
     }
 
@@ -298,7 +296,7 @@
      * addToVGPS
      */
     function addToVGPS() {
-        var gccode = GM_getValue('gccode'),
+        var gccode = getGcCodeFromPage(),
             listId = $('#comboVGPS').val(),
             msg,
             url = pgcApiUrl + 'AddToVGPSList?listId=' + listId + '&gccode=' + gccode + '&sectionName=GM-script';
@@ -328,7 +326,7 @@
      * removeFromVGPS
      */
     function removeFromVGPS() {
-        var gccode = GM_getValue('gccode'),
+        var gccode = getGcCodeFromPage(),
             listId = $('#comboVGPS').val(),
             msg,
             url = pgcApiUrl + 'RemoveFromVGPSList?listId=' + listId + '&gccode=' + gccode;
@@ -366,8 +364,6 @@
         lastUpdated = (lastUpdated) ? lastUpdated.dateTime : false;
         lastFound = (lastFound) ? lastFound.dateTime : false;
 
-        GM_setValue('gccode', gccode);
-
         // Since everything in the logbook is ajax, we need to wait for the elements
         waitForKeyElements('#cache_logs_table tr', Logbook);
 
@@ -378,7 +374,7 @@
         if (lastFound)
             url += '&lastFound=' + lastFound;
 
-        if (GM_getValue('subscription')) {
+        if (subscription) {
             GM_xmlhttpRequest({
                 method: "GET",
                 url: url,
@@ -489,8 +485,7 @@
             var coordinates = $('#ctl00_ContentBody_lnkConversions').attr('href'),
                 latitude = coordinates.replace(/.*lat=([^&]*)&lon=.*/, "$1"),
                 longitude = coordinates.replace(/.*&lon=([^&]*)&.*/, "$1");
-            var gccomUsername = GM_getValue('gccomUsername'),
-                mapUrl = pgcUrl + 'Maps/mapcompare/?profile_name=' + gccomUsername +
+            var mapUrl = pgcUrl + 'Maps/mapcompare/?profile_name=' + gccomUsername +
                 '&nonefound=on&ownfound=on&location=' + latitude + ',' + longitude +
                 '&max_distance=5&submit=Filter';
 
