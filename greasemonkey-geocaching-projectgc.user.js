@@ -5,6 +5,8 @@
 /* global GM_setValue: true */
 /* global GM_deleteValue: true */
 /* global unsafeWindow: true */
+// jshint newcap:false
+// jshint multistr:true
 
 // ==UserScript==
 // @name        Geocaching.com + Project-GC
@@ -22,9 +24,10 @@
 // @license     The MIT License (MIT)
 // ==/UserScript==
 
-'use strict';
 
 (function() {
+
+    'use strict';
 
     var pgcUrl = 'http://project-gc.com/',
         pgcApiUrl = pgcUrl + 'api/gm/v1/',
@@ -158,7 +161,7 @@
         settings = {};
 
         for (var item in GetSettingsItems()) {
-            settings[item] = !!$('#pgcUserMenuForm input[name="' + item + '"]').is(':checked');
+            settings[item] = Boolean($('#pgcUserMenuForm input[name="' + item + '"]').is(':checked'));
         }
 
         var json = JSON.stringify(settings);
@@ -199,8 +202,8 @@
                 }
 
                 pgcUsername = result.data.username;
-                loggedIn = !!result.data.loggedIn;
-                subscription = !!result.data.subscription;
+                loggedIn = Boolean(result.data.loggedIn);
+                subscription = Boolean(result.data.subscription);
 
                 BuildPGCUserMenu();
                 Router();
@@ -213,7 +216,7 @@
     }
 
     function BuildPGCUserMenu() {
-    	var loggedInContent, html, subscriptionContent;
+        var loggedInContent, html, subscriptionContent;
 
         gccomUsername = false;
         if ($('#ctl00_divSignedIn').length) {
@@ -238,7 +241,7 @@
             }
         }
 
-        var html = '\
+        html = '\
         <div onclick="$(\'#pgcUserMenu, #pgcSettingsOverlay\').toggle();" style="position: fixed; top: 0; bottom: 0; left: 0; right: 0; z-index:1004; display: none;" id="pgcSettingsOverlay"></div>\
         <a class="SignedInProfileLink" href="' + pgcUrl + 'ProfileStats/' + pgcUsername + '" title="Project-GC">\
             <span class="avatar">\
@@ -298,15 +301,14 @@
     function addToVGPS() {
         var gccode = getGcCodeFromPage(),
             listId = $('#comboVGPS').val(),
-            msg,
             url = pgcApiUrl + 'AddToVGPSList?listId=' + listId + '&gccode=' + gccode + '&sectionName=GM-script';
 
         GM_xmlhttpRequest({
             method: "GET",
             url: url,
             onload: function(response) {
-                var result = JSON.parse(response.responseText);
-                var msg = (result.status === 'OK') ? 'Geocache added to Virtual-GPS!' : 'Geocache not added to Virtual-GPS :(';
+                var result = JSON.parse(response.responseText),
+                    msg = (result.status === 'OK') ? 'Geocache added to Virtual-GPS!' : 'Geocache not added to Virtual-GPS :(';
 
                 $('#btnAddToVGPS').css('display', 'none');
                 $('#btnRemoveFromVGPS').css('display', '');
@@ -328,15 +330,14 @@
     function removeFromVGPS() {
         var gccode = getGcCodeFromPage(),
             listId = $('#comboVGPS').val(),
-            msg,
             url = pgcApiUrl + 'RemoveFromVGPSList?listId=' + listId + '&gccode=' + gccode;
 
         GM_xmlhttpRequest({
             method: "GET",
             url: url,
             onload: function(response) {
-                var result = JSON.parse(response.responseText);
-                var msg = (result.status === 'OK') ? 'Geocache removed from Virtual-GPS!' : 'Geocache not removed from Virtual-GPS :(';
+                var result = JSON.parse(response.responseText),
+                    msg = (result.status === 'OK') ? 'Geocache removed from Virtual-GPS!' : 'Geocache not removed from Virtual-GPS :(';
 
                 $('#btnAddToVGPS').css('display', '');
                 $('#btnRemoveFromVGPS').css('display', 'none');
@@ -359,7 +360,8 @@
         var gccode = getGcCodeFromPage(),
             placedBy = $('#ctl00_ContentBody_mcd1 a').html(),
             lastUpdated = $('#ctl00_ContentBody_bottomSection p small time').get(1),
-            lastFound = $('#ctl00_ContentBody_bottomSection p small time').get(2);
+            lastFound = $('#ctl00_ContentBody_bottomSection p small time').get(2),
+            coordinates, latitude, longitude, url;
 
         lastUpdated = (lastUpdated) ? lastUpdated.dateTime : false;
         lastFound = (lastFound) ? lastFound.dateTime : false;
@@ -367,14 +369,15 @@
         // Since everything in the logbook is ajax, we need to wait for the elements
         waitForKeyElements('#cache_logs_table tr', Logbook);
 
-        // Get geocache data from Project-GC
-        var url = pgcApiUrl + 'GetCacheDataFromGccode&gccode=' + gccode;
-        if (lastUpdated)
-            url += '&lastUpdated=' + lastUpdated;
-        if (lastFound)
-            url += '&lastFound=' + lastFound;
-
         if (subscription) {
+
+            // Get geocache data from Project-GC
+            url = pgcApiUrl + 'GetCacheDataFromGccode&gccode=' + gccode;
+            if (lastUpdated)
+                url += '&lastUpdated=' + lastUpdated;
+            if (lastFound)
+                url += '&lastFound=' + lastFound;
+
             GM_xmlhttpRequest({
                 method: "GET",
                 url: url,
@@ -387,7 +390,8 @@
                         fp = 0,
                         fpp = 0,
                         fpw = 0,
-                        elevation = '';
+                        elevation = '',
+                        html = '';
 
                     if (result.status == 'OK' && cacheData !== false) {
 
@@ -412,16 +416,15 @@
 
                         // Add elevation (Metres above mean sea level = mamsl)
                         if (IsSettingEnabled('addElevation')) {
-                            var formattedElevation = FormatDistance(cacheData['elevation']);
-                            var elevationUnit = IsSettingEnabled('imperial') ? 'ft' : 'm';
-                            var elevationArrow = (cacheData['elevation'] >= 0) ? '&#x21a5;' : '&#x21a7;';
-
+                            var formattedElevation = FormatDistance(cacheData.elevation),
+                                elevationUnit = IsSettingEnabled('imperial') ? 'ft' : 'm',
+                                elevationArrow = (cacheData.elevation >= 0) ? '&#x21a5;' : '&#x21a7;';
                             elevation = formattedElevation + ' ' + elevationUnit + ' ' + elevationArrow;
 
-                            if (cacheData['elevation'] >= 0) {
-                                var html = '<span> (' + elevation + ')</span>';
+                            if (cacheData.elevation >= 0) {
+                                html = '<span> (' + elevation + ')</span>';
                             } else {
-                                var html = '<span class="OldWarning"> (' + elevation + ')</span>';
+                                html = '<span class="OldWarning"> (' + elevation + ')</span>';
                             }
 
                             ($('#uxLatLonLink').length > 0 ? $('#uxLatLonLink') : $('#uxLatLon').parent()).after(html);
@@ -447,11 +450,10 @@
 
                         // Add challenge checkers
                         if (IsSettingEnabled('addChallengeCheckers') && challengeCheckerTagIds.length > 0) {
-                            var html = '';
 
-                            html += '<div id="checkerWidget" class="CacheDetailNavigationWidget TopSpacing BottomSpacing"><h3 class="WidgetHeader">Checker(s)</h3><div class="WidgetBody" id="PGC_ChallengeCheckers">';
+                            html = '<div id="checkerWidget" class="CacheDetailNavigationWidget TopSpacing BottomSpacing"><h3 class="WidgetHeader">Checker(s)</h3><div class="WidgetBody" id="PGC_ChallengeCheckers">';
                             for (var i = 0; i < challengeCheckerTagIds.length; i++) {
-                                html += '<a href="http://project-gc.com/Challenges//' + challengeCheckerTagIds[i] + '" style="display: block; width: 200px; margin: 0 auto;"><img src="http://maxcdn.project-gc.com/Images/Checker/' + challengeCheckerTagIds[i] + '" title="Project-GC Challenge checker" alt="PGC Checker"></a>';
+                                html += '<a href="http://project-gc.com/Challenges/' + challengeCheckerTagIds[i] + '" style="display: block; width: 200px; margin: 0 auto;"><img src="http://maxcdn.project-gc.com/Images/Checker/' + challengeCheckerTagIds[i] + '" title="Project-GC Challenge checker" alt="PGC Checker"></a>';
                             }
                             html += '</div></div>';
                             $('#map_preview_canvas').before(html);
@@ -482,7 +484,7 @@
 
         // Add PGC Map links
         if (IsSettingEnabled('addPgcMapLinks')) {
-            var coordinates = $('#ctl00_ContentBody_lnkConversions').attr('href'),
+            coordinates = $('#ctl00_ContentBody_lnkConversions').attr('href'),
                 latitude = coordinates.replace(/.*lat=([^&]*)&lon=.*/, "$1"),
                 longitude = coordinates.replace(/.*&lon=([^&]*)&.*/, "$1");
             var mapUrl = pgcUrl + 'Maps/mapcompare/?profile_name=' + gccomUsername +
@@ -517,7 +519,7 @@
 
         // Resolve the coordinates into an address
         if (IsSettingEnabled('addAddress')) {
-            var coordinates = $('#ctl00_ContentBody_lnkConversions').attr('href'),
+            coordinates = $('#ctl00_ContentBody_lnkConversions').attr('href'),
                 latitude = coordinates.replace(/.*lat=([^&]*)&lon=.*/, "$1"),
                 longitude = coordinates.replace(/.*&lon=([^&]*)&.*/, "$1"),
                 url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng=' + latitude + ',' + longitude + '&sensor=false';
@@ -554,15 +556,15 @@
                 var owner = $(this).children(':nth-child(3)').text();
 
                 // Add the map link
-                var url = 'http://project-gc.com/Tools/MapBookmarklist?owner_name=' + encodeURIComponent(owner) + '&guid=' + encodeURIComponent(guid);
+                url = 'http://project-gc.com/Tools/MapBookmarklist?owner_name=' + encodeURIComponent(owner) + '&guid=' + encodeURIComponent(guid);
                 $(this).children(':nth-child(1)').append('&nbsp;<a href="' + url + '"><img src="' + mapLinkIcon + '" title="Map with Project-GC"></a>');
 
                 // Add gallery link for the bookmark list
-                var url = 'http://project-gc.com/Tools/Gallery?bml_owner=' + encodeURIComponent(owner) + '&bml_guid=' + encodeURIComponent(guid) + '&submit=Filter';
+                url = 'http://project-gc.com/Tools/Gallery?bml_owner=' + encodeURIComponent(owner) + '&bml_guid=' + encodeURIComponent(guid) + '&submit=Filter';
                 $(this).children(':nth-child(1)').append('&nbsp;<a href="' + url + '"><img src="' + galleryLinkIcon + '" title="Project-GC Gallery"></a>');
 
                 // Add profile stats link to the owner
-                var url = 'http://project-gc.com/ProfileStats/' + encodeURIComponent(owner);
+                url = 'http://project-gc.com/ProfileStats/' + encodeURIComponent(owner);
                 $(this).children(':nth-child(3)').append('&nbsp;<a href="' + url + '"><img src="' + externalLinkIcon + '" title="Project-GC Profile stats"></a>');
             });
         }
@@ -585,7 +587,7 @@
                         selectedContent,
                         existsContent,
                         html = '<li><img width="16" height="16" src="http://maxcdn.project-gc.com/images/mobile_telephone_32.png"> <strong>Add to VGPS</strong><br />',
-                        listId, list;
+                        listId;
 
                     html += '<select id="comboVGPS" style="width: 138px;">';
                     for (listId in vgpsLists) {
@@ -612,7 +614,7 @@
 
                     $('div.CacheDetailNavigation ul:first').append(html);
 
-                    $('#comboVGPS').change(function(event) {
+                    $('#comboVGPS').change(function() {
                         selected = $(this).find(':selected').val();
                         if (existsIn.indexOf(String(selected)) == -1) {
                             $('#btnAddToVGPS').css('display', '');
