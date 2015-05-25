@@ -411,7 +411,8 @@
                             fp = parseInt(+cacheData.favorite_points, 10),
                                 fpp = parseInt(+cacheData.favorite_points_pct, 10),
                                 fpw = parseInt(+cacheData.favorite_points_wilson, 10);
-                            $('#uxFavContainerLink').append('<p style="text-align: center; background-color: #f0edeb;">PGC: ' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W</p>');
+                            $('#uxFavContainerLink').append('<p style="text-align: center; background-color: #f0edeb;border-bottom-left-radius: 5px;border-bottom-right-radius:5px;">PGC: ' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W</p>');
+                            $('.favorite-container').css({"border-bottom-left-radius": "0", "border-bottom-right-radius": "0"});
                         }
 
                         // Add elevation (Metres above mean sea level = mamsl)
