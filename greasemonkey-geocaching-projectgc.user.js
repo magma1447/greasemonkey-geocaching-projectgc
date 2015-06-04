@@ -145,7 +145,7 @@
         settings = GM_getValue('settings');
         if (typeof(settings) != 'undefined') {
             settings = JSON.parse(settings);
-            if(settings === null) {
+            if (settings === null) {
             	settings = [];
             }
         } else {
