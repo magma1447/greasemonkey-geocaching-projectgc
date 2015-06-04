@@ -56,6 +56,8 @@
     function Router() {
         if (path.match(/^\/geocache\/.*/) !== null) {
             Page_CachePage();
+        } else if (path.match(/^\/seek\/cache_details\.aspx.*/) !== null) {
+            Page_CachePage();
         } else if (path.match(/^\/seek\/cache_logbook\.aspx.*/) !== null) {
             Page_Logbook();
         }
