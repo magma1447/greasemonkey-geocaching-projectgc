@@ -233,6 +233,8 @@
             gccomUsername = $('#ctl00_divSignedIn .li-user-info span').html();
         } else if ($('ul.profile-panel-menu').length) {
             gccomUsername = $('ul.profile-panel-menu .li-user-info span:nth-child(2)').text();
+        } else if($('div.LogIn ul.logged-in-user li.li-user a.CommonUsername').text().length) {
+        	gccomUsername = $('div.LogIn ul.logged-in-user li.li-user a.CommonUsername').text();
         }
 
         if (loggedIn === false) {
@@ -290,6 +292,8 @@
             $('#ctl00_divSignedIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
         } else if ($('ul.profile-panel-menu').length) { // Special case for https://www.geocaching.com/account/settings/preferences
             $('ul.profile-panel-menu').prepend('<li class="li-user">' + html + '</li>');
+        } else if ($('div.LogIn ul.logged-in-user').length) {	// Special case for https://www.geocaching.com/map/
+        	$('div.LogIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
         }
 
         $('#pgcUserMenuSave').click(function(e) {
@@ -721,7 +725,7 @@
             setTimeout(function() {
                 $('#map_canvas div.leaflet-popup-pane').bind('DOMSubtreeModified', function(event) {
                     if($('#pgc_vgps').length == 0) {
-                        var gccode = $('#gmCacheInfo div.code').html();
+                        var gccode = $('#gmCacheInfo div.code').text();
 
                         $('#gmCacheInfo div.links').after('<div id="pgc_vgps"></div>');
 
