@@ -233,7 +233,7 @@
             gccomUsername = $('#ctl00_divSignedIn .li-user-info span').html();
         } else if ($('ul.profile-panel-menu').length) {
             gccomUsername = $('ul.profile-panel-menu .li-user-info span:nth-child(2)').text();
-        } else if($('div.LogIn ul.logged-in-user li.li-user a.CommonUsername').text().length) {
+        } else if ($('div.LogIn ul.logged-in-user li.li-user a.CommonUsername').text().length) {
             gccomUsername = $('div.LogIn ul.logged-in-user li.li-user a.CommonUsername').text();
         }
 
@@ -298,7 +298,7 @@
             $('#ctl00_divSignedIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
         } else if ($('ul.profile-panel-menu').length) { // Special case for https://www.geocaching.com/account/settings/preferences
             $('ul.profile-panel-menu').prepend('<li class="li-user">' + html + '</li>');
-        } else if ($('div.LogIn ul.logged-in-user').length) {    // Special case for https://www.geocaching.com/map/
+        } else if ($('div.LogIn ul.logged-in-user').length) { // Special case for https://www.geocaching.com/map/
             $('div.LogIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
         }
 
@@ -322,7 +322,7 @@
         var listId = $('#comboVGPS').val(),
             url = pgcApiUrl + 'AddToVGPSList?listId=' + listId + '&gccode=' + gccode + '&sectionName=GM-script';
 
-        if(gccode === false) {    // The map provides the gccode itself
+        if (gccode === false) { // The map provides the gccode itself
             gccode = getGcCodeFromPage();
         }
 
@@ -355,7 +355,7 @@
         var listId = $('#comboVGPS').val(),
             url = pgcApiUrl + 'RemoveFromVGPSList?listId=' + listId + '&gccode=' + gccode;
 
-        if(gccode === false) {    // The map provides the gccode itself
+        if (gccode === false) { // The map provides the gccode itself
             gccode = getGcCodeFromPage();
         }
 
@@ -439,7 +439,10 @@
                                 fpp = parseInt(+cacheData.favorite_points_pct, 10),
                                 fpw = parseInt(+cacheData.favorite_points_wilson, 10);
                             $('#uxFavContainerLink').append('<p style="text-align: center; background-color: #f0edeb;border-bottom-left-radius: 5px;border-bottom-right-radius:5px;">PGC: ' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W</p>');
-                            $('.favorite-container').css({"border-bottom-left-radius": "0", "border-bottom-right-radius": "0"});
+                            $('.favorite-container').css({
+                                "border-bottom-left-radius": "0",
+                                "border-bottom-right-radius": "0"
+                            });
                         }
 
                         // Add elevation (Metres above mean sea level = mamsl)
@@ -690,7 +693,7 @@
             var node = $(jNode).find('div.HalfLeft.LogType strong img[src]'),
                 logType = {};
 
-            if(node.length === 0)
+            if (node.length === 0)
                 return false;
 
             logType = {
@@ -730,7 +733,7 @@
 
             setTimeout(function() {
                 $('#map_canvas div.leaflet-popup-pane').bind('DOMSubtreeModified', function(event) {
-                    if($('#pgc_vgps').length == 0) {
+                    if ($('#pgc_vgps').length == 0) {
                         var gccode = $('#gmCacheInfo div.code').text();
 
                         $('#gmCacheInfo div.links').after('<div id="pgc_vgps"></div>');
