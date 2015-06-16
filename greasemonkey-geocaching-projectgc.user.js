@@ -226,7 +226,7 @@
     }
 
     function BuildPGCUserMenu() {
-        var loggedInContent, html, subscriptionContent;
+        var loggedInContent, html, subscriptionContent = '';
 
         gccomUsername = false;
         if ($('#ctl00_divSignedIn').length) {
