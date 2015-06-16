@@ -234,7 +234,7 @@
         } else if ($('ul.profile-panel-menu').length) {
             gccomUsername = $('ul.profile-panel-menu .li-user-info span:nth-child(2)').text();
         } else if($('div.LogIn ul.logged-in-user li.li-user a.CommonUsername').text().length) {
-        	gccomUsername = $('div.LogIn ul.logged-in-user li.li-user a.CommonUsername').text();
+            gccomUsername = $('div.LogIn ul.logged-in-user li.li-user a.CommonUsername').text();
         }
 
         if (loggedIn === false) {
@@ -255,19 +255,25 @@
 
         html = '\
         <div onclick="$(\'#pgcUserMenu, #pgcSettingsOverlay\').toggle();" style="position: fixed; top: 0; bottom: 0; left: 0; right: 0; z-index:1004; display: none;" id="pgcSettingsOverlay"></div>\
-        <a class="SignedInProfileLink" href="' + pgcUrl + 'ProfileStats/' + pgcUsername + '" title="Project-GC">\
-            <span class="avatar">\
-                <img src="http://project-gc.com/favicon.ico" alt="Logo" width="30" height="30" style="border-radius:100%; border-width:0;">\
-            </span>\
+        <div>\
+            <a class="SignedInProfileLink" href="' + pgcUrl + '" title="Project-GC">\
+                <span class="avatar">\
+                    <img src="http://project-gc.com/favicon.ico" alt="Logo" width="30" height="30" style="border-radius:100%; border-width:0;">\
+                </span>\
+            </a>\
             <span class="li-user-info">\
-                <span style="display: block;">' + loggedInContent + '</span>\
-                <span class="cache-count">' + subscriptionContent + '</span>\
+                <a class="SignedInProfileLink" href="' + pgcUrl + 'ProfileStats/' + pgcUsername + '" title="Project-GC">\
+                    <span style="display: block;">' + loggedInContent + '</span>\
+                </a>\
+                <a class="SignedInProfileLink" href="' + pgcUrl + 'Home/Membership/" title="Project-GC">\
+                    <span class="cache-count">' + subscriptionContent + '</span>\
+                </a>\
             </span>\
-        </a>\
-        <button id="pgcUserMenuButton" type="button" class="li-user-toggle" onclick="$(\'#pgcUserMenu, #pgcSettingsOverlay\').toggle();">\
-            <svg width="12px" height="7px" viewBox="0 0 12 7" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g class="arrow" transform="translate(-1277.000000, -25.000000)" stroke="#FFFFFF" fill="#FFFFFF"><path d="M1280.43401,23.3387013 C1280.20315,23.5702719 1280.20315,23.945803 1280.43401,24.1775793 L1284.82138,28.5825631 L1280.43401,32.9873411 C1280.20315,33.2191175 1280.20315,33.5944429 1280.43401,33.8262192 C1280.54934,33.9420045 1280.70072,34 1280.8519,34 C1281.00307,34 1281.15425,33.9422102 1281.26978,33.8262192 L1286.07462,29.0018993 C1286.30548,28.7701229 1286.30548,28.3947975 1286.07462,28.1630212 L1281.26958,23.3387013 C1281.03872,23.106925 1280.66487,23.106925 1280.43401,23.3387013 Z" id="Dropdown-arrow" sketch:type="MSShapeGroup" transform="translate(1283.254319, 28.582435) scale(1, -1) rotate(-90.000000) translate(-1283.254319, -28.582435) "></path></g></g></svg>\
-        </button>\
-        <ul id="pgcUserMenu" style="z-index: 1005;">\
+            <button id="pgcUserMenuButton" type="button" class="li-user-toggle" onclick="$(\'#pgcUserMenu, #pgcSettingsOverlay\').toggle();">\
+                <svg width="12px" height="7px" viewBox="0 0 12 7" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g class="arrow" transform="translate(-1277.000000, -25.000000)" stroke="#FFFFFF" fill="#FFFFFF"><path d="M1280.43401,23.3387013 C1280.20315,23.5702719 1280.20315,23.945803 1280.43401,24.1775793 L1284.82138,28.5825631 L1280.43401,32.9873411 C1280.20315,33.2191175 1280.20315,33.5944429 1280.43401,33.8262192 C1280.54934,33.9420045 1280.70072,34 1280.8519,34 C1281.00307,34 1281.15425,33.9422102 1281.26978,33.8262192 L1286.07462,29.0018993 C1286.30548,28.7701229 1286.30548,28.3947975 1286.07462,28.1630212 L1281.26958,23.3387013 C1281.03872,23.106925 1280.66487,23.106925 1280.43401,23.3387013 Z" id="Dropdown-arrow" sketch:type="MSShapeGroup" transform="translate(1283.254319, 28.582435) scale(1, -1) rotate(-90.000000) translate(-1283.254319, -28.582435) "></path></g></g></svg>\
+            </button>\
+        </div>\
+        <ul id="pgcUserMenu" style="z-index: 1005; display: none; text-align: left;">\
             <form id="pgcUserMenuForm" style="color: #5f452a;">';
 
         var items = GetSettingsItems(),
@@ -275,11 +281,11 @@
         for (var item in items) {
             isChecked = IsSettingEnabled(item) ? ' checked="checked"' : '';
             // Explicitly set the styles as some pages (i.e. https://www.geocaching.com/account/settings/profile) are missing the required css.
-            html += '<li style="margin: .5em 1em; white-space: nowrap;"><label style="font-weight: inherit;"><input type="checkbox" name="' + item + '"' + isChecked + '>&nbsp;' + items[item].title + '</label></li>';
+            html += '<li style="margin: .2em 1em; white-space: nowrap;"><label style="font-weight: inherit;"><input type="checkbox" name="' + item + '"' + isChecked + '>&nbsp;' + items[item].title + '</label></li>';
         }
 
         html += '\
-                <li style="margin: .5em 1em;">\
+                <li style="margin: .2em 1em;">\
                     <button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); $(\'#pgcUserMenu\').hide(); return false;">Cancel</button>\
                     &nbsp;<button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); return false;">Reset</button>\
                     &nbsp;<button id="pgcUserMenuSave">Save</button>\
@@ -292,8 +298,8 @@
             $('#ctl00_divSignedIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
         } else if ($('ul.profile-panel-menu').length) { // Special case for https://www.geocaching.com/account/settings/preferences
             $('ul.profile-panel-menu').prepend('<li class="li-user">' + html + '</li>');
-        } else if ($('div.LogIn ul.logged-in-user').length) {	// Special case for https://www.geocaching.com/map/
-        	$('div.LogIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
+        } else if ($('div.LogIn ul.logged-in-user').length) {    // Special case for https://www.geocaching.com/map/
+            $('div.LogIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
         }
 
         $('#pgcUserMenuSave').click(function(e) {
