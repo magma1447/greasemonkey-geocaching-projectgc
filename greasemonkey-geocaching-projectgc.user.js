@@ -60,6 +60,8 @@
             Page_CachePage();
         } else if (path.match(/^\/seek\/cache_logbook\.aspx.*/) !== null) {
             Page_Logbook();
+        } else if (path.match(/^\/map\/.*/) !== null) {
+            Page_Map();
         }
     }
 
@@ -306,10 +308,13 @@
     /**
      * addToVGPS
      */
-    function addToVGPS() {
-        var gccode = getGcCodeFromPage(),
-            listId = $('#comboVGPS').val(),
+    function addToVGPS(gccode = false) {
+        var listId = $('#comboVGPS').val(),
             url = pgcApiUrl + 'AddToVGPSList?listId=' + listId + '&gccode=' + gccode + '&sectionName=GM-script';
+
+        if(gccode === false) {    // The map provides the gccode itself
+            gccode = getGcCodeFromPage();
+        }
 
         GM_xmlhttpRequest({
             method: "GET",
@@ -330,15 +335,19 @@
                 return false;
             }
         });
+        return true;
     }
 
     /**
      * removeFromVGPS
      */
-    function removeFromVGPS() {
-        var gccode = getGcCodeFromPage(),
-            listId = $('#comboVGPS').val(),
+    function removeFromVGPS(gccode = false) {
+        var listId = $('#comboVGPS').val(),
             url = pgcApiUrl + 'RemoveFromVGPSList?listId=' + listId + '&gccode=' + gccode;
+
+        if(gccode === false) {    // The map provides the gccode itself
+            gccode = getGcCodeFromPage();
+        }
 
         GM_xmlhttpRequest({
             method: "GET",
@@ -704,6 +713,72 @@
                 }
             }
         }
+    }
+
+    function Page_Map() {
+        if (IsSettingEnabled('showVGPS')) {
+
+            setTimeout(function() {
+                $('#map_canvas div.leaflet-popup-pane').bind('DOMSubtreeModified', function(event) {
+                    if($('#pgc_vgps').length == 0) {
+                        var gccode = $('#gmCacheInfo div.code').html();
+
+                        $('#gmCacheInfo div.links').after('<div id="pgc_vgps"></div>');
+
+                        GM_xmlhttpRequest({
+                            method: "GET",
+                            url: pgcApiUrl + 'GetExistingVGPSLists?gccode=' + gccode,
+                            onload: function(response) {
+
+                                var result = JSON.parse(response.responseText),
+                                    vgpsLists = result.data.lists,
+                                    selected = result.data.selected,
+                                    existsIn = result.data.existsIn,
+                                    selectedContent,
+                                    existsContent,
+                                    html,
+                                    listId;
+
+
+                                html = '<img src="http://maxcdn.project-gc.com/images/mobile_telephone_32.png" style="width: 24px; height: 24px; margin-bottom: -6px;">'
+
+                                html += '<select id="comboVGPS" style="margin-bottom: 4px;">';
+                                for (listId in vgpsLists) {
+                                    selectedContent = '';
+                                    if (+selected === +listId) {
+                                        selectedContent = ' selected="selected"';
+                                    }
+
+                                    html += '<option value="' + listId + '"' + selectedContent + existsContent + '>' + vgpsLists[listId].name + '</option>';
+                                }
+                                html += '</select>';
+
+                                if (existsIn.indexOf(String(selected)) == -1) {
+                                    html += '&nbsp;<button id="btnAddToVGPS">+</button>';
+                                    html += '&nbsp;<button id="btnRemoveFromVGPS" style="display: none;">-</button>';
+                                } else {
+                                    html += '&nbsp;<button id="btnAddToVGPS" style="display: none;">+</button>';
+                                    html += '&nbsp;<button id="btnRemoveFromVGPS">-</button>';
+                                }
+
+                                $('#pgc_vgps').html(html);
+
+
+                                $('#btnAddToVGPS').click(function(event) {
+                                    event.preventDefault();
+                                    addToVGPS(gccode);
+                                });
+                                $('#btnRemoveFromVGPS').click(function(event) {
+                                    event.preventDefault();
+                                    removeFromVGPS(gccode);
+                                });
+                            }
+                        });
+                    }
+                });
+            }, 500);
+        }
+
     }
 
 }());
