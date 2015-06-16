@@ -420,10 +420,10 @@
                         elevation = '',
                         html = '';
 
-                    if (result.status == 'OK' && cacheData !== false) {
+                    if (result.status == 'OK' && typeof cacheData !== 'undefined') {
 
                         // If placed by != owner, show the real owner as well.
-                        if (placedBy != cacheOwner) {
+                        if (placedBy !== cacheOwner) {
                             $('#ctl00_ContentBody_mcd1 span.message__owner').before(' (' + cacheOwner + ')');
                         }
 
