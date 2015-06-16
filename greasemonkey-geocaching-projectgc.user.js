@@ -3,7 +3,6 @@
 /* global GM_xmlhttpRequest: true */
 /* global GM_getValue: true */
 /* global GM_setValue: true */
-/* global GM_deleteValue: true */
 /* global unsafeWindow: true */
 // jshint newcap:false
 // jshint multistr:true
@@ -20,7 +19,6 @@
 // @grant       GM_xmlhttpRequest
 // @grant       GM_setValue
 // @grant       GM_getValue
-// @grant       GM_deleteValue
 // @license     The MIT License (MIT)
 // ==/UserScript==
 
@@ -700,14 +698,15 @@
                 'src': node.attr('src'),
                 'alt': node.attr('alt'),
                 'title': node.attr('title')
-            }
-            logType['id'] = +logType['src'].replace(/.*logtypes\/(\d+)\.png/, "$1");
+            };
+
+            logType.id = +logType.src.replace(/.*logtypes\/(\d+)\.png/, "$1");
 
             // First entry is undefined, due to ajax
-            if (logType['src']) {
-                latestLogs.push('<img src="' + logType['src'] + '" alt="' + logType['alt'] + '" title="' + logType['title'] + '" style="margin-bottom: -4px; margin-right: 1px;">');
+            if (logType.src) {
+                latestLogs.push('<img src="' + logType.src + '" alt="' + logType.alt + '" title="' + logType.title + '" style="margin-bottom: -4px; margin-right: 1px;">');
                 // 2 = found, 3 = dnf, 4 = note, 5 = archive, 22 = disable, 24 = publish, 45 = nm, 46 = owner maintenance, 68 = reviewer note
-                if ($.inArray(logType['id'], [3, 5, 22, 45, 68]) !== -1) {
+                if ($.inArray(logType.id, [3, 5, 22, 45, 68]) !== -1) {
                     latestLogsAlert = true;
                 }
             }
@@ -732,8 +731,8 @@
         if (IsSettingEnabled('showVGPS')) {
 
             setTimeout(function() {
-                $('#map_canvas div.leaflet-popup-pane').bind('DOMSubtreeModified', function(event) {
-                    if ($('#pgc_vgps').length == 0) {
+                $('#map_canvas div.leaflet-popup-pane').bind('DOMSubtreeModified', function() {
+                    if ($('#pgc_vgps').length === 0) {
                         var gccode = $('#gmCacheInfo div.code').text();
 
                         $('#gmCacheInfo div.links').after('<div id="pgc_vgps"></div>');
@@ -753,7 +752,7 @@
                                     listId;
 
 
-                                html = '<img src="http://maxcdn.project-gc.com/images/mobile_telephone_32.png" style="width: 24px; height: 24px; margin-bottom: -6px;">'
+                                html = '<img src="http://maxcdn.project-gc.com/images/mobile_telephone_32.png" style="width: 24px; height: 24px; margin-bottom: -6px;">';
 
                                 html += '<select id="comboVGPS" style="margin-bottom: 4px;">';
                                 for (listId in vgpsLists) {
