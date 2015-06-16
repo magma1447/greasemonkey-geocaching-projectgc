@@ -136,6 +136,10 @@
             imperial: {
                 title: 'Use imperial units',
                 default: false
+            },
+            removeDisclaimer: {
+                title: 'Remove disclaimer',
+                default: false
             }
         };
         return items;
@@ -161,7 +165,6 @@
     }
 
     function SaveSettings(e) {
-        GM_deleteValue('disabledFunctions'); // Legacy
         e.preventDefault();
         settings = {};
 
@@ -277,7 +280,7 @@
                     &nbsp;<button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); return false;">Reset</button>\
                     &nbsp;<button id="pgcUserMenuSave">Save</button>\
                 </li>\
-                <li id="pgcUserMenuWarning" style="display: none; margin: .5em 1em;"><small class="OldWarning">Reload the page to activate the new settings.</small></li>\
+                <li id="pgcUserMenuWarning" style="display: none; margin: .5em 1em;"><small class="OldWarning"><a href="#" onclick="location.reload();" style="padding: 0; text-decoration: underline;">Reload</a> the page to activate the new settings.</small></li>\
             </form>\
         </ul>';
 
@@ -513,8 +516,9 @@
         // $('#ctl00_ContentBody_uxBanManWidget').remove();
 
         // Remove disclaimer
-        // PGC can't really do this officially
-        // $('#ctl00_divContentMain div.span-17 div.Note.Disclaimer').remove();
+        if (IsSettingEnabled('removeDisclaimer')) {
+	        $('#ctl00_divContentMain div.span-17 div.Note.Disclaimer').remove();
+	    }
 
         // Collapse download links
         // http://www.w3schools.com/charsets/ref_utf_geometric.asp (x25BA, x25BC)
