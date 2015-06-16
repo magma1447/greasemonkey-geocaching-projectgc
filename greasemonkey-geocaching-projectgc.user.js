@@ -568,7 +568,7 @@
         }
 
         // Add number of finds per type to the top
-        if (IsSettingEnabled('cloneLogsPerType')) {
+        if (IsSettingEnabled('cloneLogsPerType') && typeof $('#ctl00_ContentBody_lblFindCounts').html() !== 'undefined') {
             $('#ctl00_ContentBody_CacheInformationTable').before('<div>' + $('#ctl00_ContentBody_lblFindCounts').html() + '</div>');
         }
 
