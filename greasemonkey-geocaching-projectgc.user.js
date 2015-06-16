@@ -150,7 +150,7 @@
         if (typeof(settings) != 'undefined') {
             settings = JSON.parse(settings);
             if (settings === null) {
-            	settings = [];
+                settings = [];
             }
         } else {
             settings = [];
@@ -517,8 +517,8 @@
 
         // Remove disclaimer
         if (IsSettingEnabled('removeDisclaimer')) {
-	        $('#ctl00_divContentMain div.span-17 div.Note.Disclaimer').remove();
-	    }
+            $('#ctl00_divContentMain div.span-17 div.Note.Disclaimer').remove();
+        }
 
         // Collapse download links
         // http://www.w3schools.com/charsets/ref_utf_geometric.asp (x25BA, x25BC)
@@ -668,14 +668,24 @@
 
         // Save to latest logs
         if (latestLogs.length < 5) {
-            var logType = $(jNode).find('div.LogType strong img').attr('src');
+            var node = $(jNode).find('div.HalfLeft.LogType strong img[src]'),
+                logType = {};
+
+            if(node.length === 0)
+                return false;
+
+            logType = {
+                'src': node.attr('src'),
+                'alt': node.attr('alt'),
+                'title': node.attr('title')
+            }
+            logType['id'] = +logType['src'].replace(/.*logtypes\/(\d+)\.png/, "$1");
 
             // First entry is undefined, due to ajax
-            if (logType) {
-                latestLogs.push('<img src="' + logType + '" style="margin-bottom: -4px; margin-right: 1px;">');
+            if (logType['src']) {
+                latestLogs.push('<img src="' + logType['src'] + '" alt="' + logType['alt'] + '" title="' + logType['title'] + '" style="margin-bottom: -4px; margin-right: 1px;">');
                 // 2 = found, 3 = dnf, 4 = note, 5 = archive, 22 = disable, 24 = publish, 45 = nm, 46 = owner maintenance, 68 = reviewer note
-                var logTypeId = +logType.replace(/.*logtypes\/(\d+)\.png/, "$1");
-                if (latestLogs.length === 1 && $.inArray(logTypeId, [3, 5, 22, 45, 68]) !== -1) {
+                if ($.inArray(logType['id'], [3, 5, 22, 45, 68]) !== -1) {
                     latestLogsAlert = true;
                 }
             }
@@ -694,6 +704,8 @@
                 }
             }
         }
+
+        return true;
     }
 
 }());
