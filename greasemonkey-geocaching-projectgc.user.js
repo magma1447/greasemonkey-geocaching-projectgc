@@ -13,7 +13,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.4.6
+// @version     1.4.7
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -316,11 +316,11 @@
     /**
      * addToVGPS
      */
-    function addToVGPS(gccode = false) {
+    function addToVGPS(gccode) {
         var listId = $('#comboVGPS').val(),
             url = pgcApiUrl + 'AddToVGPSList?listId=' + listId + '&gccode=' + gccode + '&sectionName=GM-script';
 
-        if (gccode === false) { // The map provides the gccode itself
+        if (typeof(gccode) === 'undefined') { // The map provides the gccode itself
             gccode = getGcCodeFromPage();
         }
 
@@ -349,11 +349,11 @@
     /**
      * removeFromVGPS
      */
-    function removeFromVGPS(gccode = false) {
+    function removeFromVGPS(gccode) {
         var listId = $('#comboVGPS').val(),
             url = pgcApiUrl + 'RemoveFromVGPSList?listId=' + listId + '&gccode=' + gccode;
 
-        if (gccode === false) { // The map provides the gccode itself
+        if (typeof(gccode) === 'undefined') { // The map provides the gccode itself
             gccode = getGcCodeFromPage();
         }
 
