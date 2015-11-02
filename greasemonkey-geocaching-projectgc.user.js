@@ -482,7 +482,7 @@
 
                             html = '<div id="checkerWidget" class="CacheDetailNavigationWidget TopSpacing BottomSpacing"><h3 class="WidgetHeader">Challenge checker(s)</h3><div class="WidgetBody" id="PGC_ChallengeCheckers">';
                             for (var i = 0; i < challengeCheckerTagIds.length; i++) {
-                                html += '<a href="http://project-gc.com/Challenges/' + challengeCheckerTagIds[i] + '" style="display: block; width: 200px; margin: 0 auto;"><img src="http://maxcdn.project-gc.com/Images/Checker/' + challengeCheckerTagIds[i] + '" title="Project-GC Challenge checker" alt="PGC Checker"></a>';
+                                html += '<a href="http://project-gc.com/Challenges/' + gccode + '/' + challengeCheckerTagIds[i] + '" style="display: block; width: 200px; margin: 0 auto;"><img src="http://maxcdn.project-gc.com/Images/Checker/' + challengeCheckerTagIds[i] + '" title="Project-GC Challenge checker" alt="PGC Checker"></a>';
                             }
                             html += '</div></div>';
                             $('#map_preview_canvas').before(html);
