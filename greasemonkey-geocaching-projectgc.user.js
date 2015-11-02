@@ -13,7 +13,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.5.0-dev
+// @version     1.4.6
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -513,15 +513,19 @@
 
         // Add PGC Map links
         if (IsSettingEnabled('addPgcMapLinks')) {
-            coordinates = $('#ctl00_ContentBody_lnkConversions').attr('href'),
-                latitude = coordinates.replace(/.*lat=([^&]*)&lon=.*/, "$1"),
-                longitude = coordinates.replace(/.*&lon=([^&]*)&.*/, "$1");
-            var mapUrl = pgcUrl + 'Maps/mapcompare/?profile_name=' + gccomUsername +
-                '&nonefound=on&ownfound=on&location=' + latitude + ',' + longitude +
-                '&max_distance=5&submit=Filter';
+            coordinates = $('#ctl00_ContentBody_MapLinks_MapLinks li a').attr('href'),
+                latitude = coordinates.replace(/.*lat=([^&]*)&lng=.*/, "$1"),
+                longitude = coordinates.replace(/.*&lng=(.*)$/, "$1");
+            // var mapUrl = pgcUrl + 'Maps/mapcompare/?profile_name=' + gccomUsername +
+            //     '&nonefound=on&ownfound=on&location=' + latitude + ',' + longitude +
+            //     '&max_distance=5&submit=Filter';
+            var mapUrl = pgcUrl + 'LiveMap/#c=' + latitude + ',' + longitude + ';z=14';
 
+            // $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').append(
+            //     '<div style="margin-bottom: 8px;"><a target="_blank" href="' + mapUrl + '">Project-GC map</a> (<a target="_blank" href="' + mapUrl + '&onefound=on">incl found</a>)</div>'
+            // );
             $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').append(
-                '<div style="margin-bottom: 8px;"><a target="_blank" href="' + mapUrl + '">Project-GC map</a> (<a target="_blank" href="' + mapUrl + '&onefound=on">incl found</a>)</div>'
+                '<div style="margin-bottom: 8px;"><a target="_blank" href="' + mapUrl + '">Project-GC Live map</a></div>'
             );
         }
 
@@ -529,6 +533,9 @@
         // $('#ctl00_ContentBody_CacheInformationTable div.LocationData div.span-9 p.NoBottomSpacing br').remove();
         if (IsSettingEnabled('removeUTM')) {
             $('#ctl00_ContentBody_LocationSubPanel').html('');
+
+            // And move the "N 248.3 km from your home location"
+            $('#ctl00_ContentBody_LocationSubPanel').after($('#lblDistFromHome'));
         }
 
         // Remove ads
@@ -549,9 +556,9 @@
 
         // Resolve the coordinates into an address
         if (IsSettingEnabled('addAddress')) {
-            coordinates = $('#ctl00_ContentBody_lnkConversions').attr('href'),
-                latitude = coordinates.replace(/.*lat=([^&]*)&lon=.*/, "$1"),
-                longitude = coordinates.replace(/.*&lon=([^&]*)&.*/, "$1"),
+            coordinates = $('#ctl00_ContentBody_MapLinks_MapLinks li a').attr('href'),
+                latitude = coordinates.replace(/.*lat=([^&]*)&lng=.*/, "$1"),
+                longitude = coordinates.replace(/.*&lng=(.*)$/, "$1"),
                 url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng=' + latitude + ',' + longitude + '&sensor=false';
 
             GM_xmlhttpRequest({
