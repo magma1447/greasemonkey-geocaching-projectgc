@@ -13,7 +13,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.4.8
+// @version     1.4.9
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -318,11 +318,14 @@
      */
     function addToVGPS(gccode) {
         var listId = $('#comboVGPS').val(),
-            url = pgcApiUrl + 'AddToVGPSList?listId=' + listId + '&gccode=' + gccode + '&sectionName=GM-script';
+            url = null;
 
         if (typeof(gccode) === 'undefined') { // The map provides the gccode itself
             gccode = getGcCodeFromPage();
         }
+
+        url = pgcApiUrl + 'AddToVGPSList?listId=' + listId + '&gccode=' + gccode + '&sectionName=GM-script';
+
 
         GM_xmlhttpRequest({
             method: "GET",
@@ -351,11 +354,14 @@
      */
     function removeFromVGPS(gccode) {
         var listId = $('#comboVGPS').val(),
-            url = pgcApiUrl + 'RemoveFromVGPSList?listId=' + listId + '&gccode=' + gccode;
+            url = null;
 
         if (typeof(gccode) === 'undefined') { // The map provides the gccode itself
             gccode = getGcCodeFromPage();
         }
+
+        url = pgcApiUrl + 'RemoveFromVGPSList?listId=' + listId + '&gccode=' + gccode;
+
 
         GM_xmlhttpRequest({
             method: "GET",
@@ -504,7 +510,7 @@
         // Make it easier to copy the gccode
         if (IsSettingEnabled('makeCopyFriendly')) {
             $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').
-            html('<div style="margin-right: 15px; margin-bottom: 10px;"><p style="font-size: 125%; margin-bottom: 0">' + gccode + '</p>' +
+            html('<div style="margin-right: 15px; margin-bottom: 10px;"><p id="ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoCode" style="font-size: 125%; margin-bottom: 0">' + gccode + '</p>' +
                 '<input size="25" type="text" value="http://coord.info/' + encodeURIComponent(gccode) + '" onclick="this.setSelectionRange(0, this.value.length);"></div>');
             $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').css('font-weight', 'inherit').css('margin-right', '39px');
             $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel div').css('margin', '0 0 5px 0');
@@ -550,7 +556,7 @@
         // Collapse download links
         // http://www.w3schools.com/charsets/ref_utf_geometric.asp (x25BA, x25BC)
         if (IsSettingEnabled('collapseDownloads')) {
-            $('<p style="cursor: pointer; margin: 0;" id="DownloadLinksToggle" onclick="$(\'#ctl00_divContentMain div.DownloadLinks, #DownloadLinksToggle .arrow\').toggle();"><span class="arrow">&#x25BA;</span><span class="arrow open">&#x25BC;</span>Print and Downloads</p>').insertAfter('#ctl00_ContentBody_CacheInformationTable div.LocationData');
+            $('<p style="cursor: pointer; margin: 0;" id="DownloadLinksToggle" onclick="$(\'#ctl00_divContentMain div.DownloadLinks, #DownloadLinksToggle .arrow\').toggle();"><span class="arrow">&#x25BA;</span><span class="arrow open">&#x25BC;</span>Print and Downloads</p>').insert('#ctl00_divContentMain div.DownloadLinks');
             $('#ctl00_divContentMain div.DownloadLinks, #DownloadLinksToggle .arrow.open').hide();
         }
 
