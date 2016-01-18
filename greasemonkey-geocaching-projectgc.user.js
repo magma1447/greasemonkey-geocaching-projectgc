@@ -13,7 +13,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.4.9
+// @version     1.4.10
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -227,12 +227,12 @@
         var loggedInContent, html, subscriptionContent = '';
 
         gccomUsername = false;
-        if ($('#ctl00_divSignedIn').length) {
-            gccomUsername = $('#ctl00_divSignedIn .li-user-info span').html();
+        if ($('#ctl00_uxLoginStatus_divSignedIn ul.logged-in-user').length) {
+            gccomUsername = $('#ctl00_uxLoginStatus_divSignedIn ul.logged-in-user .li-user-info span').html();
         } else if ($('ul.profile-panel-menu').length) {
             gccomUsername = $('ul.profile-panel-menu .li-user-info span:nth-child(2)').text();
-        } else if ($('div.LogIn ul.logged-in-user li.li-user a.CommonUsername').text().length) {
-            gccomUsername = $('div.LogIn ul.logged-in-user li.li-user a.CommonUsername').text();
+        } else if ($('#uxLoginStatus_divSignedIn ul.logged-in-user li.li-user span.li-user-info span').first().text().length) {
+            gccomUsername = $('#uxLoginStatus_divSignedIn ul.logged-in-user li.li-user span.li-user-info span').first().text();
         }
 
         if (loggedIn === false) {
@@ -292,12 +292,12 @@
             </form>\
         </ul>';
 
-        if ($('#ctl00_divSignedIn ul.logged-in-user').length) { // The default look of the header bar
-            $('#ctl00_divSignedIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
+        if ($('#ctl00_uxLoginStatus_divSignedIn ul.logged-in-user').length) { // The default look of the header bar
+            $('#ctl00_uxLoginStatus_divSignedIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
         } else if ($('ul.profile-panel-menu').length) { // Special case for https://www.geocaching.com/account/settings/preferences
             $('ul.profile-panel-menu').prepend('<li class="li-user">' + html + '</li>');
-        } else if ($('div.LogIn ul.logged-in-user').length) { // Special case for https://www.geocaching.com/map/
-            $('div.LogIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
+        } else if ($('#uxLoginStatus_divSignedIn ul.logged-in-user').length) { // Special case for https://www.geocaching.com/map/
+            $('#uxLoginStatus_divSignedIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
         }
 
         $('#pgcUserMenuSave').click(function(e) {
