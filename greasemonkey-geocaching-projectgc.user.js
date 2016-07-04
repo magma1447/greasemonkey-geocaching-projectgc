@@ -491,7 +491,7 @@
                                 html += '<a href="http://project-gc.com/Challenges/' + gccode + '/' + challengeCheckerTagIds[i] + '" style="display: block; width: 200px; margin: 0 auto;"><img src="http://maxcdn.project-gc.com/Images/Checker/' + challengeCheckerTagIds[i] + '" title="Project-GC Challenge checker" alt="PGC Checker"></a>';
                             }
                             html += '</div></div>';
-                            $('#map_preview_canvas').before(html);
+                            $('#ctl00_ContentBody_detailWidget').before(html);
                         }
                     }
                 }
