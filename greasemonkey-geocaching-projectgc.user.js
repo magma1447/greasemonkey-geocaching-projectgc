@@ -550,7 +550,7 @@
 
         // Remove disclaimer
         if (IsSettingEnabled('removeDisclaimer')) {
-            $('#ctl00_divContentMain div.span-17 div.Note.Disclaimer').remove();
+            $('#divContentMain div.span-17 div.Note.Disclaimer').remove();
         }
 
         // Collapse download links
