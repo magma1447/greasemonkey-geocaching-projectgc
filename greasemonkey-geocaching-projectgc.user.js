@@ -725,16 +725,17 @@
             }
 
             // Show latest logs
-            // TODO : Fix this code => latestLogs.length === 5 but it's < 5 higher...
-            if (IsSettingEnabled('addLatestLogs') && latestLogs.length === 5) {
+            // Enhanced Nov 2016 to show icons for up to 5 of the latest logs
+            if (IsSettingEnabled('addLatestLogs') && latestLogs.length <= 5) {
                 var images = latestLogs.join('');
 
+                $('#latestLogIcons').remove();
                 $('#ctl00_ContentBody_size p').removeClass('AlignCenter').addClass('NoBottomSpacing');
 
                 if (latestLogsAlert) {
-                    $('#ctl00_ContentBody_size').append('<p class="NoBottomSpacing OldWarning"><strong>Latest logs:</strong> <span>' + images + '</span></p>');
+                    $('#ctl00_ContentBody_size').append('<p class="NoBottomSpacing OldWarning" id="latestLogIcons"><strong>Latest logs:</strong> <span>' + images + '</span></p>');
                 } else {
-                    $('#ctl00_ContentBody_size').append('<p class="NoBottomSpacing">Latest logs: <span>' + images + '</span></p>');
+                    $('#ctl00_ContentBody_size').append('<p class="NoBottomSpacing" id="latestLogIcons">Latest logs: <span>' + images + '</span></p>');
                 }
             }
         }
