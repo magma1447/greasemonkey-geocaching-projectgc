@@ -296,6 +296,8 @@
 
         if ($('#ctl00_uxLoginStatus_divSignedIn ul.logged-in-user').length) { // The default look of the header bar
             $('#ctl00_uxLoginStatus_divSignedIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
+        } else if ($('ul.profile-panel li.li-user').length) { // new style, e.g. https://www.geocaching.com/play/search
+            $('ul.profile-panel').prepend('<li class="li-user">' + html + '</li>');
         } else if ($('ul.profile-panel-menu').length) { // Special case for https://www.geocaching.com/account/settings/preferences
             $('ul.profile-panel-menu').prepend('<li class="li-user">' + html + '</li>');
         } else if ($('#uxLoginStatus_divSignedIn ul.logged-in-user').length) { // Special case for https://www.geocaching.com/map/
