@@ -5,7 +5,7 @@ Adds links and data to Geocaching.com to make it collaborate with Project-GC.com
 
 Some (most) features are for paying members at Project-GC only.
 
-Compatibily:
+Compatibility:
 * Requires Greasemonkey to run in Firefox.
 * Requires Tampermonkey to run in Chrome.
 
