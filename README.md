@@ -1,15 +1,13 @@
-﻿greasemonkey-geocaching-projectgc
-=================================
+﻿# greasemonkey-geocaching-projectgc
 
 Adds links and data to Geocaching.com to make it collaborate with Project-GC.com.
-
 Some (most) features are for paying members at Project-GC only.
 
-Compatibility:
+## Compatibility
 * Requires Greasemonkey to run in Firefox.
 * Requires Tampermonkey to run in Chrome.
 
-Existing features:
+## Existing features
 * Add to/remove from VGPS form.
 * Adds Favorite points (FP/FP%/FPW).
 * Adds challenge checker links if a checker exists at Project-GC.
@@ -32,10 +30,11 @@ Existing features:
 * Add links to Profile stats for bookmark list owners, from geocache pages.
 * Autodecrypt hints.
 * Add metres/feet above mean sea level.
+* Add warning if the latest log is a DNF.
 
-License:
+## License
 The client side script (this script) is MIT licensed (license file commited in repository). However, the server side API is property of Ground Zero Communications AB.
 
-Credits:
+## Credits
 * Idea and initial work: Jonas "lillfiluren" Högström.
 * Cleanup and actually make things work properly (cross browser compatible): "Surfoo".
