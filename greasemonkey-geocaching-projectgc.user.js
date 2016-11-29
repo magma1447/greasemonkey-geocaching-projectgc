@@ -59,6 +59,8 @@
             Page_CachePage();
         } else if (path.match(/^\/seek\/cache_logbook\.aspx.*/) !== null) {
             Page_Logbook();
+        } else if (path.match(/^\/bookmarks\/.*/) !== null) {
+            Page_Bookmarks();
         } else if (path.match(/^\/map\/.*/) !== null) {
             Page_Map();
         }
@@ -832,6 +834,33 @@
             }, 500);
         }
 
+	}
+
+    function Page_Bookmarks() {
+		var owner_name = $("#ctl00_ContentBody_ListInfo_uxListOwner").text();
+
+		var search = window.location.search;
+		var guid_start = search.indexOf("guid=");
+		if (guid_start == -1) {
+			/* the guid= not found in URL
+			 * something is wrong so we will not generate bad URL
+			 */
+			return;
+		}
+		var guid = search.substr(guid_start + 5/*, eof */);
+
+		var url = "http://project-gc.com/Tools/MapBookmarklist?owner_name=" + owner_name + "&guid=" + guid;
+		var icon = "http://maxcdn.project-gc.com/images/map_app_16.png";
+
+		/* Heading link */
+		var html = ' <a href="' + url + '" title="Map this Bookmark list using Project-GC" style="padding-left:20px;"><img src="' + icon + '" /> Map this!</a>';
+
+		$("#ctl00_ContentBody_lbHeading").after(html);
+
+		/* Footer button */
+		var html2 = '<p><input type="button" onclick="window.location.href= \'' + url + '\'" value="Map this Bookmark list on Project-GC" /></p>';
+
+		$("#ctl00_ContentBody_ListInfo_btnDownload").parent().before(html2);
     }
 
 }());
