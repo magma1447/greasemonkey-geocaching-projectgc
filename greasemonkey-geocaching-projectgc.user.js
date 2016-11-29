@@ -570,6 +570,16 @@
             $('#divContentMain div.span-17 div.Note.Disclaimer').remove();
         }
 
+        // If the first log is a DNF, display a blue warning on top of the page
+        if($('#cache_logs_table tr:first td div.LogDisplayRight strong img').attr('src') === '/images/logtypes/3.png') {
+            var htmlFirstLogDnf = '<p style="color: #006cff;" class=" NoBottomSpacing"><strong>Cache Issues:</strong></p>\
+                        <ul style="color: #006cff;" class="">\
+                            <li>The latest log for this cache is a DNF, <a href="#cache_logs_table">please read the log</a> before your own search.</li>\
+                        </ul>';
+            $('div.span-6.right.last').next().after(htmlFirstLogDnf);
+            
+        }
+
         // Collapse download links
         // http://www.w3schools.com/charsets/ref_utf_geometric.asp (x25BA, x25BC)
         if (IsSettingEnabled('collapseDownloads')) {
