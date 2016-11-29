@@ -233,6 +233,8 @@
             gccomUsername = $('ul.profile-panel-menu .li-user-info span:nth-child(2)').text();
         } else if ($('#uxLoginStatus_divSignedIn ul.logged-in-user li.li-user span.li-user-info span').first().text().length) {
             gccomUsername = $('#uxLoginStatus_divSignedIn ul.logged-in-user li.li-user span.li-user-info span').first().text();
+        } else if ($('ul.profile-panel.detailed').length) {
+            gccomUsername = $('ul.profile-panel.detailed > li.li-user > a > span:nth-child(2)').text();
         }
 
         if (loggedIn === false) {
