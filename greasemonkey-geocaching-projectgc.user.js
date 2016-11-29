@@ -19,6 +19,7 @@
 // @grant       GM_xmlhttpRequest
 // @grant       GM_setValue
 // @grant       GM_getValue
+// @grant       GM_addStyle
 // @license     The MIT License (MIT)
 // ==/UserScript==
 
@@ -252,6 +253,13 @@
                 subscriptionContent = 'Missing membership';
             }
         }
+
+        GM_addStyle('\
+        #pgcUserMenuForm > li:hover { background-color: #e3dfc9; }\
+        #pgcUserMenuForm > li { display: block; }\
+        #pgcUserMenuForm input[type="checkbox"] { opacity: inherit; width: inherit; height:inherit; overflow:inherit; position:inherit; }\
+        #pgcUserMenuForm button { display: inline-block; background: none; border-width: 0; }\
+        ');
 
         html = '\
         <div onclick="$(\'#pgcUserMenu, #pgcSettingsOverlay\').toggle();" style="position: fixed; top: 0; bottom: 0; left: 0; right: 0; z-index:1004; display: none;" id="pgcSettingsOverlay"></div>\
