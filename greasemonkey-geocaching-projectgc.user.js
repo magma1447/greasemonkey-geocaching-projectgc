@@ -19,6 +19,7 @@
 // @grant       GM_xmlhttpRequest
 // @grant       GM_setValue
 // @grant       GM_getValue
+// @grant       GM_addStyle
 // @license     The MIT License (MIT)
 // ==/UserScript==
 
@@ -233,6 +234,8 @@
             gccomUsername = $('ul.profile-panel-menu .li-user-info span:nth-child(2)').text();
         } else if ($('#uxLoginStatus_divSignedIn ul.logged-in-user li.li-user span.li-user-info span').first().text().length) {
             gccomUsername = $('#uxLoginStatus_divSignedIn ul.logged-in-user li.li-user span.li-user-info span').first().text();
+        } else if ($('ul.profile-panel.detailed').length) {
+            gccomUsername = $('ul.profile-panel.detailed > li.li-user > a > span:nth-child(2)').text();
         }
 
         if (loggedIn === false) {
@@ -250,6 +253,13 @@
                 subscriptionContent = 'Missing membership';
             }
         }
+
+        GM_addStyle('\
+        #pgcUserMenuForm > li:hover { background-color: #e3dfc9; }\
+        #pgcUserMenuForm > li { display: block; }\
+        #pgcUserMenuForm input[type="checkbox"] { opacity: inherit; width: inherit; height:inherit; overflow:inherit; position:inherit; }\
+        #pgcUserMenuForm button { display: inline-block; background: none; border-width: 0; }\
+        ');
 
         html = '\
         <div onclick="$(\'#pgcUserMenu, #pgcSettingsOverlay\').toggle();" style="position: fixed; top: 0; bottom: 0; left: 0; right: 0; z-index:1004; display: none;" id="pgcSettingsOverlay"></div>\
@@ -279,7 +289,7 @@
         for (var item in items) {
             isChecked = IsSettingEnabled(item) ? ' checked="checked"' : '';
             // Explicitly set the styles as some pages (i.e. https://www.geocaching.com/account/settings/profile) are missing the required css.
-            html += '<li style="margin: .2em 1em; white-space: nowrap;"><label style="font-weight: inherit;"><input type="checkbox" name="' + item + '"' + isChecked + '>&nbsp;' + items[item].title + '</label></li>';
+            html += '<li style="margin: .2em 1em; white-space: nowrap;"><label style="font-weight: inherit; margin-bottom: 0"><input type="checkbox" name="' + item + '"' + isChecked + '>&nbsp;' + items[item].title + '</label></li>';
         }
 
         html += '\
@@ -294,6 +304,8 @@
 
         if ($('#ctl00_uxLoginStatus_divSignedIn ul.logged-in-user').length) { // The default look of the header bar
             $('#ctl00_uxLoginStatus_divSignedIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
+        } else if ($('ul.profile-panel li.li-user').length) { // new style, e.g. https://www.geocaching.com/play/search
+            $('ul.profile-panel').prepend('<li class="li-user">' + html + '</li>');
         } else if ($('ul.profile-panel-menu').length) { // Special case for https://www.geocaching.com/account/settings/preferences
             $('ul.profile-panel-menu').prepend('<li class="li-user">' + html + '</li>');
         } else if ($('#uxLoginStatus_divSignedIn ul.logged-in-user').length) { // Special case for https://www.geocaching.com/map/
