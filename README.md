@@ -32,6 +32,7 @@ Some (most) features are for paying members at Project-GC only.
 * Add metres/feet above mean sea level.
 * Add warning if the latest log is a DNF.
 * Show exif location data for images in Gallery.
+* Adds button to map bookmark lists.
 
 ## Open source libraries used
 Exif parsing solved with a fork of https://github.com/exif-js/exif-js
