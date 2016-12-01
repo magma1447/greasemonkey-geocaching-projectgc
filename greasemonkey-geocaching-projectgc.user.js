@@ -145,6 +145,10 @@
             removeDisclaimer: {
                 title: 'Remove disclaimer',
                 default: false
+            },
+            parseExifLocation: {
+                title: 'Parse Exif location',
+                default: true
             }
         };
         return items;
@@ -840,71 +844,73 @@
 
     function Page_Gallery() {
         // Find location data in exif tags
-        $(window).load(function() { // Wait until page is loaded. If the images aren't loaded before this starts it will fail.
-            $('#ctl00_ContentBody_GalleryItems_DataListGallery img').each(function() {
-                EXIF.getData($(this)[0], function() {
-                    // console.log(EXIF.pretty(this));
-                    var GPSLatitudeRef = EXIF.getTag(this, "GPSLatitudeRef");
-                    var GPSLatitude = EXIF.getTag(this, "GPSLatitude");
-                    var GPSLongitudeRef = EXIF.getTag(this, "GPSLongitudeRef");
-                    var GPSLongitude = EXIF.getTag(this, "GPSLongitude");
+        if(IsSettingEnabled('parseExifLocation')) {
+            $(window).load(function() { // Wait until page is loaded. If the images aren't loaded before this starts it will fail.
+                $('#ctl00_ContentBody_GalleryItems_DataListGallery img').each(function() {
+                    EXIF.getData($(this)[0], function() {
+                        // console.log(EXIF.pretty(this));
+                        var GPSLatitudeRef = EXIF.getTag(this, "GPSLatitudeRef");
+                        var GPSLatitude = EXIF.getTag(this, "GPSLatitude");
+                        var GPSLongitudeRef = EXIF.getTag(this, "GPSLongitudeRef");
+                        var GPSLongitude = EXIF.getTag(this, "GPSLongitude");
 
-                    if(typeof(GPSLatitudeRef) != 'undefined') {
-                        var coords = '';
+                        if(typeof(GPSLatitudeRef) != 'undefined') {
+                            var coords = '';
 
-                        coords += GPSLatitudeRef;
-                        if(GPSLatitude[0] < 10) {
-                            coords += '0' + GPSLatitude[0];
-                        } else {
-                            coords += GPSLatitude[0];
-                        }
-                        coords += ' ';
-                        if(GPSLatitude[1] < 10) {
-                            coords += '0' + GPSLatitude[1];
-                        } else {
-                            coords += GPSLatitude[1];
-                        }
-                        coords += '.';
-                        var decimals = Math.round(GPSLatitude[2]/60*1000);
-                        if(decimals < 10) {
-                            coords += '00' + decimals;
-                        } else if(decimals < 100) {
-                            coords += '0' + decimals;
-                        } else {
-                            coords += decimals;
-                        }
+                            coords += GPSLatitudeRef;
+                            if(GPSLatitude[0] < 10) {
+                                coords += '0' + GPSLatitude[0];
+                            } else {
+                                coords += GPSLatitude[0];
+                            }
+                            coords += ' ';
+                            if(GPSLatitude[1] < 10) {
+                                coords += '0' + GPSLatitude[1];
+                            } else {
+                                coords += GPSLatitude[1];
+                            }
+                            coords += '.';
+                            var decimals = Math.round(GPSLatitude[2]/60*1000);
+                            if(decimals < 10) {
+                                coords += '00' + decimals;
+                            } else if(decimals < 100) {
+                                coords += '0' + decimals;
+                            } else {
+                                coords += decimals;
+                            }
 
-                        coords += ' ';
+                            coords += ' ';
 
-                        coords += GPSLongitudeRef;
-                        if(GPSLongitude[0] < 10) {
-                            coords += '00' + GPSLongitude[0];
-                        } else if(GPSLongitude[0] < 100) {
-                            coords += '0' + GPSLongitude[0];
-                        } else {
-                            coords += GPSLongitude[0];
-                        }
-                        coords += ' ';
-                        if(GPSLongitude[1] < 10) {
-                            coords += '0' + GPSLongitude[1];
-                        } else {
-                            coords += GPSLongitude[1];
-                        }
-                        coords += '.';
-                        var decimals = Math.round(GPSLongitude[2]/60*1000);
-                        if(decimals < 10) {
-                            coords += '00' + decimals;
-                        } else if(decimals < 100) {
-                            coords += '0' + decimals;
-                        } else {
-                            coords += decimals;
-                        }
+                            coords += GPSLongitudeRef;
+                            if(GPSLongitude[0] < 10) {
+                                coords += '00' + GPSLongitude[0];
+                            } else if(GPSLongitude[0] < 100) {
+                                coords += '0' + GPSLongitude[0];
+                            } else {
+                                coords += GPSLongitude[0];
+                            }
+                            coords += ' ';
+                            if(GPSLongitude[1] < 10) {
+                                coords += '0' + GPSLongitude[1];
+                            } else {
+                                coords += GPSLongitude[1];
+                            }
+                            coords += '.';
+                            var decimals = Math.round(GPSLongitude[2]/60*1000);
+                            if(decimals < 10) {
+                                coords += '00' + decimals;
+                            } else if(decimals < 100) {
+                                coords += '0' + decimals;
+                            } else {
+                                coords += decimals;
+                            }
 
-                        $('<span class="OldWarning">EXIF Location<br>' + coords + '</span>').insertAfter(this.parentNode);
-                    }
+                            $('<span class="OldWarning">EXIF Location<br>' + coords + '</span>').insertAfter(this.parentNode);
+                        }
+                    });
                 });
             });
-        });
+        }
     }
 
     function Page_Bookmarks() {
