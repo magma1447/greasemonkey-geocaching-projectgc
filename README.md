@@ -31,6 +31,10 @@ Some (most) features are for paying members at Project-GC only.
 * Autodecrypt hints.
 * Add metres/feet above mean sea level.
 * Add warning if the latest log is a DNF.
+* Show exif location data for images in Gallery.
+
+## Open source libraries used
+Exif parsing solved with a fork of https://github.com/exif-js/exif-js
 
 ## License
 The client side script (this script) is MIT licensed (license file commited in repository). However, the server side API is property of Ground Zero Communications AB.
