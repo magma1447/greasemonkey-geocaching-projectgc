@@ -13,7 +13,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.6.1
+// @version     1.6.2
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -265,6 +265,31 @@
 
         return coords;
     }
+
+    // function GetDecimalCoordinatesFromExif(exif) {
+    //     var GPSLatitudeRef = EXIF.getTag(exif, "GPSLatitudeRef");
+    //     var GPSLatitude = EXIF.getTag(exif, "GPSLatitude");
+    //     var GPSLongitudeRef = EXIF.getTag(exif, "GPSLongitudeRef");
+    //     var GPSLongitude = EXIF.getTag(exif, "GPSLongitude");
+
+    //     if(typeof(GPSLatitudeRef) == 'undefined') {
+    //         return false;
+    //     }
+
+    //     var latitude = GPSLatitude[0] + GPSLatitude[1]/60 + GPSLatitude[2]/60/60;
+    //     var longitude = GPSLongitude[0] + GPSLongitude[1]/60 + GPSLongitude[2]/60/60;
+
+    //     if(GPSLatitudeRef == 'S') {
+    //         latitude = 0 - latitude;
+    //     }
+    //     if(GPSLongitudeRef == 'W') {
+    //         longitude = 0 - longitude;
+    //     }
+
+    //     return [latitude, longitude]
+    // }
+
+
 
     /**
      * Check that we are authenticated at Project-GC.com, and that it's with the same username
@@ -811,7 +836,7 @@
                         // console.log(EXIF.pretty(this));
                         var coords = GetCoordinatesFromExif(this);
                         if(coords != false) {
-                            $('<span style="color: #8c0b0b; font-weight: bold;">EXIF Location: ' + coords + '</span>').insertAfter($(imgElm).parent());
+                            $('<span style="color: #8c0b0b; font-weight: bold;">EXIF Location: <a href="http://maps.google.com/?q=' + coords + '" target="_blank">' + coords + '</a></span>').insertAfter($(imgElm).parent());
                         }
                     });
                 });
@@ -937,7 +962,7 @@
                         // console.log(EXIF.pretty(this));
                         var coords = GetCoordinatesFromExif(this);
                         if(coords != false) {
-                            $('<span class="OldWarning">EXIF Location<br>' + coords + '</span>').insertAfter(this.parentNode);
+                            $('<span class="OldWarning">EXIF Location<br><a href="http://maps.google.com/?q=' + coords + '" target="_blank">' + coords + '</a></span>').insertAfter(this.parentNode);
                         }
                     });
                 });
