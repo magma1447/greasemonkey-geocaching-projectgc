@@ -31,7 +31,7 @@ Some (most) features are for paying members at Project-GC only.
 * Autodecrypt hints.
 * Add metres/feet above mean sea level.
 * Add warning if the latest log is a DNF.
-* Show exif location data for images in Gallery.
+* Show exif location data for images in Gallery and Logbook.
 * Adds button to map bookmark lists.
 
 ## Open source libraries used

@@ -13,7 +13,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.6.0
+// @version     1.6.1
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -201,6 +201,69 @@
         distance = distance.toLocaleString();
 
         return distance;
+    }
+
+    function GetCoordinatesFromExif(exif) {
+        var GPSLatitudeRef = EXIF.getTag(exif, "GPSLatitudeRef");
+        var GPSLatitude = EXIF.getTag(exif, "GPSLatitude");
+        var GPSLongitudeRef = EXIF.getTag(exif, "GPSLongitudeRef");
+        var GPSLongitude = EXIF.getTag(exif, "GPSLongitude");
+
+        if(typeof(GPSLatitudeRef) == 'undefined') {
+            return false;
+        }
+
+        var coords = '';
+
+        coords += GPSLatitudeRef;
+        if(GPSLatitude[0] < 10) {
+            coords += '0' + GPSLatitude[0];
+        } else {
+            coords += GPSLatitude[0];
+        }
+        coords += ' ';
+        if(GPSLatitude[1] < 10) {
+            coords += '0' + GPSLatitude[1];
+        } else {
+            coords += GPSLatitude[1];
+        }
+        coords += '.';
+        var decimals = Math.round(GPSLatitude[2]/60*1000);
+        if(decimals < 10) {
+            coords += '00' + decimals;
+        } else if(decimals < 100) {
+            coords += '0' + decimals;
+        } else {
+            coords += decimals;
+        }
+
+        coords += ' ';
+
+        coords += GPSLongitudeRef;
+        if(GPSLongitude[0] < 10) {
+            coords += '00' + GPSLongitude[0];
+        } else if(GPSLongitude[0] < 100) {
+            coords += '0' + GPSLongitude[0];
+        } else {
+            coords += GPSLongitude[0];
+        }
+        coords += ' ';
+        if(GPSLongitude[1] < 10) {
+            coords += '0' + GPSLongitude[1];
+        } else {
+            coords += GPSLongitude[1];
+        }
+        coords += '.';
+        var decimals = Math.round(GPSLongitude[2]/60*1000);
+        if(decimals < 10) {
+            coords += '00' + decimals;
+        } else if(decimals < 100) {
+            coords += '0' + decimals;
+        } else {
+            coords += decimals;
+        }
+
+        return coords;
     }
 
     /**
@@ -734,6 +797,29 @@
             }
         }
 
+        if(IsSettingEnabled('parseExifLocation')) {
+            $(jNode).find('table.LogImagesTable tr>td').each(function() {
+                var url = $(this).find('a.tb_images').attr('href');
+                var thumbnailUrl = url.replace('/img.geocaching.com/cache/log/large/', '/img.geocaching.com/cache/log/thumb/');
+
+                var imgElm = $(this).find('img');
+                $(imgElm).attr('src', thumbnailUrl);
+                $(imgElm).next().css('vertical-align', 'top');
+
+                $(imgElm).load(function() {
+                    EXIF.getData($(imgElm)[0], function() {
+                        // console.log(EXIF.pretty(this));
+                        var coords = GetCoordinatesFromExif(this);
+                        if(coords != false) {
+                            $('<span style="color: #8c0b0b; font-weight: bold;">EXIF Location: ' + coords + '</span>').insertAfter($(imgElm).parent());
+                        }
+                    });
+                });
+
+            });
+        }
+
+
         // Save to latest logs
         if (latestLogs.length < 5) {
             var node = $(jNode).find('div.HalfLeft.LogType strong img[src]'),
@@ -849,62 +935,8 @@
                 $('#ctl00_ContentBody_GalleryItems_DataListGallery img').each(function() {
                     EXIF.getData($(this)[0], function() {
                         // console.log(EXIF.pretty(this));
-                        var GPSLatitudeRef = EXIF.getTag(this, "GPSLatitudeRef");
-                        var GPSLatitude = EXIF.getTag(this, "GPSLatitude");
-                        var GPSLongitudeRef = EXIF.getTag(this, "GPSLongitudeRef");
-                        var GPSLongitude = EXIF.getTag(this, "GPSLongitude");
-
-                        if(typeof(GPSLatitudeRef) != 'undefined') {
-                            var coords = '';
-
-                            coords += GPSLatitudeRef;
-                            if(GPSLatitude[0] < 10) {
-                                coords += '0' + GPSLatitude[0];
-                            } else {
-                                coords += GPSLatitude[0];
-                            }
-                            coords += ' ';
-                            if(GPSLatitude[1] < 10) {
-                                coords += '0' + GPSLatitude[1];
-                            } else {
-                                coords += GPSLatitude[1];
-                            }
-                            coords += '.';
-                            var decimals = Math.round(GPSLatitude[2]/60*1000);
-                            if(decimals < 10) {
-                                coords += '00' + decimals;
-                            } else if(decimals < 100) {
-                                coords += '0' + decimals;
-                            } else {
-                                coords += decimals;
-                            }
-
-                            coords += ' ';
-
-                            coords += GPSLongitudeRef;
-                            if(GPSLongitude[0] < 10) {
-                                coords += '00' + GPSLongitude[0];
-                            } else if(GPSLongitude[0] < 100) {
-                                coords += '0' + GPSLongitude[0];
-                            } else {
-                                coords += GPSLongitude[0];
-                            }
-                            coords += ' ';
-                            if(GPSLongitude[1] < 10) {
-                                coords += '0' + GPSLongitude[1];
-                            } else {
-                                coords += GPSLongitude[1];
-                            }
-                            coords += '.';
-                            var decimals = Math.round(GPSLongitude[2]/60*1000);
-                            if(decimals < 10) {
-                                coords += '00' + decimals;
-                            } else if(decimals < 100) {
-                                coords += '0' + decimals;
-                            } else {
-                                coords += decimals;
-                            }
-
+                        var coords = GetCoordinatesFromExif(this);
+                        if(coords != false) {
                             $('<span class="OldWarning">EXIF Location<br>' + coords + '</span>').insertAfter(this.parentNode);
                         }
                     });
