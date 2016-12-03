@@ -67,33 +67,21 @@
             Page_Gallery();
         }
         
+    }
+
+    function CommonTweaks() {
         // Override gc.com function on alerting for external links to not alert for Project-GC URLs
-        var gcAlertOverride = document.createElement('script'); 
-        gcAlertOverride.type = "text/javascript"; 
-        gcAlertOverride.innerHTML = (<><![CDATA[
-
-            function isGeocachingDomain(url) {
-                if (url == "www.geocaching.com"
-                    || url == "geocaching.com"
-                    || url == "www.groundspeak.com"
-                    || url == "support.groundspeak.com"
-                    || url == "wiki.groundspeak.com"
-                    || url == "groundspeak.com"
-                    || url == "www.waymarking.com"
-                    || url == "waymarking.com"
-                    || url == "coord.info"
-                    || url == "project-gc.com"
-                    || url == "www.project-gc.com") {
-                    return true;
-                }
-
-                return false;
-            }
-
-        ]]></>).toString();
+        var gcAlertOverride = document.createElement('script');
+        gcAlertOverride.type = "text/javascript";
+        gcAlertOverride.innerHTML = `(function() {
+                var _old_isGeocachingDomain = isGeocachingDomain;
+                isGeocachingDomain = function(url) {
+                    return (_old_isGeocachingDomain.apply(this, arguments)
+                        || url == "project-gc.com"
+                        || url == "www.project-gc.com");
+                };
+            })();`;
         document.getElementsByTagName('head')[0].appendChild(gcAlertOverride);
-        // Above overrides gc.com function on alerting for external links
-        
     }
 
     function GetSettingsItems() {
@@ -340,6 +328,7 @@
 
                 BuildPGCUserMenu();
                 Router();
+                CommonTweaks();
             },
             onerror: function(response) {
                 alert(response);
