@@ -66,6 +66,34 @@
         } else if(path.match(/^\/seek\/gallery\.aspx.*/) !== null) {
             Page_Gallery();
         }
+        
+        // Override gc.com function on alerting for external links to not alert for Project-GC URLs
+        var gcAlertOverride = document.createElement('script'); 
+        gcAlertOverride.type = "text/javascript"; 
+        gcAlertOverride.innerHTML = (<><![CDATA[
+
+            function isGeocachingDomain(url) {
+                if (url == "www.geocaching.com"
+                    || url == "geocaching.com"
+                    || url == "www.groundspeak.com"
+                    || url == "support.groundspeak.com"
+                    || url == "wiki.groundspeak.com"
+                    || url == "groundspeak.com"
+                    || url == "www.waymarking.com"
+                    || url == "waymarking.com"
+                    || url == "coord.info"
+                    || url == "project-gc.com"
+                    || url == "www.project-gc.com") {
+                    return true;
+                }
+
+                return false;
+            }
+
+        ]]></>).toString();
+        document.getElementsByTagName('head')[0].appendChild(gcAlertOverride);
+        // Above overrides gc.com function on alerting for external links
+        
     }
 
     function GetSettingsItems() {
