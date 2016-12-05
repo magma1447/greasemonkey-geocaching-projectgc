@@ -66,7 +66,7 @@
         } else if(path.match(/^\/seek\/gallery\.aspx.*/) !== null) {
             Page_Gallery();
         }
-        
+
     }
 
     function CommonTweaks() {
@@ -225,26 +225,33 @@
         var GPSLongitudeRef = EXIF.getTag(exif, "GPSLongitudeRef");
         var GPSLongitude = EXIF.getTag(exif, "GPSLongitude");
 
-        if(typeof(GPSLatitudeRef) == 'undefined') {
+        if(typeof(GPSLatitude) == 'undefined') {
             return false;
         }
+
+        // Create a latitude DD.DDD
+        var tmp = Number(GPSLatitude[0]) + Number(GPSLatitude[1])/60 + Number(GPSLatitude[2])/60/60;
 
         var coords = '';
 
         coords += GPSLatitudeRef;
-        if(GPSLatitude[0] < 10) {
-            coords += '0' + GPSLatitude[0];
+        var d = Math.floor(tmp);
+        if(d < 10) {
+            coords += '0' + d;
         } else {
-            coords += GPSLatitude[0];
+            coords += d;
         }
+        tmp = (tmp - d)*60;
         coords += ' ';
-        if(GPSLatitude[1] < 10) {
-            coords += '0' + GPSLatitude[1];
+        var m = Math.floor(tmp);
+        if(m < 10) {
+            coords += '0' + m;
         } else {
-            coords += GPSLatitude[1];
+            coords += m;
         }
+        tmp = (tmp - m)*1000;
         coords += '.';
-        var decimals = Math.round(GPSLatitude[2]/60*1000);
+        var decimals = Math.round(tmp, 3);
         if(decimals < 10) {
             coords += '00' + decimals;
         } else if(decimals < 100) {
@@ -255,22 +262,29 @@
 
         coords += ' ';
 
+        // Create a longitude DD.DDD
+        var tmp = Number(GPSLongitude[0]) + Number(GPSLongitude[1])/60 + Number(GPSLongitude[2])/60/60;
+
         coords += GPSLongitudeRef;
-        if(GPSLongitude[0] < 10) {
-            coords += '00' + GPSLongitude[0];
+        var d = Math.floor(tmp);
+        if(d < 10) {
+            coords += '00' + d;
         } else if(GPSLongitude[0] < 100) {
-            coords += '0' + GPSLongitude[0];
+            coords += '0' + d;
         } else {
-            coords += GPSLongitude[0];
+            coords += d;
         }
+        tmp = (tmp - d)*60;
         coords += ' ';
-        if(GPSLongitude[1] < 10) {
-            coords += '0' + GPSLongitude[1];
+        var m = Math.floor(tmp);
+        if(m < 10) {
+            coords += '0' + m;
         } else {
-            coords += GPSLongitude[1];
+            coords += m;
         }
+        tmp = (tmp - m)*1000;
         coords += '.';
-        var decimals = Math.round(GPSLongitude[2]/60*1000);
+        var decimals = Math.round(tmp, 3);
         if(decimals < 10) {
             coords += '00' + decimals;
         } else if(decimals < 100) {
@@ -327,8 +341,8 @@
                 subscription = Boolean(result.data.subscription);
 
                 BuildPGCUserMenu();
-                Router();
                 CommonTweaks();
+                Router();
             },
             onerror: function(response) {
                 alert(response);
