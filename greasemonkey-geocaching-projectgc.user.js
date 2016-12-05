@@ -66,6 +66,22 @@
         } else if(path.match(/^\/seek\/gallery\.aspx.*/) !== null) {
             Page_Gallery();
         }
+        
+    }
+
+    function CommonTweaks() {
+        // Override gc.com function on alerting for external links to not alert for Project-GC URLs
+        var gcAlertOverride = document.createElement('script');
+        gcAlertOverride.type = "text/javascript";
+        gcAlertOverride.innerHTML = `(function() {
+                var _old_isGeocachingDomain = isGeocachingDomain;
+                isGeocachingDomain = function(url) {
+                    return (_old_isGeocachingDomain.apply(this, arguments)
+                        || url == "project-gc.com"
+                        || url == "www.project-gc.com");
+                };
+            })();`;
+        document.getElementsByTagName('head')[0].appendChild(gcAlertOverride);
     }
 
     function GetSettingsItems() {
@@ -312,6 +328,7 @@
 
                 BuildPGCUserMenu();
                 Router();
+                CommonTweaks();
             },
             onerror: function(response) {
                 alert(response);
