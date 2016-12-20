@@ -352,7 +352,7 @@
     }
 
     function BuildPGCUserMenu() {
-        var loggedInContent, html, subscriptionContent = '';
+        var loggedInContent, html, subscriptionContent = '', profileStatsUrl;
 
         gccomUsername = false;
         if ($('#ctl00_uxLoginStatus_divSignedIn ul.logged-in-user').length) {
@@ -367,7 +367,10 @@
 
         if (loggedIn === false) {
             loggedInContent = 'Not logged in';
+            profileStatsUrl = pgcUrl + 'User/Login';
         } else {
+            profileStatsUrl = pgcUrl + 'ProfileStats/' + pgcUsername;
+
             if (pgcUsername == gccomUsername) {
                 loggedInContent = '<strong>' + pgcUsername + '</strong>';
             } else {
@@ -397,7 +400,7 @@
                 </span>\
             </a>\
             <span class="li-user-info">\
-                <a class="SignedInProfileLink" href="' + pgcUrl + 'ProfileStats/' + pgcUsername + '" title="Project-GC">\
+                <a class="SignedInProfileLink" href="' + profileStatsUrl + '" title="Project-GC">\
                     <span style="display: block;">' + loggedInContent + '</span>\
                 </a>\
                 <a class="SignedInProfileLink" href="' + pgcUrl + 'Home/Membership/" title="Project-GC">\
