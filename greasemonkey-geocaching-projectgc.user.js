@@ -647,7 +647,6 @@
 
         // Tidy the web
         if (IsSettingEnabled('tidy')) {
-            $('#lnkMessageOwner').html('');
             $('#ctl00_divContentMain p.Clear').css('margin', '0');
             $('div.Note.PersonalCacheNote').css('margin', '0');
             $('h3.CacheDescriptionHeader').remove();
