@@ -13,7 +13,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.6.3
+// @version     1.6.4
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -207,41 +207,41 @@
     }
 
     function GetCoordinatesFromExif(exif) {
-        var GPSLatitudeRef = EXIF.getTag(exif, "GPSLatitudeRef");
-        var GPSLatitude = EXIF.getTag(exif, "GPSLatitude");
-        var GPSLongitudeRef = EXIF.getTag(exif, "GPSLongitudeRef");
-        var GPSLongitude = EXIF.getTag(exif, "GPSLongitude");
+        var GPSLatitudeRef = EXIF.getTag(exif, "GPSLatitudeRef"),
+            GPSLatitude = EXIF.getTag(exif, "GPSLatitude"),
+            GPSLongitudeRef = EXIF.getTag(exif, "GPSLongitudeRef"),
+            GPSLongitude = EXIF.getTag(exif, "GPSLongitude");
 
-        if(typeof(GPSLatitude) == 'undefined') {
+        if (typeof(GPSLatitude) === 'undefined' || isNaN(GPSLatitude[0]) || isNaN(GPSLatitude[1]) || isNaN(GPSLatitude[1]) ||
+            isNaN(GPSLongitude[0]) || isNaN(GPSLongitude[1]) || isNaN(GPSLongitude[1])) {
             return false;
         }
 
         // Create a latitude DD.DDD
-        var tmp = Number(GPSLatitude[0]) + Number(GPSLatitude[1])/60 + Number(GPSLatitude[2])/60/60;
-
-        var coords = '';
+        var tmp = Number(GPSLatitude[0]) + Number(GPSLatitude[1]) / 60 + Number(GPSLatitude[2]) / 60 / 60,
+            coords = '';
 
         coords += GPSLatitudeRef;
         var d = Math.floor(tmp);
-        if(d < 10) {
+        if (d < 10) {
             coords += '0' + d;
         } else {
             coords += d;
         }
-        tmp = (tmp - d)*60;
+        tmp = (tmp - d) * 60;
         coords += ' ';
         var m = Math.floor(tmp);
-        if(m < 10) {
+        if (m < 10) {
             coords += '0' + m;
         } else {
             coords += m;
         }
-        tmp = (tmp - m)*1000;
+        tmp = (tmp - m) * 1000;
         coords += '.';
         var decimals = Math.round(tmp, 3);
-        if(decimals < 10) {
+        if (decimals < 10) {
             coords += '00' + decimals;
-        } else if(decimals < 100) {
+        } else if (decimals < 100) {
             coords += '0' + decimals;
         } else {
             coords += decimals;
@@ -250,31 +250,31 @@
         coords += ' ';
 
         // Create a longitude DD.DDD
-        var tmp = Number(GPSLongitude[0]) + Number(GPSLongitude[1])/60 + Number(GPSLongitude[2])/60/60;
+        var tmp = Number(GPSLongitude[0]) + Number(GPSLongitude[1]) / 60 + Number(GPSLongitude[2]) / 60 / 60;
 
         coords += GPSLongitudeRef;
         var d = Math.floor(tmp);
-        if(d < 10) {
+        if (d < 10) {
             coords += '00' + d;
-        } else if(GPSLongitude[0] < 100) {
+        } else if (GPSLongitude[0] < 100) {
             coords += '0' + d;
         } else {
             coords += d;
         }
-        tmp = (tmp - d)*60;
+        tmp = (tmp - d) * 60;
         coords += ' ';
         var m = Math.floor(tmp);
-        if(m < 10) {
+        if (m < 10) {
             coords += '0' + m;
         } else {
             coords += m;
         }
-        tmp = (tmp - m)*1000;
+        tmp = (tmp - m) * 1000;
         coords += '.';
         var decimals = Math.round(tmp, 3);
-        if(decimals < 10) {
+        if (decimals < 10) {
             coords += '00' + decimals;
-        } else if(decimals < 100) {
+        } else if (decimals < 100) {
             coords += '0' + decimals;
         } else {
             coords += decimals;
@@ -282,31 +282,6 @@
 
         return coords;
     }
-
-    // function GetDecimalCoordinatesFromExif(exif) {
-    //     var GPSLatitudeRef = EXIF.getTag(exif, "GPSLatitudeRef");
-    //     var GPSLatitude = EXIF.getTag(exif, "GPSLatitude");
-    //     var GPSLongitudeRef = EXIF.getTag(exif, "GPSLongitudeRef");
-    //     var GPSLongitude = EXIF.getTag(exif, "GPSLongitude");
-
-    //     if(typeof(GPSLatitudeRef) == 'undefined') {
-    //         return false;
-    //     }
-
-    //     var latitude = GPSLatitude[0] + GPSLatitude[1]/60 + GPSLatitude[2]/60/60;
-    //     var longitude = GPSLongitude[0] + GPSLongitude[1]/60 + GPSLongitude[2]/60/60;
-
-    //     if(GPSLatitudeRef == 'S') {
-    //         latitude = 0 - latitude;
-    //     }
-    //     if(GPSLongitudeRef == 'W') {
-    //         longitude = 0 - longitude;
-    //     }
-
-    //     return [latitude, longitude]
-    // }
-
-
 
     /**
      * Check that we are authenticated at Project-GC.com, and that it's with the same username
@@ -338,7 +313,7 @@
     }
 
     function BuildPGCUserMenu() {
-        var loggedInContent, html, subscriptionContent = '';
+        var loggedInContent, html, subscriptionContent = '', profileStatsUrl;
 
         gccomUsername = false;
         if ($('#ctl00_uxLoginStatus_divSignedIn ul.logged-in-user').length) {
@@ -353,7 +328,10 @@
 
         if (loggedIn === false) {
             loggedInContent = 'Not logged in';
+            profileStatsUrl = pgcUrl + 'User/Login';
         } else {
+            profileStatsUrl = pgcUrl + 'ProfileStats/' + pgcUsername;
+
             if (pgcUsername == gccomUsername) {
                 loggedInContent = '<strong>' + pgcUsername + '</strong>';
             } else {
@@ -383,7 +361,7 @@
                 </span>\
             </a>\
             <span class="li-user-info">\
-                <a class="SignedInProfileLink" href="' + pgcUrl + 'ProfileStats/' + pgcUsername + '" title="Project-GC">\
+                <a class="SignedInProfileLink" href="' + profileStatsUrl + '" title="Project-GC">\
                     <span style="display: block;">' + loggedInContent + '</span>\
                 </a>\
                 <a class="SignedInProfileLink" href="' + pgcUrl + 'Home/Membership/" title="Project-GC">\
@@ -645,7 +623,6 @@
 
         // Tidy the web
         if (IsSettingEnabled('tidy')) {
-            $('#lnkMessageOwner').html('');
             $('#ctl00_divContentMain p.Clear').css('margin', '0');
             $('div.Note.PersonalCacheNote').css('margin', '0');
             $('h3.CacheDescriptionHeader').remove();
