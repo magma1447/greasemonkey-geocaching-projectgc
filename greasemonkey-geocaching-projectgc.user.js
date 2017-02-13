@@ -13,7 +13,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.6.4
+// @version     1.6.5
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -587,10 +587,10 @@
                             if (cacheData.country.length > 0) {
                                 location.push(cacheData.country);
                             }
-                            if (cacheData.region.length > 0) {
+                            if (cacheData.region !== null && cacheData.region.length > 0) {
                                 location.push(cacheData.region);
                             }
-                            if (cacheData.county.length > 0) {
+                            if (cacheData.county !== null && cacheData.county.length > 0) {
                                 location.push(cacheData.county);
                             }
                             location = location.join(' / ');
