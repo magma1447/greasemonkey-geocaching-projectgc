@@ -13,7 +13,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.7.2
+// @version     1.7.3
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -28,7 +28,7 @@
 
     'use strict';
 
-    var pgcUrl = '//project-gc.com/',
+    var pgcUrl = 'https://project-gc.com/',
         cdnDomain = '//maxcdn.project-gc.com/',
         pgcApiUrl = pgcUrl + 'api/gm/v1/',
         externalLinkIcon = '//maxcdn.project-gc.com/images/external_small.png',
