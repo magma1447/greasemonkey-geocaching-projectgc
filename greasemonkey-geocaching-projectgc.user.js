@@ -152,6 +152,10 @@
             parseExifLocation: {
                 title: 'Parse Exif location',
                 default: true
+            },
+            addGeocacheLogsPerProfileCountry: {
+                title: 'Geocachelogs per profile country',
+                default: true
             }
         };
         return items;
@@ -535,6 +539,7 @@
                         cacheData = result.data.cacheData,
                         cacheOwner = result.data.owner,
                         challengeCheckerTagIds = result.data.challengeCheckerTagIds,
+                        geocacheLogsPerCountry = result.data.geocacheLogsPerCountry,
                         location = [],
                         fp = 0,
                         fpp = 0,
@@ -612,9 +617,17 @@
                             $('#ctl00_ContentBody_detailWidget').before(html);
                         }
 
-                         // Display warning message if cache is logged and no longer be logged
+                        // Display warning message if cache is logged and no longer be logged
                         if (cacheData.locked) {
                             $('ul.OldWarning').append('<li>This cache has been locked and can no longer be logged.</li>');
+                        }
+
+                        // Add geocache logs per profile country table
+                        if (IsSettingEnabled('addGeocacheLogsPerProfileCountry') && geocacheLogsPerCountry.length > 0) {
+                            $('#ctl00_ContentBody_lblFindCounts').append('<div id="geocacheLogsPerCountry" style="border: dashed; border-color: #aaa; border-width: thin;"><p style="margin-left: 10px; margin-bottom: 0;"><strong>Found logs per country</strong> <small>according to Project-GC.com</small></p><ul style="list-style: none; margin-left: 0; margin-bottom: 0;"></ul></div>');
+                            for (var i = 0; i < geocacheLogsPerCountry.length; i++) {
+                                $('#geocacheLogsPerCountry ul').append('<li style="display: inline; padding-right: 20px;"><img src="//project-gc.com' + geocacheLogsPerCountry[i].flagIcon + '" alt="' + geocacheLogsPerCountry[i].country + '" title="' + geocacheLogsPerCountry[i].country + '">' + geocacheLogsPerCountry[i].cnt + '</li>');
+                            }
                         }
                     }
                 }
