@@ -626,7 +626,7 @@
                         if (IsSettingEnabled('addGeocacheLogsPerProfileCountry') && geocacheLogsPerCountry.length > 0) {
                             $('#ctl00_ContentBody_lblFindCounts').append('<div id="geocacheLogsPerCountry" style="border: dashed; border-color: #aaa; border-width: thin;"><p style="margin-left: 10px; margin-bottom: 0;"><strong>Found logs per country</strong> <small>according to Project-GC.com</small></p><ul style="list-style: none; margin-left: 0; margin-bottom: 0;"></ul></div>');
                             for (var i = 0; i < geocacheLogsPerCountry.length; i++) {
-                                $('#geocacheLogsPerCountry ul').append('<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;"><img src="//project-gc.com' + geocacheLogsPerCountry[i].flagIcon + '" alt="' + $('<div/>').text(geocacheLogsPerCountry[i].country).html() + '" title="' + $('<div/>').text(geocacheLogsPerCountry[i].country).html() + '"> ' + geocacheLogsPerCountry[i].cnt + '</span></li>');
+                                $('#geocacheLogsPerCountry ul').append('<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;"><img src="//maxcdn.project-gc.com' + geocacheLogsPerCountry[i].flagIcon + '" alt="' + $('<div/>').text(geocacheLogsPerCountry[i].country).html() + '" title="' + $('<div/>').text(geocacheLogsPerCountry[i].country).html() + '"> ' + geocacheLogsPerCountry[i].cnt + '</span></li>');
                             }
                             $('#geocacheLogsPerCountry ul').append('<span style="float: right;"><small>' + geocacheLogsPerCountry.length + ' unique countries</small></span>');
                         }
