@@ -628,6 +628,7 @@
                             for (var i = 0; i < geocacheLogsPerCountry.length; i++) {
                                 $('#geocacheLogsPerCountry ul').append('<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;"><img src="//project-gc.com' + geocacheLogsPerCountry[i].flagIcon + '" alt="' + $('<div/>').text(geocacheLogsPerCountry[i].country).html() + '" title="' + $('<div/>').text(geocacheLogsPerCountry[i].country).html() + '"> ' + geocacheLogsPerCountry[i].cnt + '</span></li>');
                             }
+                            $('#geocacheLogsPerCountry ul').append('<span style="float: right;"><small>' + geocacheLogsPerCountry.length + ' unique countries</small></span>');
                         }
                     }
                 }
