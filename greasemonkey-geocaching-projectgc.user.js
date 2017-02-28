@@ -13,7 +13,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.7.3
+// @version     1.7.4
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -629,7 +629,7 @@
                             for (var i = 0; i < geocacheLogsPerCountry.length; i++) {
                                 $('#geocacheLogsPerCountry ul').append('<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;"><img src="' + cdnDomain + geocacheLogsPerCountry[i].flagIcon + '" alt="' + $('<div/>').text(geocacheLogsPerCountry[i].country).html() + '" title="' + $('<div/>').text(geocacheLogsPerCountry[i].country).html() + '"> ' + geocacheLogsPerCountry[i].cnt + '</span></li>');
                             }
-                            $('#geocacheLogsPerCountry ul').append('<span style="float: right;"><small>' + geocacheLogsPerCountry.length + ' unique countries</small></span>');
+                            $('#geocacheLogsPerCountry ul').after('<span style="display: block; text-align: right; padding-right: 10px;"><small>' + geocacheLogsPerCountry.length + ' unique countries</small></span>');
                         }
                     }
                 }
