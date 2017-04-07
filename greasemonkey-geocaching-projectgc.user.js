@@ -13,7 +13,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.8.0
+// @version     1.8.1
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -1028,17 +1028,19 @@
     }
 
     function Page_FieldNotes() {
-        if(IsSettingEnabled('makeComposeLogHrefs')) {
-            $('#divContentMain > table > tbody > tr > td:nth-child(5)').each(function() {
-                var guid = $(this).children('a:nth-child(2)').attr('href').replace(/.*=(.*)/, '$1');
-                var composeUrl = 'https://www.geocaching.com/seek/log.aspx?PLogGuid=' + guid;
+        if($('#divContentMain > table > tbody > tr').length) {
+            if(IsSettingEnabled('makeComposeLogHrefs')) {
+                $('#divContentMain > table > tbody > tr > td:nth-child(5)').each(function() {
+                    var guid = $(this).children('a:nth-child(2)').attr('href').replace(/.*=(.*)/, '$1');
+                    var composeUrl = 'https://www.geocaching.com/seek/log.aspx?PLogGuid=' + guid;
 
-                $(this).children('a:nth-child(1)').attr('href', composeUrl);
-            });
+                    $(this).children('a:nth-child(1)').attr('href', composeUrl);
+                });
 
-            $('#divContentMain > h3').after('<p class="OldWarning">Project-GC has change the <em>Compose Log</em> links from Javascript callbacks to standard hrefs to make tabbed logging possible.</p>');
-        } else {
-            $('#divContentMain > h3').after('<p class="OldWarning">Project-GC can convert the <em>Compose Log</em> entries from Javascript callbacks to standard hrefs if you enable that setting.</p>');
+                $('#divContentMain > h3').after('<p class="OldWarning">Project-GC has change the <em>Compose Log</em> links from Javascript callbacks to standard hrefs to make tabbed logging possible.</p>');
+            } else {
+                $('#divContentMain > h3').after('<p class="OldWarning">Project-GC can convert the <em>Compose Log</em> entries from Javascript callbacks to standard hrefs if you enable that setting.</p>');
+            }
         }
     }
 
