@@ -1037,7 +1037,7 @@
                     $(this).children('a:nth-child(1)').attr('href', composeUrl);
                 });
 
-                $('#divContentMain > h3').after('<p class="OldWarning">Project-GC has change the <em>Compose Log</em> links from Javascript callbacks to standard hrefs to make tabbed logging possible.</p>');
+                $('#divContentMain > h3').after('<p class="OldWarning">Project-GC has changed the <em>Compose Log</em> links from Javascript callbacks to standard hrefs to make tabbed logging possible.</p>');
             } else {
                 $('#divContentMain > h3').after('<p class="OldWarning">Project-GC can convert the <em>Compose Log</em> entries from Javascript callbacks to standard hrefs if you enable that setting.</p>');
             }
