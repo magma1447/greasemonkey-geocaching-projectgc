@@ -13,7 +13,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.8.1
+// @version     1.8.2
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -68,10 +68,7 @@
             Page_Gallery();
         } else if(path.match(/^\/profile\/.*/) !== null) {
             Page_Profile();
-        } else if(path.match(/^\/my\/fieldnotes\.aspx.*/) !== null) {
-            Page_FieldNotes();
         }
-
     }
 
     function GetSettingsItems() {
@@ -1025,23 +1022,6 @@
 		var html2 = '<p><input type="button" onclick="window.location.href= \'' + url + '\'" value="Map this Bookmark list on Project-GC" /></p>';
 
 		$("#ctl00_ContentBody_ListInfo_btnDownload").parent().before(html2);
-    }
-
-    function Page_FieldNotes() {
-        if($('#divContentMain > table > tbody > tr').length) {
-            if(IsSettingEnabled('makeComposeLogHrefs')) {
-                $('#divContentMain > table > tbody > tr > td:nth-child(5)').each(function() {
-                    var guid = $(this).children('a:nth-child(2)').attr('href').replace(/.*=(.*)/, '$1');
-                    var composeUrl = 'https://www.geocaching.com/seek/log.aspx?PLogGuid=' + guid;
-
-                    $(this).children('a:nth-child(1)').attr('href', composeUrl);
-                });
-
-                $('#divContentMain > h3').after('<p class="OldWarning">Project-GC has changed the <em>Compose Log</em> links from Javascript callbacks to standard hrefs to make tabbed logging possible.</p>');
-            } else {
-                $('#divContentMain > h3').after('<p class="OldWarning">Project-GC can convert the <em>Compose Log</em> entries from Javascript callbacks to standard hrefs if you enable that setting.</p>');
-            }
-        }
     }
 
 }());
