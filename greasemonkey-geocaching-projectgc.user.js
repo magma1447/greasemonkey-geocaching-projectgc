@@ -13,7 +13,7 @@
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
-// @version     1.8.2
+// @version     1.8.3
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
 // @grant       GM_xmlhttpRequest
@@ -627,12 +627,32 @@
                         }
 
                         // Add geocache logs per profile country table
-                        if (IsSettingEnabled('addGeocacheLogsPerProfileCountry') && geocacheLogsPerCountry.length > 0) {
-                            $('#ctl00_ContentBody_lblFindCounts').append('<div id="geocacheLogsPerCountry" style="border: dashed; border-color: #aaa; border-width: thin;"><p style="margin-left: 10px; margin-bottom: 0;"><strong>Found logs per country</strong> <small>according to Project-GC.com</small></p><ul style="list-style: none; margin-left: 0; margin-bottom: 0;"></ul></div>');
-                            for (var i = 0; i < geocacheLogsPerCountry.length; i++) {
-                                $('#geocacheLogsPerCountry ul').append('<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;"><img src="' + cdnDomain + geocacheLogsPerCountry[i].flagIcon + '" alt="' + $('<div/>').text(geocacheLogsPerCountry[i].country).html() + '" title="' + $('<div/>').text(geocacheLogsPerCountry[i].country).html() + '"> ' + geocacheLogsPerCountry[i].cnt + '</span></li>');
+                        if (IsSettingEnabled('addGeocacheLogsPerProfileCountry')) {
+                            html = '<div id="geocacheLogsPerCountry" style="border: dashed; border-color: #aaa; border-width: thin;">';
+
+                            if(typeof(geocacheLogsPerCountry['willAttend']) != 'undefined' && geocacheLogsPerCountry['willAttend'].length > 0) {
+                                html += '<p style="margin-left: 10px; margin-bottom: 0;"><strong>Will attend logs per country</strong> <small>according to Project-GC.com</small></p>';
+                                html += '<ul style="list-style: none; margin-left: 0; margin-bottom: 0;">';
+                                for (var i = 0; i < geocacheLogsPerCountry['willAttend'].length; i++) {
+                                    html += '<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;"><img src="' + cdnDomain + geocacheLogsPerCountry['willAttend'][i].flagIcon + '" alt="' + $('<div/>').text(geocacheLogsPerCountry['willAttend'][i].country).html() + '" title="' + $('<div/>').text(geocacheLogsPerCountry['willAttend'][i].country).html() + '"> ' + geocacheLogsPerCountry['willAttend'][i].cnt + '</span></li>';
+                                }
+                                html += '</ul>';
+                                html += '<span style="display: block; text-align: right; padding-right: 10px;"><small>' + geocacheLogsPerCountry['willAttend'].length + ' unique countries</small></span>';
                             }
-                            $('#geocacheLogsPerCountry ul').after('<span style="display: block; text-align: right; padding-right: 10px;"><small>' + geocacheLogsPerCountry.length + ' unique countries</small></span>');
+
+                            if(typeof(geocacheLogsPerCountry['found']) != 'undefined' && geocacheLogsPerCountry['found'].length > 0) {
+                                html += '<p style="margin-left: 10px; margin-bottom: 0;"><strong>Found logs per country</strong> <small>according to Project-GC.com</small></p>';
+                                html += '<ul style="list-style: none; margin-left: 0; margin-bottom: 0;">';
+                                for (var i = 0; i < geocacheLogsPerCountry['found'].length; i++) {
+                                    html += '<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;"><img src="' + cdnDomain + geocacheLogsPerCountry['found'][i].flagIcon + '" alt="' + $('<div/>').text(geocacheLogsPerCountry['found'][i].country).html() + '" title="' + $('<div/>').text(geocacheLogsPerCountry['found'][i].country).html() + '"> ' + geocacheLogsPerCountry['found'][i].cnt + '</span></li>';
+                                }
+                                html += '</ul>';
+                                html += '<span style="display: block; text-align: right; padding-right: 10px;"><small>' + geocacheLogsPerCountry['found'].length + ' unique countries</small></span>';
+                            }
+
+                            html += '</div>';
+
+                            $('#ctl00_ContentBody_lblFindCounts').append(html);
                         }
                     }
                 }
