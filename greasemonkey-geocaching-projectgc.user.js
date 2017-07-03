@@ -68,6 +68,8 @@
             Page_Gallery();
         } else if(path.match(/^\/profile\/.*/) !== null) {
             Page_Profile();
+        } else if (path.match(/^\/account\/drafts/) !== null) {
+            Page_Drafts();
         }
     }
 
@@ -157,10 +159,10 @@
                 title: 'Geocachelogs per profile country',
                 default: true
             },
-            makeComposeLogHrefs: {
-                title: 'Convert <em>Compose Log</em> entries in <em>Drafts</em> to href',
+            openDraftLogInSameWindow: {
+                title: 'Open <em>Compose Log</em> entries in <em>Drafts</em> in same window',
                 default: true
-            }
+            },
         };
         return items;
     }
@@ -1042,6 +1044,16 @@
 		var html2 = '<p><input type="button" onclick="window.location.href= \'' + url + '\'" value="Map this Bookmark list on Project-GC" /></p>';
 
 		$("#ctl00_ContentBody_ListInfo_btnDownload").parent().before(html2);
+    }
+
+    function Page_Drafts() {
+        if (IsSettingEnabled("openDraftLogInSameWindow")) {
+          waitForKeyElements('#draftsHub > ul.draft-list > li.draft-item', Draft);
+        }
+    }
+
+    function Draft(jNode) {
+        $(jNode).find(".draft-content > a").removeAttr('target');
     }
 
 }());
