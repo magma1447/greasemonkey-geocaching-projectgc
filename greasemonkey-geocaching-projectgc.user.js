@@ -163,6 +163,10 @@
                 title: 'Open <em>Compose Log</em> entries in <em>Drafts</em> in same window',
                 default: true
             },
+            cachenoteFont: {
+                title: 'Change personal cache note font to monospaced',
+                default: true
+            },
         };
         return items;
     }
@@ -816,6 +820,14 @@
                         removeFromVGPS();
                     });
                 }
+            });
+        }
+
+        // Change font in personal cache note to monospaced
+        if (IsSettingEnabled('cachenoteFont')) {
+            $("#cache_note").css("font-family", "monospace").css("font-size", "12px");
+            $("#cache_note").on("DOMSubtreeModified", function() {
+                $(".inplace_field").css("font-family", "monospace").css("font-size", "12px");
             });
         }
     }
