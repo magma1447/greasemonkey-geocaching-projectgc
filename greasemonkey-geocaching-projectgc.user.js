@@ -70,6 +70,8 @@
             Page_Profile();
         } else if (path.match(/^\/account\/drafts/) !== null) {
             Page_Drafts();
+        } else if (path.match(/^\/account\/messagecenter/) !== null) {
+            Page_Messagecenter();
         }
     }
 
@@ -1034,6 +1036,21 @@
 
     function Draft(jNode) {
         $(jNode).find(".draft-content > a").removeAttr('target');
+    }
+
+    function Page_Messagecenter() {
+        var target = document.getElementById('currentMessage');
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if(mutation.type === "childList") {
+                    var userlink = $(".user-meta a.current-user-image").attr("href"), username = $(".user-meta span.current-user-name").html();
+                    $(".user-meta span.current-user-name").html("<a href='"+userlink+"'>"+username+"</a>");
+                }
+            });
+        });
+
+        var config = { childList: true };
+        observer.observe(target, config);
     }
 
     function padLeft(str, n, padstr){
