@@ -239,23 +239,7 @@
             coords += d;
         }
         tmp = (tmp - d) * 60;
-        coords += ' ';
-        var m = Math.floor(tmp);
-        if (m < 10) {
-            coords += '0' + m;
-        } else {
-            coords += m;
-        }
-        tmp = (tmp - m) * 1000;
-        coords += '.';
-        var decimals = Math.round(tmp, 3);
-        if (decimals < 10) {
-            coords += '00' + decimals;
-        } else if (decimals < 100) {
-            coords += '0' + decimals;
-        } else {
-            coords += decimals;
-        }
+        coords += ' ' + padLeft(tmp.toFixed(3), 6);
 
         coords += ' ';
 
@@ -272,23 +256,7 @@
             coords += d;
         }
         tmp = (tmp - d) * 60;
-        coords += ' ';
-        var m = Math.floor(tmp);
-        if (m < 10) {
-            coords += '0' + m;
-        } else {
-            coords += m;
-        }
-        tmp = (tmp - m) * 1000;
-        coords += '.';
-        var decimals = Math.round(tmp, 3);
-        if (decimals < 10) {
-            coords += '00' + decimals;
-        } else if (decimals < 100) {
-            coords += '0' + decimals;
-        } else {
-            coords += decimals;
-        }
+        coords += ' ' + padLeft(tmp.toFixed(3), 6);
 
         return coords;
     }
@@ -1056,6 +1024,9 @@
         $(jNode).find(".draft-content > a").removeAttr('target');
     }
 
+    function padLeft(str, n, padstr){
+        return Array(n-String(str).length+1).join(padstr||'0')+str;
+    }
 }());
 
 
