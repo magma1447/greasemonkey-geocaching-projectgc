@@ -68,6 +68,10 @@
             Page_Gallery();
         } else if(path.match(/^\/profile\/.*/) !== null) {
             Page_Profile();
+        } else if (path.match(/^\/account\/drafts/) !== null) {
+            Page_Drafts();
+        } else if (path.match(/^\/account\/messagecenter/) !== null) {
+            Page_Messagecenter();
         }
     }
 
@@ -157,10 +161,14 @@
                 title: 'Geocachelogs per profile country',
                 default: true
             },
-            makeComposeLogHrefs: {
-                title: 'Convert <em>Compose Log</em> entries in <em>Drafts</em> to href',
+            openDraftLogInSameWindow: {
+                title: 'Open <em>Compose Log</em> entries in <em>Drafts</em> in same window',
                 default: true
-            }
+            },
+            cachenoteFont: {
+                title: 'Change personal cache note font to monospaced',
+                default: true
+            },
         };
         return items;
     }
@@ -237,23 +245,7 @@
             coords += d;
         }
         tmp = (tmp - d) * 60;
-        coords += ' ';
-        var m = Math.floor(tmp);
-        if (m < 10) {
-            coords += '0' + m;
-        } else {
-            coords += m;
-        }
-        tmp = (tmp - m) * 1000;
-        coords += '.';
-        var decimals = Math.round(tmp, 3);
-        if (decimals < 10) {
-            coords += '00' + decimals;
-        } else if (decimals < 100) {
-            coords += '0' + decimals;
-        } else {
-            coords += decimals;
-        }
+        coords += ' ' + padLeft(tmp.toFixed(3), 6);
 
         coords += ' ';
 
@@ -270,23 +262,7 @@
             coords += d;
         }
         tmp = (tmp - d) * 60;
-        coords += ' ';
-        var m = Math.floor(tmp);
-        if (m < 10) {
-            coords += '0' + m;
-        } else {
-            coords += m;
-        }
-        tmp = (tmp - m) * 1000;
-        coords += '.';
-        var decimals = Math.round(tmp, 3);
-        if (decimals < 10) {
-            coords += '00' + decimals;
-        } else if (decimals < 100) {
-            coords += '0' + decimals;
-        } else {
-            coords += decimals;
-        }
+        coords += ' ' + padLeft(tmp.toFixed(3), 6);
 
         return coords;
     }
@@ -848,6 +824,14 @@
                 }
             });
         }
+
+        // Change font in personal cache note to monospaced
+        if (IsSettingEnabled('cachenoteFont')) {
+            $("#cache_note").css("font-family", "monospace").css("font-size", "12px");
+            $("#cache_note").on("DOMSubtreeModified", function() {
+                $(".inplace_field").css("font-family", "monospace").css("font-size", "12px");
+            });
+        }
     }
 
     function Page_Logbook() {
@@ -1044,6 +1028,34 @@
 		$("#ctl00_ContentBody_ListInfo_btnDownload").parent().before(html2);
     }
 
+    function Page_Drafts() {
+        if (IsSettingEnabled("openDraftLogInSameWindow")) {
+          waitForKeyElements('#draftsHub > ul.draft-list > li.draft-item', Draft);
+        }
+    }
+
+    function Draft(jNode) {
+        $(jNode).find(".draft-content > a").removeAttr('target');
+    }
+
+    function Page_Messagecenter() {
+        var target = document.getElementById('currentMessage');
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if(mutation.type === "childList") {
+                    var userlink = $(".user-meta a.current-user-image").attr("href"), username = $(".user-meta span.current-user-name").html();
+                    $(".user-meta span.current-user-name").html("<a href='"+userlink+"'>"+username+"</a>");
+                }
+            });
+        });
+
+        var config = { childList: true };
+        observer.observe(target, config);
+    }
+
+    function padLeft(str, n, padstr){
+        return Array(n-String(str).length+1).join(padstr||'0')+str;
+    }
 }());
 
 
