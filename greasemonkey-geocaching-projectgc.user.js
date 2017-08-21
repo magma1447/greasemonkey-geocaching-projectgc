@@ -29,11 +29,11 @@
     'use strict';
 
     var pgcUrl = 'https://project-gc.com/',
-        cdnDomain = '//maxcdn.project-gc.com/',
+        cdnDomain = 'https://cdn2.project-gc.com/',
         pgcApiUrl = pgcUrl + 'api/gm/v1/',
-        externalLinkIcon = '//maxcdn.project-gc.com/images/external_small.png',
-        galleryLinkIcon = '//maxcdn.project-gc.com/images/pictures_16.png',
-        mapLinkIcon = '//maxcdn.project-gc.com/images/map_app_16.png',
+        externalLinkIcon = 'https://cdn2.project-gc.com/images/external_small.png',
+        galleryLinkIcon = 'https://cdn2.project-gc.com/images/pictures_16.png',
+        mapLinkIcon = 'https://cdn2.project-gc.com/images/map_app_16.png',
         loggedIn = null,
         subscription = null,
         pgcUsername = null,
@@ -365,7 +365,7 @@
         <div>\
             <a class="SignedInProfileLink" href="' + pgcUrl + '" title="Project-GC">\
                 <span class="avatar">\
-                    <img src="http://project-gc.com/favicon.ico" alt="Logo" width="30" height="30" style="border-radius:100%; border-width:0;">\
+                    <img src="https://project-gc.com/favicon.ico" alt="Logo" width="30" height="30" style="border-radius:100%; border-width:0;">\
                 </span>\
             </a>\
             <span class="li-user-info">\
@@ -615,7 +615,7 @@
 
                             html = '<div id="checkerWidget" class="CacheDetailNavigationWidget TopSpacing BottomSpacing"><h3 class="WidgetHeader">Challenge checker(s)</h3><div class="WidgetBody" id="PGC_ChallengeCheckers">';
                             for (var i = 0; i < challengeCheckerTagIds.length; i++) {
-                                html += '<a href="http://project-gc.com/Challenges/' + gccode + '/' + challengeCheckerTagIds[i] + '" style="display: block; width: 200px; margin: 0 auto;"><img src="http://maxcdn.project-gc.com/Images/Checker/' + challengeCheckerTagIds[i] + '" title="Project-GC Challenge checker" alt="PGC Checker"></a>';
+                                html += '<a href="https://project-gc.com/Challenges/' + gccode + '/' + challengeCheckerTagIds[i] + '" style="display: block; width: 200px; margin: 0 auto;"><img src="https://cdn2.project-gc.com/Images/Checker/' + challengeCheckerTagIds[i] + '" title="Project-GC Challenge checker" alt="PGC Checker"></a>';
                             }
                             html += '</div></div>';
                             $('#ctl00_ContentBody_detailWidget').before(html);
@@ -671,7 +671,7 @@
         if (IsSettingEnabled('makeCopyFriendly')) {
             $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').
             html('<div style="margin-right: 15px; margin-bottom: 10px;"><p id="ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoCode" style="font-size: 125%; margin-bottom: 0">' + gccode + '</p>' +
-                '<input size="25" type="text" value="http://coord.info/' + encodeURIComponent(gccode) + '" onclick="this.setSelectionRange(0, this.value.length);"></div>');
+                '<input size="25" type="text" value="https://coord.info/' + encodeURIComponent(gccode) + '" onclick="this.setSelectionRange(0, this.value.length);"></div>');
             $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').css('font-weight', 'inherit').css('margin-right', '39px');
             $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel div').css('margin', '0 0 5px 0');
             $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel div p').css('font-weight', 'bold');
@@ -735,7 +735,7 @@
             coordinates = $('#ctl00_ContentBody_MapLinks_MapLinks li a').attr('href'),
                 latitude = coordinates.replace(/.*lat=([^&]*)&lng=.*/, "$1"),
                 longitude = coordinates.replace(/.*&lng=(.*)$/, "$1"),
-                url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng=' + latitude + ',' + longitude + '&sensor=false';
+                url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latitude + ',' + longitude + '&sensor=false';
 
             GM_xmlhttpRequest({
                 method: "GET",
@@ -769,15 +769,15 @@
                 var owner = $(this).children(':nth-child(3)').text();
 
                 // Add the map link
-                url = 'http://project-gc.com/Tools/MapBookmarklist?owner_name=' + encodeURIComponent(owner) + '&guid=' + encodeURIComponent(guid);
+                url = 'https://project-gc.com/Tools/MapBookmarklist?owner_name=' + encodeURIComponent(owner) + '&guid=' + encodeURIComponent(guid);
                 $(this).children(':nth-child(1)').append('&nbsp;<a href="' + url + '"><img src="' + mapLinkIcon + '" title="Map with Project-GC"></a>');
 
                 // Add gallery link for the bookmark list
-                url = 'http://project-gc.com/Tools/Gallery?bml_owner=' + encodeURIComponent(owner) + '&bml_guid=' + encodeURIComponent(guid) + '&submit=Filter';
+                url = 'https://project-gc.com/Tools/Gallery?bml_owner=' + encodeURIComponent(owner) + '&bml_guid=' + encodeURIComponent(guid) + '&submit=Filter';
                 $(this).children(':nth-child(1)').append('&nbsp;<a href="' + url + '"><img src="' + galleryLinkIcon + '" title="Project-GC Gallery"></a>');
 
                 // Add profile stats link to the owner
-                url = 'http://project-gc.com/ProfileStats/' + encodeURIComponent(owner);
+                url = 'https://project-gc.com/ProfileStats/' + encodeURIComponent(owner);
                 $(this).children(':nth-child(3)').append('&nbsp;<a href="' + url + '"><img src="' + externalLinkIcon + '" title="Project-GC Profile stats"></a>');
             });
         }
@@ -799,7 +799,7 @@
                         existsIn = result.data.existsIn,
                         selectedContent,
                         existsContent,
-                        html = '<li><img width="16" height="16" src="http://maxcdn.project-gc.com/images/mobile_telephone_32.png"> <strong>Add to VGPS</strong><br />',
+                        html = '<li><img width="16" height="16" src="https://cdn2.project-gc.com/images/mobile_telephone_32.png"> <strong>Add to VGPS</strong><br />',
                         listId;
 
                     html += '<select id="comboVGPS" style="width: 138px;">';
@@ -883,7 +883,7 @@
                         // console.log(EXIF.pretty(this));
                         var coords = GetCoordinatesFromExif(this);
                         if(coords != false) {
-                            $('<span style="color: #8c0b0b; font-weight: bold;">EXIF Location: <a href="http://maps.google.com/?q=' + coords + '" target="_blank">' + coords + '</a></span>').insertAfter($(imgElm).parent());
+                            $('<span style="color: #8c0b0b; font-weight: bold;">EXIF Location: <a href="https://maps.google.com/?q=' + coords + '" target="_blank">' + coords + '</a></span>').insertAfter($(imgElm).parent());
                         }
                     });
                 });
@@ -959,7 +959,7 @@
                                     listId;
 
 
-                                html = '<img src="http://maxcdn.project-gc.com/images/mobile_telephone_32.png" style="width: 24px; height: 24px; margin-bottom: -6px;">';
+                                html = '<img src="https://cdn2.project-gc.com/images/mobile_telephone_32.png" style="width: 24px; height: 24px; margin-bottom: -6px;">';
 
                                 html += '<select id="comboVGPS" style="margin-bottom: 4px;">';
                                 for (listId in vgpsLists) {
@@ -1009,7 +1009,7 @@
                         // console.log(EXIF.pretty(this));
                         var coords = GetCoordinatesFromExif(this);
                         if(coords != false) {
-                            $('<span class="OldWarning">EXIF Location<br><a href="http://maps.google.com/?q=' + coords + '" target="_blank">' + coords + '</a></span>').insertAfter(this.parentNode);
+                            $('<span class="OldWarning">EXIF Location<br><a href="https://maps.google.com/?q=' + coords + '" target="_blank">' + coords + '</a></span>').insertAfter(this.parentNode);
                         }
                     });
                 });
@@ -1030,8 +1030,8 @@
 		}
 		var guid = search.substr(guid_start + 5/*, eof */);
 
-		var url = "http://project-gc.com/Tools/MapBookmarklist?owner_name=" + owner_name + "&guid=" + guid;
-		var icon = "http://maxcdn.project-gc.com/images/map_app_16.png";
+		var url = "https://project-gc.com/Tools/MapBookmarklist?owner_name=" + owner_name + "&guid=" + guid;
+		var icon = "https://cdn2.project-gc.com/images/map_app_16.png";
 
 		/* Heading link */
 		var html = ' <a href="' + url + '" title="Map this Bookmark list using Project-GC" style="padding-left:20px;"><img src="' + icon + '" /> Map this!</a>';
