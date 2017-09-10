@@ -339,11 +339,11 @@
         ');
 
         html = '\
-        <div onclick="$(\'#pgcUserMenu, #pgcSettingsOverlay\').toggle();" style="position: relative; top: 0; bottom: 0; left: 0; right: 0; z-index:1004; display: none;" id="pgcSettingsOverlay"></div>\
+        <div onclick="$(\'#pgcUserMenu, #pgcSettingsOverlay\').toggle();" style="position: fixed; top: 0; bottom: 0; left: 0; right: 0; z-index:1004; display: none;" id="pgcSettingsOverlay"></div>\
         \
             <a class="SignedInProfileLink" href="' + pgcUrl + '" title="Project-GC">\
                 <span class="user-avatar">\
-                    <img src="http://project-gc.com/favicon.ico" alt="Logo" width="30" height="30" style="border-radius:100%; border-width:0;">\
+                    <img src="https://project-gc.com/favicon.ico" alt="Logo" width="30" height="30" style="border-radius:100%; border-width:0;">\
                 </span>\
             </a>\
             <span class="li-user-info">\
