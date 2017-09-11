@@ -1,4 +1,4 @@
-/* global $: true */
+﻿/* global $: true */
 /* global waitForKeyElements: true */
 /* global GM_xmlhttpRequest: true */
 /* global GM_getValue: true */
@@ -333,7 +333,8 @@
         #pgcUserMenuForm > li:hover { background-color: #e3dfc9; }\
         #pgcUserMenuForm > li { display: block; }\
         #pgcUserMenuForm input[type="checkbox"] { opacity: inherit; width: inherit; height:inherit; overflow:inherit; position:inherit; }\
-        #pgcUserMenuForm button { display: inline-block; background: none; border-width: 0; }\
+        #pgcUserMenuForm button { display: inline-block; background-color: #e7e7e7; border-radius: 4px; color: black; border-width: 0; width: auto; font-size: 18px; padding: 4px 6px;}\
+        #pgcUserMenuForm button:hover { background-color: 0; }\
         #pgcUserMenu { right: 19rem;  }\
         #pgcUserMenu > form { background-color: white; color: #5f452a; }\
         ');
@@ -343,7 +344,7 @@
         \
             <a class="SignedInProfileLink" href="' + pgcUrl + '" title="Project-GC">\
                 <span class="user-avatar">\
-                    <img src="https://project-gc.com/favicon.ico" alt="Logo" width="30" height="30" style="border-radius:100%; border-width:0;">\
+                    <img src="https://cdn2.project-gc.com/favicon.ico" alt="Logo" width="30" height="30" style="border-radius:100%; border-width:0;">\
                 </span>\
             </a>\
             <span class="li-user-info">\
@@ -359,7 +360,7 @@
             </button>\
         \
         <ul id="pgcUserMenu" class="submenu" style="z-index: 1005; display: none; text-align: left;">\
-            <form id="pgcUserMenuForm">';
+            <form id="pgcUserMenuForm" style="display: block; columns: 2; font-size: 14px;">';
 
         var items = GetSettingsItems(),
             isChecked = '';
@@ -370,12 +371,12 @@
         }
 
         html += '\
-                <li style="margin: .2em 1em;">\
+                <li style="margin: .2em 1em; background: 0;">\
                     <button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); $(\'#pgcUserMenu\').hide(); return false;">Cancel</button>\
                     &nbsp;<button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); return false;">Reset</button>\
                     &nbsp;<button id="pgcUserMenuSave">Save</button>\
                 </li>\
-                <li id="pgcUserMenuWarning" style="display: none; margin: .5em 1em;"><small class="OldWarning"><a href="#" onclick="location.reload();" style="padding: 0; text-decoration: underline;">Reload</a> the page to activate the new settings.</small></li>\
+                <li id="pgcUserMenuWarning" style="display: none; margin: .5em 1em; color: red; background: 0;"><a href="#" onclick="location.reload();" style="color: red; padding: 0; text-decoration: underline; display: inline;">Reload</a> the page to activate the new settings.</li>\
             </form>\
         </ul>';
 
@@ -383,8 +384,6 @@
             $('#ctl00_uxLoginStatus_divSignedIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
         } else if ($('ul.profile-panel li.li-user').length) { // new style, e.g. https://www.geocaching.com/play/search
             $('ul.profile-panel').prepend('<li class="li-user">' + html + '</li>');
-        } else if ($('ul.profile-panel-menu').length) { // Special case for https://www.geocaching.com/account/settings/preferences
-            $('ul.profile-panel-menu').prepend('<li class="li-user">' + html + '</li>');
         } else if ($('#uxLoginStatus_divSignedIn ul.logged-in-user').length) { // Special case for https://www.geocaching.com/map/
             $('#uxLoginStatus_divSignedIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
         }
