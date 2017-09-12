@@ -33,7 +33,9 @@ Some (most) features are for paying members at Project-GC only.
 * Add warning if the latest log is a DNF.
 * Show exif location data for images in Gallery and Logbook.
 * Adds button to map bookmark lists.
-* Convert Draft's Compose Log from Javascript callbacks to standard hrefs.
+* Remove open in new tab from Drafts
+* Found/Will attend/Attended per country
+* Monospace font for personal cache notes
 
 ## Open source libraries used
 Exif parsing solved with a fork of https://github.com/exif-js/exif-js
@@ -44,3 +46,4 @@ The client side script (this script) is MIT licensed (license file commited in r
 ## Credits
 * Idea and initial work: Jonas "lillfiluren" Högström.
 * Cleanup and actually make things work properly (cross browser compatible): "Surfoo".
+* Other contributors, https://github.com/magma1447/greasemonkey-geocaching-projectgc/graphs/contributors
