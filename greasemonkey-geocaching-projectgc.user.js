@@ -20,6 +20,8 @@
 // @grant       GM_setValue
 // @grant       GM_getValue
 // @grant       GM_addStyle
+// @connect     maps.googleapis.com
+// @connect     project-gc.com
 // @license     The MIT License (MIT)
 // ==/UserScript==
 
