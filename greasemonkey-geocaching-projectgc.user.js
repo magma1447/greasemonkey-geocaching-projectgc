@@ -22,6 +22,9 @@
 // @grant       GM_addStyle
 // @connect     maps.googleapis.com
 // @connect     project-gc.com
+// @connect     img.geocaching.com
+// @connect     s3.amazonaws.com
+// @connect     *
 // @license     The MIT License (MIT)
 // ==/UserScript==
 
