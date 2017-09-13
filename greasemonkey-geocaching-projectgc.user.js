@@ -178,6 +178,10 @@
                 title: 'Add links to logbook tabs',
                 default: true
             },
+            addMyNumberOfLogs: {
+                title: 'Add my number of logs above log button',
+                default: true
+            }
         };
         return items;
     }
@@ -534,6 +538,7 @@
                         cacheOwner = result.data.owner,
                         challengeCheckerTagIds = result.data.challengeCheckerTagIds,
                         geocacheLogsPerCountry = result.data.geocacheLogsPerCountry,
+                        myNumberOfLogs = result.data.myNumberOfLogs,
                         location = [],
                         fp = 0,
                         fpp = 0,
@@ -645,6 +650,17 @@
 
                             $('#ctl00_ContentBody_lblFindCounts').append(html);
                         }
+
+                        // Add my number of logs above the log button
+                        if (IsSettingEnabled('addMyNumberOfLogs')) {
+                            $('<p style="margin: 0;"><small>You have ' + myNumberOfLogs + ' logs according to Project-GC</small></p>').insertBefore('#ctl00_ContentBody_GeoNav_logButton');
+                        }
+
+                        // Append the same number to the added logbook link
+                        if (IsSettingEnabled('logbookLinks')) {
+                            $('#pgc-logbook-yours').html('Your\'s (' + myNumberOfLogs + ')')
+
+                        }
                     }
                 }
             });
@@ -656,6 +672,7 @@
             $('div.Note.PersonalCacheNote').css('margin', '0');
             $('h3.CacheDescriptionHeader').remove();
             $('#ctl00_ContentBody_EncryptionKey').remove();
+            $('#ctl00_ContentBody_GeoNav_foundStatus').css('margin-bottom', '0');
         }
 
         // Make it easier to copy the gccode
@@ -850,10 +867,11 @@
 
 
         if (IsSettingEnabled('logbookLinks')) {
-            $('<a style="padding-left: 12px;" href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-3">Your Friend\'s Logs</a>').insertAfter( $('#ctl00_ContentBody_uxLogbookLink') );
-            $('<a style="padding-left: 12px;" href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-2">Your logs</a>').insertAfter( $('#ctl00_ContentBody_uxLogbookLink') );
+            $('\
+                <span>&nbsp;|&nbsp;</span><a id="pgc-logbook-yours" href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-2">Your\'s</a>\
+                <span>&nbsp;|&nbsp;</span><a href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-3">Friend\'s</a>\
+                ').insertAfter( $('#ctl00_ContentBody_uxLogbookLink') );
         }
-
     }
 
     function Page_Logbook() {
