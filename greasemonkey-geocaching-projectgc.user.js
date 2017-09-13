@@ -338,8 +338,8 @@
         #pgcUserMenuForm > li:hover { background-color: #e3dfc9; }\
         #pgcUserMenuForm > li { display: block; }\
         #pgcUserMenuForm input[type="checkbox"] { opacity: inherit; width: inherit; height:inherit; overflow:inherit; position:inherit; }\
-        #pgcUserMenuForm button { display: inline-block; background-color: #e7e7e7; border-radius: 4px; color: black; border-width: 0; width: auto; font-size: 18px; padding: 4px 6px;}\
-        #pgcUserMenuForm button:hover { background-color: 0; }\
+        #pgcUserMenuForm button { display: inline-block; background: #ede5dc url(images/ui-bg_flat_100_ede5dc_40x100.png) 50% 50% repeat-x; border: 1px solid #cab6a3; border-radius: 4px; color: #584528; text-decoration: none; width: auto; font-size: 14px; padding: 4px 6px;}\
+        #pgcUserMenuForm button:hover { background: #e4d8cb url(images/ui-bgflag_100_e4d8cb_40x100.png) 50% 50% repeat-x; }\
         #pgcUserMenu { right: 19rem;  }\
         #pgcUserMenu > form { background-color: white; color: #5f452a; }\
         ');
