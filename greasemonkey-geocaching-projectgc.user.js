@@ -174,6 +174,10 @@
                 title: 'Change personal cache note font to monospaced',
                 default: true
             },
+            logbookLinks: {
+                title: 'Add links to logbook tabs',
+                default: true
+            },
         };
         return items;
     }
@@ -843,6 +847,13 @@
                 $(".inplace_field").css("font-family", "monospace").css("font-size", "12px");
             });
         }
+
+
+        if (IsSettingEnabled('logbookLinks')) {
+            $('<a style="padding-left: 12px;" href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-3">Your Friend\'s Logs</a>').insertAfter( $('#ctl00_ContentBody_uxLogbookLink') );
+            $('<a style="padding-left: 12px;" href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-2">Your logs</a>').insertAfter( $('#ctl00_ContentBody_uxLogbookLink') );
+        }
+
     }
 
     function Page_Logbook() {
