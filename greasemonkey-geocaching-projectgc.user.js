@@ -380,7 +380,7 @@
         for (var item in items) {
             isChecked = IsSettingEnabled(item) ? ' checked="checked"' : '';
             // Explicitly set the styles as some pages (i.e. https://www.geocaching.com/account/settings/profile) are missing the required css.
-            html += '<li style="margin: .2em 1em; white-space: nowrap;"><label style="font-weight: inherit; margin-bottom: 0"><input type="checkbox" name="' + item + '"' + isChecked + '>&nbsp;' + items[item].title + '</label></li>';
+            html += '<li style="margin: .2em 1em; white-space: nowrap;"><label style="font-weight: inherit; margin-bottom: 0"><input type="checkbox" name="' + item + '"' + isChecked + ' >&nbsp;' + items[item].title + '</label> <small>(default: ' + items[item].default + ')</small></li>';
         }
 
         html += '\
