@@ -17,10 +17,14 @@
 // @version     1.8.6
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=19641
+// @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant       GM_xmlhttpRequest
 // @grant       GM_setValue
 // @grant       GM_getValue
 // @grant       GM_addStyle
+// @grant       GM.xmlHttpRequest
+// @grant       GM.setValue
+// @grant       GM.getValue
 // @connect     maps.googleapis.com
 // @connect     project-gc.com
 // @connect     img.geocaching.com
@@ -187,8 +191,8 @@
         return items;
     }
 
-    function ReadSettings() {
-        settings = GM_getValue('settings');
+    async function ReadSettings() {
+        settings = await GM.getValue('settings');
         if (typeof(settings) != 'undefined') {
             settings = JSON.parse(settings);
             if (settings === null) {
@@ -215,7 +219,7 @@
         }
 
         var json = JSON.stringify(settings);
-        GM_setValue('settings', json);
+        GM.setValue('settings', json);
 
         $('#pgcUserMenuWarning').css('display', 'inherit');
     }
@@ -285,7 +289,7 @@
      * Check that we are authenticated at Project-GC.com, and that it's with the same username
      */
     function CheckPGCLogin() {
-        GM_xmlhttpRequest({
+        GM.xmlHttpRequest({
             method: "GET",
             url: pgcApiUrl + 'GetMyUsername',
             onload: function(response) {
@@ -433,7 +437,7 @@
         url = pgcApiUrl + 'AddToVGPSList?listId=' + listId + '&gccode=' + gccode + '&sectionName=GM-script';
 
 
-        GM_xmlhttpRequest({
+        GM.xmlHttpRequest({
             method: "GET",
             url: url,
             onload: function(response) {
@@ -469,7 +473,7 @@
         url = pgcApiUrl + 'RemoveFromVGPSList?listId=' + listId + '&gccode=' + gccode;
 
 
-        GM_xmlhttpRequest({
+        GM.xmlHttpRequest({
             method: "GET",
             url: url,
             onload: function(response) {
@@ -530,7 +534,7 @@
             if (lastFound)
                 url += '&lastFound=' + lastFound;
 
-            GM_xmlhttpRequest({
+            GM.xmlHttpRequest({
                 method: "GET",
                 url: url,
                 onload: function(response) {
@@ -746,7 +750,7 @@
                 longitude = coordinates.replace(/.*&lng=(.*)$/, "$1"),
                 url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latitude + ',' + longitude + '&sensor=false';
 
-            GM_xmlhttpRequest({
+            GM.xmlHttpRequest({
                 method: "GET",
                 url: url,
                 onload: function(response) {
@@ -798,7 +802,7 @@
 
         // VGPS form
         if (IsSettingEnabled('showVGPS')) {
-            GM_xmlhttpRequest({
+            GM.xmlHttpRequest({
                 method: "GET",
                 url: pgcApiUrl + 'GetExistingVGPSLists?gccode=' + gccode,
                 onload: function(response) {
@@ -969,7 +973,7 @@
 
                         $('#gmCacheInfo div.links').after('<div id="pgc_vgps"></div>');
 
-                        GM_xmlhttpRequest({
+                        GM.xmlHttpRequest({
                             method: "GET",
                             url: pgcApiUrl + 'GetExistingVGPSLists?gccode=' + gccode,
                             onload: function(response) {
@@ -1101,7 +1105,7 @@
 
 
 
-// https://github.com/exif-js/exif-js adjusted to use GM_xmlhttpRequest
+// https://github.com/exif-js/exif-js adjusted to use GM.xmlHttpRequest
 (function() {
     var debug = false;
 
@@ -1444,7 +1448,7 @@
         // };
         // http.send();
 
-        // GM_xmlhttpRequest({
+        // GM.xmlHttpRequest({
         //     method: "GET",
         //     url: url,
         //     onload: function(e) {
@@ -1493,7 +1497,7 @@
                 // http.responseType = "arraybuffer";
                 // http.send(null);
 
-                GM_xmlhttpRequest({
+                GM.xmlHttpRequest({
                     method: "GET",
                     url: img.src,
                     responseType: 'arraybuffer',
