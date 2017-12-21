@@ -874,7 +874,7 @@
         if (IsSettingEnabled('logbookLinks')) {
             $('\
                 <span>&nbsp;|&nbsp;</span><a id="pgc-logbook-yours" href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-2">Yours</a>\
-                <span>&nbsp;|&nbsp;</span><a href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-3">Friend\'s</a>\
+                <span>&nbsp;|&nbsp;</span><a href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-3">Friends\'</a>\
                 ').insertAfter( $('#ctl00_ContentBody_uxLogbookLink') );
         }
     }
