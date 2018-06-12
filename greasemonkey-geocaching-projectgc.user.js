@@ -14,7 +14,7 @@
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
-// @version     2.0.1
+// @version     2.0.2
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js
 // @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -899,12 +899,14 @@
         }
 
         if(IsSettingEnabled('parseExifLocation')) {
-            $(jNode).find('table.LogImagesTable tr>td').each(function() {
-                var url = $(this).find('a.tb_images').attr('href');
+            $(jNode).find('ul.LogImagesTable li>a').each(function() {
+                var url = $(this).attr('href');
                 var thumbnailUrl = url.replace('/img.geocaching.com/cache/log/large/', '/img.geocaching.com/cache/log/thumb/');
 
                 var imgElm = $(this).find('img');
                 $(imgElm).attr('src', thumbnailUrl);
+                $(imgElm).removeAttr('width');
+                $(imgElm).removeAttr('height');
                 $(imgElm).next().css('vertical-align', 'top');
 
                 $(imgElm).load(function() {
@@ -912,7 +914,7 @@
                         // console.log(EXIF.pretty(this));
                         var coords = GetCoordinatesFromExif(this);
                         if(coords != false) {
-                            $('<span style="color: #8c0b0b; font-weight: bold;">EXIF Location: <a href="https://maps.google.com/?q=' + coords + '" target="_blank">' + coords + '</a></span>').insertAfter($(imgElm).parent());
+                            $('<span style="color: #8c0b0b; font-weight: bold; float: right;">EXIF Location: <a href="https://maps.google.com/?q=' + coords + '" target="_blank">' + coords + '</a></span>').insertAfter($(imgElm).parent());
                         }
                     });
                 });
