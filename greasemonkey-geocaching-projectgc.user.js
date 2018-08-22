@@ -925,7 +925,7 @@
 
         // Save to latest logs
         if (latestLogs.length < 5) {
-            var node = $(jNode).find('div.HalfLeft.LogType strong img[src]'),
+            var node = $(jNode).find('div.HalfLeft.LogType h4 img[src]'),
                 logType = {};
 
             if (node.length === 0)
