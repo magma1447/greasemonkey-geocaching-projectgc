@@ -14,7 +14,7 @@
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
-// @version     2.0.2
+// @version     2.1.0
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js
 // @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -82,6 +82,8 @@
             Page_Drafts();
         } else if (path.match(/^\/account\/messagecenter/) !== null) {
             Page_Messagecenter();
+        } else if (path.match(/^\/seek\/cdpf\.aspx/) !== null) {
+            Page_PrintCachePage();
         }
     }
 
@@ -185,6 +187,10 @@
             },
             addMyNumberOfLogs: {
                 title: 'Add my number of logs above log button',
+                default: true
+            },
+            hideMapFromPrintCachePage: {
+                title: 'Hide map from print cache page',
                 default: true
             }
         };
@@ -1100,8 +1106,49 @@
         observer.observe(target, config);
     }
 
+    function Page_PrintCachePage() {
+        // Remove the disclaimer
+        $('div.TermsWidget').css('display', 'none');
+
+
+        // Get rid of the Logs section if it's not asked for. But keep it if we asked for it, even though there are 0 logs.
+        if( getUrlParameter('lc') === false ) {
+            $('div.item.ui-widget > div.item-header > h2.ui-sortable-handle').each(function() {
+                if( $(this).html() == 'Logs' ) {    // Will only work with English
+                    $(this).parent().parent().addClass('no-print').css('display', 'none');
+                    return false;   // Break .each loop
+                }
+            });
+        }
+
+
+        if(IsSettingEnabled('hideMapFromPrintCachePage')) {
+            $('#map').parent().parent().addClass('no-print');
+            $('#map').parent().prev().children('span.ui-icon').removeClass('ui-icon-minusthick').addClass('ui-icon-plusthick');
+            $('#map').parent().css('display', 'none');
+        }
+    }
+
+
     function padLeft(str, n, padstr){
         return Array(n-String(str).length+1).join(padstr||'0')+str;
+    }
+
+    function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+
+        return false;
     }
 }());
 
