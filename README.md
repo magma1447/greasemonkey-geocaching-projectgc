@@ -29,13 +29,14 @@ Some (most) features are for paying members at Project-GC only.
 * Add links to plot bookmark lists on maps, from geocache pages.
 * Add links to Profile stats for bookmark list owners, from geocache pages.
 * Autodecrypt hints.
-* Add metres/feet above mean sea level.
+* Add meters/feet above mean sea level.
 * Add warning if the latest log is a DNF.
 * Show exif location data for images in Gallery and Logbook.
 * Adds button to map bookmark lists.
 * Remove open in new tab from Drafts
 * Found/Will attend/Attended per country
 * Monospace font for personal cache notes
+* Minor tweaks on Print cache page
 
 ## Open source libraries used
 Exif parsing solved with a fork of https://github.com/exif-js/exif-js
