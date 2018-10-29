@@ -14,7 +14,7 @@
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
-// @version     2.1.1
+// @version     2.2.0
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js
 // @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -43,6 +43,8 @@
         pgcApiUrl = pgcUrl + 'api/gm/v1/',
         externalLinkIcon = 'https://cdn2.project-gc.com/images/external_small.png',
         galleryLinkIcon = 'https://cdn2.project-gc.com/images/pictures_16.png',
+        challengeCheckerSuccessIcon = 'https://cdn2.project-gc.com/images/check16.png',
+        challengeCheckerFailIcon = 'https://cdn2.project-gc.com/images/cancel16.png',
         mapLinkIcon = 'https://cdn2.project-gc.com/images/map_app_16.png',
         loggedIn = null,
         subscription = null,
@@ -51,7 +53,8 @@
         latestLogs = [],
         latestLogsAlert = false,
         settings = {},
-        path = window.location.pathname;
+        path = window.location.pathname,
+        challengeCheckerResults = null;
 
     // Don't run the script for iframes
     if (window.top == window.self) {
@@ -528,9 +531,6 @@
         lastUpdated = (lastUpdated) ? lastUpdated.dateTime : false;
         lastFound = (lastFound) ? lastFound.dateTime : false;
 
-        // Since everything in the logbook is ajax, we need to wait for the elements
-        waitForKeyElements('#cache_logs_table tr', Logbook);
-
         if (subscription) {
 
             // Get geocache data from Project-GC
@@ -556,6 +556,14 @@
                         fpw = 0,
                         elevation = '',
                         html = '';
+
+
+                    challengeCheckerResults = result.data.challengeCheckerResults;
+
+                    // Since everything in the logbook is ajax, we need to wait for the elements
+                    // We also want to wait on challengeCheckerResults
+                    waitForKeyElements('#cache_logs_table tr', Logbook);
+
 
                     if (result.status == 'OK' && typeof cacheData !== 'undefined') {
 
@@ -926,6 +934,17 @@
                 });
 
             });
+        }
+
+        if(true) {
+            var classes = $(jNode).attr('class');
+            var logId = classes.match(/l-[0-9]+/)[0].replace('l-', '');
+            if(challengeCheckerResults[logId] == 'success') {
+                $(jNode).find('div.LogDisplayLeft').first().append('<p>Checker result: <img src="' + challengeCheckerSuccessIcon + '"></p>');
+            }
+            else if(challengeCheckerResults[logId] == 'fail') {
+                $(jNode).find('div.LogDisplayLeft').first().append('<p>Checker result: <img src="' + challengeCheckerFailIcon + '"></p>');
+            }
         }
 
 
