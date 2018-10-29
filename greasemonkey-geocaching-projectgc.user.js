@@ -14,7 +14,7 @@
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
-// @version     2.1.0
+// @version     2.1.1
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js
 // @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -895,7 +895,7 @@
     function Logbook(jNode) {
         // Add Profile stats and gallery links after each user
         if (IsSettingEnabled('profileStatsLinks')) {
-            var profileNameElm = $(jNode).find('p.logOwnerProfileName strong a');
+            var profileNameElm = $(jNode).find('a.h5');
             var profileName = profileNameElm.html();
 
             if (typeof profileName !== 'undefined') {
