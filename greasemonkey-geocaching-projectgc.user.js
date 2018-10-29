@@ -1161,7 +1161,6 @@
     var root = this;
 
     var EXIF = function(obj) {
-        console.log('B');
         if (obj instanceof EXIF) return obj;
         if (!(this instanceof EXIF)) return new EXIF(obj);
         this.EXIFwrapped = obj;
