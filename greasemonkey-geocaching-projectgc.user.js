@@ -14,7 +14,7 @@
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
-// @version     2.2.0
+// @version     2.2.1
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js
 // @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -194,6 +194,10 @@
             },
             hideMapFromPrintCachePage: {
                 title: 'Hide map from print cache page',
+                default: true
+            },
+            addCachedChallengeCheckerResults: {
+                title: 'Add icons for cached Challenge checker results',
                 default: true
             }
         };
@@ -936,14 +940,16 @@
             });
         }
 
-        if(true) {
+        if(IsSettingEnabled('addCachedChallengeCheckerResults')) {
             var classes = $(jNode).attr('class');
             var logId = classes.match(/l-[0-9]+/)[0].replace('l-', '');
-            if(challengeCheckerResults[logId] == 'success') {
-                $(jNode).find('div.LogDisplayLeft').first().append('<p>Checker result: <img src="' + challengeCheckerSuccessIcon + '"></p>');
-            }
-            else if(challengeCheckerResults[logId] == 'fail') {
-                $(jNode).find('div.LogDisplayLeft').first().append('<p>Checker result: <img src="' + challengeCheckerFailIcon + '"></p>');
+            if(typeof challengeCheckerResults[logId] !== 'undefined') {
+                if(challengeCheckerResults[logId] == 'success') {
+                    $(jNode).find('div.LogDisplayLeft').first().append('<p>Checker result: <img src="' + challengeCheckerSuccessIcon + '"></p>');
+                }
+                else if(challengeCheckerResults[logId] == 'fail') {
+                    $(jNode).find('div.LogDisplayLeft').first().append('<p>Checker result: <img src="' + challengeCheckerFailIcon + '"></p>');
+                }
             }
         }
 
