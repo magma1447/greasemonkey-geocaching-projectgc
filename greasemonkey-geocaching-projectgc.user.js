@@ -564,6 +564,32 @@
 
                     challengeCheckerResults = result.data.challengeCheckerResults;
 
+                    // Add an alert in top if there are Found it-logs which doesn't seem to fulfill the requirements
+                    if(challengeCheckerResults !== false) {
+                        var suspiciousFoundItLogs = [];
+                        for(var logId in challengeCheckerResults) {
+                            if(typeof challengeCheckerResults[logId] !== 'undefined' && challengeCheckerResults[logId]['status'] == 'fail') {
+                                suspiciousFoundItLogs.push(logId);
+                            }
+                        }
+
+                        if(suspiciousFoundItLogs.length != 0) {
+                            var suspiciousFoundItLog = '<p style="color: #006cff;" class=" NoBottomSpacing"><strong>Cache Issues:</strong></p>\
+                                        <ul style="color: #006cff;" class="">\
+                                            <li>The following Found it logs might not fulfill the requirements:<br>';
+
+                            for(var i = 0 ; i < suspiciousFoundItLogs.length ; i++) {
+                                suspiciousFoundItLog = suspiciousFoundItLog + ' <a href="https://www.geocaching.com/seek/log.aspx?LID=' + suspiciousFoundItLogs[i] + '">' + suspiciousFoundItLogs[i] + '</a>';
+                            }
+                            suspiciousFoundItLog = suspiciousFoundItLog + '</li></ul>';
+
+                            $('div.span-6.right.last').last().next().after(suspiciousFoundItLog);
+                        }
+                    }
+
+                    //--
+
+
                     // Since everything in the logbook is ajax, we need to wait for the elements
                     // We also want to wait on challengeCheckerResults
                     waitForKeyElements('#cache_logs_table tr', Logbook);
@@ -750,7 +776,7 @@
                         <ul style="color: #006cff;" class="">\
                             <li>The latest log for this cache is a DNF, <a href="#cache_logs_table">please read the log</a> before your own search.</li>\
                         </ul>';
-            $('div.span-6.right.last').next().after(htmlFirstLogDnf);
+            $('div.span-6.right.last').last().next().after(htmlFirstLogDnf);
 
         }
 
