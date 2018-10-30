@@ -14,7 +14,7 @@
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
-// @version     2.2.2
+// @version     2.2.3
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js
 // @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -579,7 +579,7 @@
                                             <li>The following Found it logs might not fulfill the requirements:<br>';
 
                             for(var i = 0 ; i < suspiciousFoundItLogs.length ; i++) {
-                                suspiciousFoundItLog = suspiciousFoundItLog + ' <a href="https://www.geocaching.com/seek/log.aspx?LID=' + suspiciousFoundItLogs[i] + '">' + suspiciousFoundItLogs[i] + ' by ' + challengeCheckerResults[suspiciousFoundItLogs[i]]['profileName'] + '</a><br>';
+                                suspiciousFoundItLog = suspiciousFoundItLog + ' <a href="https://www.geocaching.com/seek/log.aspx?LID=' + suspiciousFoundItLogs[i] + '">' + challengeCheckerResults[suspiciousFoundItLogs[i]]['profileName'] + '</a><br>';
                             }
                             suspiciousFoundItLog = suspiciousFoundItLog + 'Please understand that the checker result is a cached result. Also the geocacher might very well have fulfilled it in the past, external factors might have changed.</li></ul>';
 
