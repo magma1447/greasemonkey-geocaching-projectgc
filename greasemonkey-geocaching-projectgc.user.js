@@ -574,14 +574,14 @@
                         }
 
                         if(suspiciousFoundItLogs.length != 0) {
-                            var suspiciousFoundItLog = '<p style="color: #006cff;" class=" NoBottomSpacing"><strong>Cache Issues:</strong></p>\
-                                        <ul style="color: #006cff;" class="">\
+                            var suspiciousFoundItLog = '<p style="color: #ff6c00;" class=" NoBottomSpacing"><strong>Cache Issues:</strong></p>\
+                                        <ul style="color: #ff6c00;" class="">\
                                             <li>The following Found it logs might not fulfill the requirements:<br>';
 
                             for(var i = 0 ; i < suspiciousFoundItLogs.length ; i++) {
-                                suspiciousFoundItLog = suspiciousFoundItLog + ' <a href="https://www.geocaching.com/seek/log.aspx?LID=' + suspiciousFoundItLogs[i] + '">' + suspiciousFoundItLogs[i] + '</a>';
+                                suspiciousFoundItLog = suspiciousFoundItLog + ' <a href="https://www.geocaching.com/seek/log.aspx?LID=' + suspiciousFoundItLogs[i] + '">' + suspiciousFoundItLogs[i] + ' by ' + challengeCheckerResults[suspiciousFoundItLogs[i]]['profileName'] + '</a><br>';
                             }
-                            suspiciousFoundItLog = suspiciousFoundItLog + '</li></ul>';
+                            suspiciousFoundItLog = suspiciousFoundItLog + 'Please understand that the checker result is a cached result. Also the geocacher might very well have fulfilled it in the past, external factors might have changed.</li></ul>';
 
                             $('div.span-6.right.last').last().next().after(suspiciousFoundItLog);
                         }
