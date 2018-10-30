@@ -586,13 +586,7 @@
                             $('div.span-6.right.last').last().next().after(suspiciousFoundItLog);
                         }
                     }
-
                     //--
-
-
-                    // Since everything in the logbook is ajax, we need to wait for the elements
-                    // We also want to wait on challengeCheckerResults
-                    waitForKeyElements('#cache_logs_table tr', Logbook);
 
 
                     if (result.status == 'OK' && typeof cacheData !== 'undefined') {
@@ -656,7 +650,6 @@
 
                         // Add challenge checkers
                         if (IsSettingEnabled('addChallengeCheckers') && challengeCheckerTagIds.length > 0) {
-
                             html = '<div id="checkerWidget" class="CacheDetailNavigationWidget TopSpacing BottomSpacing"><h3 class="WidgetHeader">Challenge checker(s)</h3><div class="WidgetBody" id="PGC_ChallengeCheckers">';
                             for (var i = 0; i < challengeCheckerTagIds.length; i++) {
                                 html += '<a href="https://project-gc.com/Challenges/' + gccode + '/' + challengeCheckerTagIds[i] + '" style="display: block; width: 200px; margin: 0 auto;"><img src="https://cdn2.project-gc.com/Images/Checker/' + challengeCheckerTagIds[i] + '" title="Project-GC Challenge checker" alt="PGC Checker"></a>';
@@ -711,6 +704,11 @@
 
                         }
                     }
+
+
+                    // Since everything in the logbook is ajax, we need to wait for the elements
+                    // We also want to wait on challengeCheckerResults
+                    waitForKeyElements('#cache_logs_table tr', Logbook);
                 }
             });
         }
