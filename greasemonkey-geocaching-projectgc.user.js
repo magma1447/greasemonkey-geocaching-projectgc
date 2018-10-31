@@ -14,7 +14,7 @@
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
-// @version     2.2.4
+// @version     2.2.5
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js
 // @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -923,9 +923,9 @@
 
     function Page_Logbook() {
         // Since everything in the logbook is ajax, we need to wait for the elements
-        waitForKeyElements('#AllLogs tbody tr', Logbook);
-        waitForKeyElements('#PersonalLogs tbody tr', Logbook);
-        waitForKeyElements('#FriendLogs tbody tr', Logbook);
+        waitForKeyElements('#AllLogs tr', Logbook);
+        waitForKeyElements('#PersonalLogs tr', Logbook);
+        waitForKeyElements('#FriendLogs tr', Logbook);
     }
 
     function Logbook(jNode) {
@@ -964,7 +964,7 @@
             });
         }
 
-        if(IsSettingEnabled('addCachedChallengeCheckerResults')) {
+        if(IsSettingEnabled('addCachedChallengeCheckerResults') && challengeCheckerResults !== null) {
             var classes = $(jNode).attr('class');
             var logId = classes.match(/l-[0-9]+/)[0].replace('l-', '');
             if(typeof challengeCheckerResults[logId] !== 'undefined') {
