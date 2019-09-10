@@ -14,7 +14,7 @@
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
-// @version     2.2.5
+// @version     2.2.6
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js
 // @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -29,6 +29,7 @@
 // @connect     project-gc.com
 // @connect     img.geocaching.com
 // @connect     s3.amazonaws.com
+// @connect     nominatim.openstreetmap.org
 // @connect     *
 // @license     The MIT License (MIT)
 // ==/UserScript==
@@ -121,7 +122,7 @@
                 default: true
             },
             addAddress: {
-                title: 'Add reverse geocoded address',
+                title: 'Add OSM reverse geocoded address',
                 default: true
             },
             removeUTM: {
@@ -790,17 +791,23 @@
             coordinates = $('#ctl00_ContentBody_MapLinks_MapLinks li a').attr('href'),
                 latitude = coordinates.replace(/.*lat=([^&]*)&lng=.*/, "$1"),
                 longitude = coordinates.replace(/.*&lng=(.*)$/, "$1"),
-                url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latitude + ',' + longitude + '&sensor=false';
+                url = 'https://nominatim.openstreetmap.org/reverse?lat=' + latitude + '&lon=' + longitude + '&format=json';
 
             GM.xmlHttpRequest({
                 method: "GET",
                 url: url,
                 onload: function(response) {
                     var result = JSON.parse(response.responseText);
-                    if (result.status !== 'OK') {
+                    if (!result.display_name) {
                         return false;
                     }
-                    var formattedAddress = result.results[0].formatted_address;
+                    var formattedAddress = result.address.road;
+                    if (result.address.house_number) {
+                        formattedAddress = formattedAddress + ' ' + result.address.house_number;
+                    }
+                    if (result.address.city) {
+                        formattedAddress = formattedAddress + ', ' + result.address.city;
+                    }
                     $('#ctl00_ContentBody_LocationSubPanel').append(formattedAddress + '<br />');
                 }
             });
