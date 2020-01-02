@@ -14,7 +14,7 @@
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
-// @version     2.2.6
+// @version     2.2.7
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js
 // @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -846,7 +846,7 @@
 
         // Decrypt the hint
         if (IsSettingEnabled('decryptHints')) {
-            unsafeWindow.dht();
+            // unsafeWindow.dht();
         }
 
         // VGPS form
@@ -971,10 +971,10 @@
             });
         }
 
-        if(IsSettingEnabled('addCachedChallengeCheckerResults') && challengeCheckerResults !== null) {
+        if(IsSettingEnabled('addCachedChallengeCheckerResults') && typeof(challengeCheckerResults) !== 'undefined' && challengeCheckerResults !== null) {
             var classes = $(jNode).attr('class');
             var logId = classes.match(/l-[0-9]+/)[0].replace('l-', '');
-            if(typeof challengeCheckerResults[logId] !== 'undefined') {
+            if(typeof(challengeCheckerResults[logId]) !== 'undefined') {
                 if(challengeCheckerResults[logId]['status'] == 'success') {
                     $(jNode).find('div.LogDisplayLeft').first().append('<hr style="margin-top: 12px; margin-bottom: 12px;"><p>Checker result<br>' + challengeCheckerResults[logId]['lastRun'] + ' UTC: <img src="' + challengeCheckerSuccessIcon + '"></p>');
                 }
