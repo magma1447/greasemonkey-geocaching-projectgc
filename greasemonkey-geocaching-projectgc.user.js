@@ -913,7 +913,7 @@
 
         // Change font in personal cache note to monospaced
         if (IsSettingEnabled('cachenoteFont')) {
-            $("#viewCacheNote").css("font-family", "monospace").css("font-size", "12px");
+            $("#viewCacheNote,#cacheNoteText").css("font-family", "monospace").css("font-size", "12px");
             $("#viewCacheNote").on("DOMSubtreeModified", function() {
                 $(".inplace_field").css("font-family", "monospace").css("font-size", "12px");
             });
