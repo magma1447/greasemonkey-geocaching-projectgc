@@ -14,7 +14,7 @@
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
-// @version     2.2.8
+// @version     2.3.0
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js
 // @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -551,6 +551,7 @@
                 onload: function(response) {
                     var result = JSON.parse(response.responseText),
                         cacheData = result.data.cacheData,
+                        bearing = result.data.bearing,
                         cacheOwner = result.data.owner,
                         challengeCheckerTagIds = result.data.challengeCheckerTagIds,
                         geocacheLogsPerCountry = result.data.geocacheLogsPerCountry,
@@ -648,6 +649,8 @@
                             $('#ctl00_ContentBody_Location').html('<span style="text-decoration: line-through;">' + gccomLocationData + '</span><br><span>' + location + '</span>');
                         }
 
+                        // Add bearing from home
+                        $('#lblDistFromHome').append(' <span>(' + Math.round(bearing*10)/10 + '&deg;)</span>');
 
                         // Add challenge checkers
                         if (IsSettingEnabled('addChallengeCheckers') && challengeCheckerTagIds.length > 0) {
