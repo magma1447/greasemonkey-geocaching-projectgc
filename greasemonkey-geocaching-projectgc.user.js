@@ -848,8 +848,8 @@
         }
 
         // Decrypt the hint
-        if (IsSettingEnabled('decryptHints')) {
-            // unsafeWindow.dht();
+        if (IsSettingEnabled('decryptHints') && $('#ctl00_ContentBody_lnkDH')[0].title == 'Decrypt') {
+            $('#ctl00_ContentBody_lnkDH')[0].click();
         }
 
         // VGPS form
