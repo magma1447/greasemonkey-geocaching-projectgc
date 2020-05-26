@@ -133,6 +133,10 @@
                 title: 'Add FP from PGC',
                 default: true
             },
+            showWeekday: {
+                title: 'Show weekday of the place date',
+                default: true
+            },
             profileStatsLinks: {
                 title: 'Add links to Profile stats',
                 default: true
@@ -715,6 +719,22 @@
                     waitForKeyElements('#cache_logs_table tbody tr', Logbook);
                 }
             });
+        }
+
+        // Add weekday of place date
+        if (IsSettingEnabled('showWeekday')) {
+            var match = $('meta[name="description"]')[1].content.match(/([0-9]{2})\/([0-9]{2})\/([0-9]{4})/);
+            if (match) {
+                var date = new Date(match[3], match[1]-1, match[2]);
+                var weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                var text = $($('#ctl00_ContentBody_mcd2')[0].childNodes[0]).text();
+                var pos = text.indexOf(':') + 2;
+                var newText = text.substring(0, pos);
+                newText += weekday[date.getDay()] + ', ';
+                newText += text.substring(pos, text.length);
+                var newNode = document.createTextNode(newText);
+                $('#ctl00_ContentBody_mcd2')[0].replaceChild(newNode, $('#ctl00_ContentBody_mcd2')[0].childNodes[0]);
+            }
         }
 
         // Tidy the web
