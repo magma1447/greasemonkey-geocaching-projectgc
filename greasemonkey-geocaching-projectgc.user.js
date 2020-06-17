@@ -14,7 +14,7 @@
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
-// @version     2.2.7
+// @version     2.3.1
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js
 // @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -131,6 +131,10 @@
             },
             addPgcFp: {
                 title: 'Add FP from PGC',
+                default: true
+            },
+            showWeekday: {
+                title: 'Show weekday of the place date',
                 default: true
             },
             profileStatsLinks: {
@@ -399,7 +403,7 @@
         for (var item in items) {
             isChecked = IsSettingEnabled(item) ? ' checked="checked"' : '';
             // Explicitly set the styles as some pages (i.e. https://www.geocaching.com/account/settings/profile) are missing the required css.
-            html += '<li style="margin: .2em 1em; white-space: nowrap;"><label style="font-weight: inherit; margin-bottom: 0"><input type="checkbox" name="' + item + '"' + isChecked + ' >&nbsp;' + items[item].title + '</label> <small>(default: ' + items[item].default + ')</small></li>';
+            html += '<li style="margin: .2em 1em; white-space: nowrap; display: flex;"><label style="font-weight: inherit; margin-bottom: 0" for="' + item + '"><input type="checkbox" id="' + item + '" name="' + item + '"' + isChecked + ' >&nbsp;' + items[item].title + '</label>&nbsp;<small>(default: ' + items[item].default + ')</small></li>';
         }
 
         html += '\
@@ -551,6 +555,7 @@
                 onload: function(response) {
                     var result = JSON.parse(response.responseText),
                         cacheData = result.data.cacheData,
+                        bearing = result.data.bearing,
                         cacheOwner = result.data.owner,
                         challengeCheckerTagIds = result.data.challengeCheckerTagIds,
                         geocacheLogsPerCountry = result.data.geocacheLogsPerCountry,
@@ -648,6 +653,8 @@
                             $('#ctl00_ContentBody_Location').html('<span style="text-decoration: line-through;">' + gccomLocationData + '</span><br><span>' + location + '</span>');
                         }
 
+                        // Add bearing from home
+                        $('#lblDistFromHome').append(' <span>(' + Math.round(bearing*10)/10 + '&deg;)</span>');
 
                         // Add challenge checkers
                         if (IsSettingEnabled('addChallengeCheckers') && challengeCheckerTagIds.length > 0) {
@@ -712,6 +719,22 @@
                     waitForKeyElements('#cache_logs_table tbody tr', Logbook);
                 }
             });
+        }
+
+        // Add weekday of place date
+        if (IsSettingEnabled('showWeekday')) {
+            var match = $('meta[name="description"]')[1].content.match(/([0-9]{2})\/([0-9]{2})\/([0-9]{4})/);
+            if (match) {
+                var date = new Date(match[3], match[1]-1, match[2]);
+                var weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                var text = $($('#ctl00_ContentBody_mcd2')[0].childNodes[0]).text();
+                var pos = text.indexOf(':') + 2;
+                var newText = text.substring(0, pos);
+                newText += weekday[date.getDay()] + ', ';
+                newText += text.substring(pos, text.length);
+                var newNode = document.createTextNode(newText);
+                $('#ctl00_ContentBody_mcd2')[0].replaceChild(newNode, $('#ctl00_ContentBody_mcd2')[0].childNodes[0]);
+            }
         }
 
         // Tidy the web
@@ -845,8 +868,8 @@
         }
 
         // Decrypt the hint
-        if (IsSettingEnabled('decryptHints')) {
-            // unsafeWindow.dht();
+        if (IsSettingEnabled('decryptHints') && $('#ctl00_ContentBody_lnkDH')[0].title == 'Decrypt') {
+            $('#ctl00_ContentBody_lnkDH')[0].click();
         }
 
         // VGPS form
@@ -913,8 +936,8 @@
 
         // Change font in personal cache note to monospaced
         if (IsSettingEnabled('cachenoteFont')) {
-            $("#cache_note").css("font-family", "monospace").css("font-size", "12px");
-            $("#cache_note").on("DOMSubtreeModified", function() {
+            $("#viewCacheNote,#cacheNoteText").css("font-family", "monospace").css("font-size", "12px");
+            $("#viewCacheNote").on("DOMSubtreeModified", function() {
                 $(".inplace_field").css("font-family", "monospace").css("font-size", "12px");
             });
         }
