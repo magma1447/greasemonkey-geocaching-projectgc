@@ -344,6 +344,8 @@
             gccomUsername = $('#uxLoginStatus_divSignedIn ul.logged-in-user li.li-user span.li-user-info span').first().text();
         } else if ($('ul.profile-panel.detailed').length) {
             gccomUsername = $('ul.profile-panel.detailed > li.li-user > a > span:nth-child(2)').text();
+        } else if ($('.username')[0]) {
+            gccomUsername = $('.username').html();
         }
 
         if (loggedIn === false) {
@@ -369,8 +371,8 @@
         #pgcUserMenuForm > li:hover { background-color: #e3dfc9; }\
         #pgcUserMenuForm > li { display: block; }\
         #pgcUserMenuForm input[type="checkbox"] { opacity: inherit; width: inherit; height:inherit; overflow:inherit; position:inherit; }\
-        #pgcUserMenuForm button { display: inline-block; background: #ede5dc url(images/ui-bg_flat_100_ede5dc_40x100.png) 50% 50% repeat-x; border: 1px solid #cab6a3; border-radius: 4px; color: #584528; text-decoration: none; width: auto; font-size: 14px; padding: 4px 6px;}\
-        #pgcUserMenuForm button:hover { background: #e4d8cb url(images/ui-bgflag_100_e4d8cb_40x100.png) 50% 50% repeat-x; }\
+        #pgcUserMenuForm button { display: inline-block !important; background: #ede5dc url(images/ui-bg_flat_100_ede5dc_40x100.png) 50% 50% repeat-x !important; border: 1px solid #cab6a3 !important; border-radius: 4px; color: #584528 !important; text-decoration: none; width: auto !important; font-size: 14px; padding: 4px 6px !important;}\
+        #pgcUserMenuForm button:hover { background: #e4d8cb url(images/ui-bgflag_100_e4d8cb_40x100.png) 50% 50% repeat-x !important; }\
         #pgcUserMenu { right: 19rem;  }\
         #pgcUserMenu > form { background-color: white; color: #5f452a; }\
         ');
@@ -395,26 +397,27 @@
                 <svg width="24px" height="14px" viewBox="0 0 12 7" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="0" fill="none" fill-rule="evenodd"><g class="arrow" transform="translate(-1277.000000, -25.000000)" stroke="#FFFFFF" fill="currentColor"><path d="M1280.43401,23.3387013 C1280.20315,23.5702719 1280.20315,23.945803 1280.43401,24.1775793 L1284.82138,28.5825631 L1280.43401,32.9873411 C1280.20315,33.2191175 1280.20315,33.5944429 1280.43401,33.8262192 C1280.54934,33.9420045 1280.70072,34 1280.8519,34 C1281.00307,34 1281.15425,33.9422102 1281.26978,33.8262192 L1286.07462,29.0018993 C1286.30548,28.7701229 1286.30548,28.3947975 1286.07462,28.1630212 L1281.26958,23.3387013 C1281.03872,23.106925 1280.66487,23.106925 1280.43401,23.3387013 Z" id="Dropdown-arrow" sketch:type="MSShapeGroup" transform="translate(1283.254319, 28.582435) scale(1, -1) rotate(-90.000000) translate(-1283.254319, -28.582435) "></path></g></g></svg>\
             </button>\
         \
-        <ul id="pgcUserMenu" class="submenu" style="z-index: 1005; display: none; text-align: left;">\
-            <form id="pgcUserMenuForm" style="display: block; columns: 2; font-size: 14px;">';
+        <ul id="pgcUserMenu" class="submenu" style="z-index: 1005; display: none; text-align: left;">';
+        var settings = '<form id="pgcUserMenuForm" style="display: block; columns: 2; font-size: 14px; background-color: #fff !important;">';
 
         var items = GetSettingsItems(),
             isChecked = '';
         for (var item in items) {
             isChecked = IsSettingEnabled(item) ? ' checked="checked"' : '';
             // Explicitly set the styles as some pages (i.e. https://www.geocaching.com/account/settings/profile) are missing the required css.
-            html += '<li style="margin: .2em 1em; white-space: nowrap; display: flex;"><label style="font-weight: inherit; margin-bottom: 0" for="' + item + '"><input type="checkbox" id="' + item + '" name="' + item + '"' + isChecked + ' >&nbsp;' + items[item].title + '</label>&nbsp;<small>(default: ' + items[item].default + ')</small></li>';
+            settings += '<li style="margin: .2em 1em; white-space: nowrap; display: flex;"><label style="font-weight: inherit; margin-bottom: 0" for="' + item + '"><input type="checkbox" id="' + item + '" name="' + item + '"' + isChecked + ' >&nbsp;' + items[item].title + '</label>&nbsp;<small>(default: ' + items[item].default + ')</small></li>';
         }
 
-        html += '\
+        settings += '\
                 <li style="margin: .2em 1em; background: 0;">\
-                    <button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); $(\'#pgcUserMenu\').hide(); return false;">Cancel</button>\
-                    &nbsp;<button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); return false;">Reset</button>\
-                    &nbsp;<button id="pgcUserMenuSave">Save</button>\
+                    <button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); document.getElementById(\'pgcUserMenu\').style.display=\"none\"; return false;">Cancel</button>\
+                    <button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); return false;">Reset</button>\
+                    <button id="pgcUserMenuSave">Save</button>\
                 </li>\
                 <li id="pgcUserMenuWarning" style="display: none; margin: .5em 1em; color: red; background: 0;"><a href="#" onclick="location.reload();" style="color: red; padding: 0; text-decoration: underline; display: inline;">Reload</a> the page to activate the new settings.</li>\
-            </form>\
-        </ul>';
+            </form>';
+
+        html += settings + '</ul>';
 
         if ($('#ctl00_uxLoginStatus_divSignedIn ul.logged-in-user').length) { // The default look of the header bar
             $('#ctl00_uxLoginStatus_divSignedIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
@@ -422,6 +425,26 @@
             $('ul.profile-panel').prepend('<li class="li-user">' + html + '</li>');
         } else if ($('#uxLoginStatus_divSignedIn ul.logged-in-user').length) { // Special case for https://www.geocaching.com/map/
             $('#uxLoginStatus_divSignedIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
+        } else if ($('.user-menu')[0]) { // new style search map, BML, CO Dashboard
+            html = '\
+                <li class="player-profile" style="width: auto;">\
+                    <a href="' + pgcUrl + '" title="Project-GC">\
+                        <img src="https://cdn2.project-gc.com/favicon.ico" width="40" height="40" style="border-radius:100%; border-width:0;">\
+                    </a>\
+                    <span>\
+                        <a href="' + profileStatsUrl + '" style="color:#fff; text-decoration:none;">' + loggedInContent + '</a>\
+                    </span>\
+                    <span>\
+                        <a href="' + pgcUrl + 'Home/Membership/" style="color:#fff; text-decoration:none;">' + subscriptionContent + '</a>\
+                    </span>\
+                </li>\
+                <li>\
+                    <button id="pgcUserMenuButton" class="dropdown-toggle toggle-user-menu"><svg><use xlink:href="#caret-down"></use></svg></button>\
+                    <ul id="pgcUserMenu" class="dropdown-menu menu-user" style="display:none;">\
+                        ' + settings + '\
+                    </ul>\
+                </li>';
+            $('.user-menu').prepend(html);
         }
 
         $("#pgcUserMenuButton, #pgcSettingsOverlay").click(function(e) {
@@ -1114,7 +1137,7 @@
             }, 500);
         }
 
-	}
+    }
 
     function Page_Gallery() {
         // Find location data in exif tags
@@ -1134,30 +1157,30 @@
     }
 
     function Page_Bookmarks() {
-		var owner_name = $("#ctl00_ContentBody_ListInfo_uxListOwner").text();
+        var owner_name = $("#ctl00_ContentBody_ListInfo_uxListOwner").text();
 
-		var search = window.location.search;
-		var guid_start = search.indexOf("guid=");
-		if (guid_start == -1) {
-			/* the guid= not found in URL
-			 * something is wrong so we will not generate bad URL
-			 */
-			return;
-		}
-		var guid = search.substr(guid_start + 5/*, eof */);
+        var search = window.location.search;
+        var guid_start = search.indexOf("guid=");
+        if (guid_start == -1) {
+            /* the guid= not found in URL
+             * something is wrong so we will not generate bad URL
+             */
+            return;
+        }
+        var guid = search.substr(guid_start + 5/*, eof */);
 
-		var url = "https://project-gc.com/Tools/MapBookmarklist?owner_name=" + owner_name + "&guid=" + guid;
-		var icon = "https://cdn2.project-gc.com/images/map_app_16.png";
+        var url = "https://project-gc.com/Tools/MapBookmarklist?owner_name=" + owner_name + "&guid=" + guid;
+        var icon = "https://cdn2.project-gc.com/images/map_app_16.png";
 
-		/* Heading link */
-		var html = ' <a href="' + url + '" title="Map this Bookmark list using Project-GC" style="padding-left:20px;"><img src="' + icon + '" /> Map this!</a>';
+        /* Heading link */
+        var html = ' <a href="' + url + '" title="Map this Bookmark list using Project-GC" style="padding-left:20px;"><img src="' + icon + '" /> Map this!</a>';
 
-		$("#ctl00_ContentBody_lbHeading").after(html);
+        $("#ctl00_ContentBody_lbHeading").after(html);
 
-		/* Footer button */
-		var html2 = '<p><input type="button" onclick="window.location.href= \'' + url + '\'" value="Map this Bookmark list on Project-GC" /></p>';
+        /* Footer button */
+        var html2 = '<p><input type="button" onclick="window.location.href= \'' + url + '\'" value="Map this Bookmark list on Project-GC" /></p>';
 
-		$("#ctl00_ContentBody_ListInfo_btnDownload").parent().before(html2);
+        $("#ctl00_ContentBody_ListInfo_btnDownload").parent().before(html2);
     }
 
     function Page_Drafts() {
