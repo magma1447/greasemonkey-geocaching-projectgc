@@ -426,7 +426,7 @@
         } else if ($('#uxLoginStatus_divSignedIn ul.logged-in-user').length) { // Special case for https://www.geocaching.com/map/
             $('#uxLoginStatus_divSignedIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
         } else if ($('.user-menu')[0]) { // new style search map, BML, CO Dashboard
-            html = '\
+            var htmlForNewStyle = '\
                 <li class="player-profile" style="width: auto;">\
                     <a href="' + pgcUrl + '" title="Project-GC">\
                         <img src="https://cdn2.project-gc.com/favicon.ico" width="40" height="40" style="border-radius:100%; border-width:0;">\
@@ -444,7 +444,15 @@
                         ' + settings + '\
                     </ul>\
                 </li>';
-            $('.user-menu').prepend(html);
+            $('.user-menu').prepend(htmlForNewStyle);
+
+            // Workaroud for users thay also use the GClh
+            function checkForGClh(waitCount) {
+                if ($('#GClh_II_running')[0] && $('#ctl00_uxLoginStatus_divSignedIn').length) {
+                    $('#ctl00_uxLoginStatus_divSignedIn').prepend('<li class="li-user">' + html + '</li>');
+                } else {waitCount++; if (waitCount <= 1000) setTimeout(function(){checkForGClh(waitCount);}, 10);}
+            }
+            checkForGClh(0);
         }
 
         $("#pgcUserMenuButton, #pgcSettingsOverlay").click(function(e) {
