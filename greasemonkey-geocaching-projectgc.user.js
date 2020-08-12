@@ -14,7 +14,7 @@
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
-// @version     2.3.2
+// @version     2.3.3
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js
 // @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -446,7 +446,7 @@
                 </li>';
             $('.user-menu').prepend(htmlForNewStyle);
 
-            // Workaroud for users thay also use the GClh
+            // Workaroud for users that also use the GClh
             function checkForGClh(waitCount) {
                 if ($('#GClh_II_running')[0] && $('#ctl00_uxLoginStatus_divSignedIn').length) {
                     $('#ctl00_uxLoginStatus_divSignedIn').prepend('<li class="li-user">' + html + '</li>');
