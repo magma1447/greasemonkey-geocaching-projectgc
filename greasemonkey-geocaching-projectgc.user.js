@@ -11,6 +11,7 @@
 // @name        Geocaching.com + Project-GC
 // @namespace   PGC
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
+// @icon        https://project-gc.com/favicon-32x32.png
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
