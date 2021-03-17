@@ -205,6 +205,10 @@
             addCachedChallengeCheckerResults: {
                 title: 'Add icons for cached Challenge checker results',
                 default: true
+            },
+            hideLogVoting: {
+                title: 'Hide log upvote buttons and sorting options',
+                default: false
             }
         };
         return items;
@@ -1037,6 +1041,11 @@
                     $(jNode).find('div.LogDisplayLeft').first().append('<hr style="margin-top: 12px; margin-bottom: 12px;"><p>Checker result<br>' + challengeCheckerResults[logId]['lastRun'] + ' UTC: <img src="' + challengeCheckerFailIcon + '"></p>');
                 }
             }
+        }
+
+        if(IsSettingEnabled('hideLogVoting')) {
+            $('div.upvotes').css('display','none');
+            $('div.sort-logs').css('display','none');
         }
 
 
