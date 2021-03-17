@@ -33,10 +33,11 @@ Some (most) features are for paying members at Project-GC only.
 * Add warning if the latest log is a DNF.
 * Show exif location data for images in Gallery and Logbook.
 * Adds button to map bookmark lists.
-* Remove open in new tab from Drafts
-* Found/Will attend/Attended per country
-* Monospace font for personal cache notes
-* Minor tweaks on Print cache page
+* Remove open in new tab from Drafts.
+* Found/Will attend/Attended per country.
+* Monospace font for personal cache notes.
+* Minor tweaks on Print cache page.
+* Hide up-vote buttons from logs.
 
 ## Open source libraries used
 Exif parsing solved with a fork of https://github.com/exif-js/exif-js
