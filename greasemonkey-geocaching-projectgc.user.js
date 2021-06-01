@@ -327,7 +327,11 @@
                 loggedIn = Boolean(result.data.loggedIn);
                 subscription = Boolean(result.data.subscription);
 
-                BuildPGCUserMenu();
+                function waitForHeader(waitCount) {
+                    if ($('.user-menu')[0]) BuildPGCUserMenu();
+                    else {waitCount++; if (waitCount <= 1000) setTimeout(function(){waitForHeader(waitCount);}, 10);}
+                }
+                waitForHeader(0);
                 Router();
             },
             onerror: function(response) {
@@ -338,77 +342,42 @@
     }
 
     function BuildPGCUserMenu() {
-        var loggedInContent, html, subscriptionContent = '', profileStatsUrl;
+        var loggedInContent, subscriptionContent = '';
 
         gccomUsername = false;
-        if ($('#ctl00_uxLoginStatus_divSignedIn ul.logged-in-user').length) {
-            gccomUsername = $('#ctl00_uxLoginStatus_divSignedIn ul.logged-in-user .li-user-info span').html();
-        } else if ($('ul.profile-panel-menu').length) {
-            gccomUsername = $('ul.profile-panel-menu .li-user-info span:nth-child(2)').text();
-        } else if ($('#uxLoginStatus_divSignedIn ul.logged-in-user li.li-user span.li-user-info span').first().text().length) {
-            gccomUsername = $('#uxLoginStatus_divSignedIn ul.logged-in-user li.li-user span.li-user-info span').first().text();
-        } else if ($('ul.profile-panel.detailed').length) {
-            gccomUsername = $('ul.profile-panel.detailed > li.li-user > a > span:nth-child(2)').text();
-        } else if ($('.username')[0]) {
+        if ($('.username')[0]) {
             gccomUsername = $('.username').html();
         }
 
         if (loggedIn === false) {
-            loggedInContent = 'Not logged in';
-            profileStatsUrl = pgcUrl + 'User/Login';
+            loggedInContent = '<a href="' + pgcUrl + 'User/Login" target="_blank">Not logged in</a>';
         } else {
-            profileStatsUrl = pgcUrl + 'ProfileStats/' + pgcUsername;
-
-            if (pgcUsername == gccomUsername) {
-                loggedInContent = '<strong>' + pgcUsername + '</strong>';
-            } else {
-                loggedInContent = '<strong style="color: red;">' + pgcUsername + '</strong>';
-            }
-
-            if (subscription) {
-                subscriptionContent = 'Paid membership';
-            } else {
-                subscriptionContent = 'Missing membership';
-            }
+            loggedInContent = '<a href="' + pgcUrl + 'ProfileStats/' + pgcUsername + '"><strong' + (pgcUsername != gccomUsername ? ' style="color: red;"' : '') + '>' + pgcUsername + '</strong></a>';
+            subscriptionContent = '<a href="https://project-gc.com/Home/Membership" target="_blank">' + (subscription ? 'Paid' : 'Missing') + ' membership</a>';
         }
 
         GM_addStyle('\
-        #pgcUserMenuForm > li:hover { background-color: #e3dfc9; }\
-        #pgcUserMenuForm > li { display: block; }\
-        #pgcUserMenuForm input[type="checkbox"] { opacity: inherit; width: inherit; height:inherit; overflow:inherit; position:inherit; }\
-        #pgcUserMenuForm button { display: inline-block !important; background: #ede5dc url(images/ui-bg_flat_100_ede5dc_40x100.png) 50% 50% repeat-x !important; border: 1px solid #cab6a3 !important; border-radius: 4px; color: #584528 !important; text-decoration: none; width: auto !important; font-size: 14px; padding: 4px 6px !important;}\
-        #pgcUserMenuForm button:hover { background: #e4d8cb url(images/ui-bgflag_100_e4d8cb_40x100.png) 50% 50% repeat-x !important; }\
-        #pgcUserMenu { right: 19rem;  }\
-        #pgcUserMenu > form { background-color: white; color: #5f452a; }\
+        #pgc .player-profile, #pgc_gclh .li-user-info {width: auto;}\
+        #pgc .player-profile:hover {text-decoration: none;}\
+        #pgc .player-profile a:hover {text-decoration: underline;}\
+        #pgc .player-profile a {text-decoration: none;color: white;}\
+        #pgc_gclh img:hover {cursor:pointer;}\
+        #pgc_gclh .draft-indicator {display: none;}\
+        #pgcUserMenuForm > li:hover, #pgcUserMenuForm_gclh > li:hover { background-color: #e3dfc9; }\
+        #pgcUserMenuForm > li, #pgcUserMenuForm_gclh > li { display: block; }\
+        #pgcUserMenuForm input[type="checkbox"], #pgcUserMenuForm_gclh input[type="checkbox"] { opacity: inherit; width: inherit; height:inherit; overflow:inherit; position:inherit; }\
+        #pgcUserMenuForm button, #pgcUserMenuForm_gclh button { display: inline-block !important; background: #ede5dc url(images/ui-bg_flat_100_ede5dc_40x100.png) 50% 50% repeat-x !important; border: 1px solid #cab6a3 !important; border-radius: 4px; color: #584528 !important; text-decoration: none; width: auto !important; font-size: 14px; padding: 4px 6px !important;}\
+        #pgcUserMenuForm button:hover, #pgcUserMenuForm_gclh button:hover { background: #e4d8cb url(images/ui-bgflag_100_e4d8cb_40x100.png) 50% 50% repeat-x !important; }\
+        #pgcUserMenu, #pgcUserMenu_gclh { right: 19rem;  }\
+        #pgcUserMenu > form, #pgcUserMenu_gclh > form { background-color: white; color: #5f452a; }\
+        .profile-panel .li-user-info {min-width: 160px;}\
         ');
 
-        html = '\
-        <div style="position: fixed; top: 0; bottom: 0; left: 0; right: 0; z-index:1004; display: none;" id="pgcSettingsOverlay"></div>\
-        \
-            <a class="SignedInProfileLink" href="' + pgcUrl + '" title="Project-GC">\
-                <span class="user-avatar">\
-                    <img src="https://cdn2.project-gc.com/favicon.ico" alt="Logo" width="30" height="30" style="border-radius:100%; border-width:0;">\
-                </span>\
-            </a>\
-            <span class="li-user-info">\
-                <a class="SignedInProfileLink" href="' + profileStatsUrl + '" title="Project-GC">\
-                    <span style="display: block;">' + loggedInContent + '</span>\
-                </a>\
-                <a class="SignedInProfileLink" href="' + pgcUrl + 'Home/Membership/" title="Project-GC">\
-                    <span class="cache-count">' + subscriptionContent + '</span>\
-                </a>\
-            </span>\
-            <button id="pgcUserMenuButton" type="button" class="li-user-toggle">\
-                <svg width="24px" height="14px" viewBox="0 0 12 7" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="0" fill="none" fill-rule="evenodd"><g class="arrow" transform="translate(-1277.000000, -25.000000)" stroke="#FFFFFF" fill="currentColor"><path d="M1280.43401,23.3387013 C1280.20315,23.5702719 1280.20315,23.945803 1280.43401,24.1775793 L1284.82138,28.5825631 L1280.43401,32.9873411 C1280.20315,33.2191175 1280.20315,33.5944429 1280.43401,33.8262192 C1280.54934,33.9420045 1280.70072,34 1280.8519,34 C1281.00307,34 1281.15425,33.9422102 1281.26978,33.8262192 L1286.07462,29.0018993 C1286.30548,28.7701229 1286.30548,28.3947975 1286.07462,28.1630212 L1281.26958,23.3387013 C1281.03872,23.106925 1280.66487,23.106925 1280.43401,23.3387013 Z" id="Dropdown-arrow" sketch:type="MSShapeGroup" transform="translate(1283.254319, 28.582435) scale(1, -1) rotate(-90.000000) translate(-1283.254319, -28.582435) "></path></g></g></svg>\
-            </button>\
-        \
-        <ul id="pgcUserMenu" class="submenu" style="z-index: 1005; display: none; text-align: left;">';
-        var settings = '<form id="pgcUserMenuForm" style="display: block; columns: 2; font-size: 14px; background-color: #fff !important;">';
+        var settings = '<ul id="pgcUserMenu" class="dropdown-menu menu-user submenu" style="display:none; z-index: 1005;"><form id="pgcUserMenuForm" style="display: block; columns: 2; font-size: 14px; background-color: #fff !important;">';
 
-        var items = GetSettingsItems(),
-            isChecked = '';
+        var items = GetSettingsItems();
         for (var item in items) {
-            isChecked = IsSettingEnabled(item) ? ' checked="checked"' : '';
+            let isChecked = IsSettingEnabled(item) ? ' checked="checked"' : '';
             // Explicitly set the styles as some pages (i.e. https://www.geocaching.com/account/settings/profile) are missing the required css.
             settings += '<li style="margin: .2em 1em; white-space: nowrap; display: flex;"><label style="font-weight: inherit; margin-bottom: 0" for="' + item + '"><input type="checkbox" id="' + item + '" name="' + item + '"' + isChecked + ' >&nbsp;' + items[item].title + '</label>&nbsp;<small>(default: ' + items[item].default + ')</small></li>';
         }
@@ -420,53 +389,76 @@
                     <button id="pgcUserMenuSave">Save</button>\
                 </li>\
                 <li id="pgcUserMenuWarning" style="display: none; margin: .5em 1em; color: red; background: 0;"><a href="#" onclick="location.reload();" style="color: red; padding: 0; text-decoration: underline; display: inline;">Reload</a> the page to activate the new settings.</li>\
-            </form>';
+            </form>\
+        </ul>';
 
-        html += settings + '</ul>';
+        let pgc = '<li id="pgc"><div class="player-profile">' + $($('.user-menu li')[1]).find('a').html() + '</div></li>';
+        $('.user-menu').prepend(pgc);
+        // Icon
+        $('#pgc div').prepend('<a href="' + pgcUrl + '"></a>');
+        $('#pgc img').attr('src', 'https://cdn2.project-gc.com/favicon.ico');
+        $('#pgc img').attr('style', 'border-radius:100%;');
+        $('#pgc img').appendTo('#pgc a');
+        // Username
+        $('#pgc .username').html(loggedInContent);
+        // Subscription 
+        $('#pgc .username + span').html(subscriptionContent);
 
-        if ($('#ctl00_uxLoginStatus_divSignedIn ul.logged-in-user').length) { // The default look of the header bar
-            $('#ctl00_uxLoginStatus_divSignedIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
-        } else if ($('ul.profile-panel li.li-user').length) { // new style, e.g. https://www.geocaching.com/play/search
-            $('ul.profile-panel').prepend('<li class="li-user">' + html + '</li>');
-        } else if ($('#uxLoginStatus_divSignedIn ul.logged-in-user').length) { // Special case for https://www.geocaching.com/map/
-            $('#uxLoginStatus_divSignedIn ul.logged-in-user').prepend('<li class="li-user">' + html + '</li>');
-        } else if ($('.user-menu')[0]) { // new style search map, BML, CO Dashboard
-            var htmlForNewStyle = '\
-                <li class="player-profile" style="width: auto;">\
-                    <a href="' + pgcUrl + '" title="Project-GC">\
-                        <img src="https://cdn2.project-gc.com/favicon.ico" width="40" height="40" style="border-radius:100%; border-width:0;">\
-                    </a>\
-                    <span>\
-                        <a href="' + profileStatsUrl + '" style="color:#fff; text-decoration:none;">' + loggedInContent + '</a>\
-                    </span>\
-                    <span>\
-                        <a href="' + pgcUrl + 'Home/Membership/" style="color:#fff; text-decoration:none;">' + subscriptionContent + '</a>\
-                    </span>\
-                </li>\
-                <li>\
-                    <button id="pgcUserMenuButton" class="dropdown-toggle toggle-user-menu"><svg><use xlink:href="#caret-down"></use></svg></button>\
-                    <ul id="pgcUserMenu" class="dropdown-menu menu-user" style="display:none;">\
-                        ' + settings + '\
-                    </ul>\
-                </li>';
-            $('.user-menu').prepend(htmlForNewStyle);
+        // Menu Toggle
+        let button = $($('.user-menu li')[3]).clone();
+        $(button).find('button').attr('id', 'pgcUserMenuButton');
+        $(button).append(settings);
+        // Add Toggle Button
+        $('#pgc').after(button);
 
-            // Workaroud for users that also use the GClh
-            function checkForGClh(waitCount) {
-                if ($('#GClh_II_running')[0] && $('#ctl00_uxLoginStatus_divSignedIn').length) {
-                    $('#ctl00_uxLoginStatus_divSignedIn').prepend('<li class="li-user">' + html + '</li>');
-                } else {waitCount++; if (waitCount <= 1000) setTimeout(function(){checkForGClh(waitCount);}, 10);}
+        $("#pgcUserMenuButton").click(function(e) {
+            $('#pgcUserMenu').show();
+        })
+        $('body').click(function(e) {
+            if (e.target != $("#pgcUserMenuButton")[0] && e.target != $("#pgcUserMenuButton svg")[0] && e.target != $("#pgcUserMenuButton svg use")[0]) {
+                $("#pgcUserMenu").hide();
             }
-            checkForGClh(0);
-        }
-
-        $("#pgcUserMenuButton, #pgcSettingsOverlay").click(function(e) {
-          $('#pgcUserMenu, #pgcSettingsOverlay').toggle();
         })
 
         $('#pgcUserMenuSave').click(function(e) {
             SaveSettings(e);
         });
+
+        // Workaroud for users that also use the GClh
+        function checkForGClh(waitCount) {
+            if ($('#GClh_II_running')[0] && $('gclh_nav#ctl00_gcNavigation')[0]) {
+                let gclh_pgc = '<li id="pgc_gclh" class="li-user"><div class="li-user-info">' + $($('.li-user')[0]).find('a').html() + '</div>'
+                             + '<button id="pgcUserMenuButton_gclh" class="li-user-toggle dropdown">' + $($('.li-user')[0]).find('button').html() + '</button>'
+                             + settings + '</li>';
+                $('#ctl00_uxLoginStatus_divSignedIn').prepend(gclh_pgc);
+                // Icon
+                $('#pgc_gclh img').attr('src', 'https://cdn2.project-gc.com/favicon.ico');
+                $('#pgc_gclh img').attr('style', 'border-radius:100%;');
+                $('#pgc_gclh img')[0].onclick = function() {open(pgcUrl);};
+                // User
+                $('#pgc_gclh .user-name').html(loggedInContent);
+                // Subscription
+                $('#pgc_gclh .cache-count').html(subscriptionContent);
+
+
+                // Rename the settings
+                $('#pgc_gclh .dropdown-menu.menu-user').attr('id', 'pgcUserMenu_gclh');
+                $('#pgc_gclh .dropdown-menu.menu-user form').attr('id', 'pgcUserMenuForm_gclh');
+                $('#pgc_gclh .dropdown-menu.menu-user form li:nth-last-child(2) button:nth-last-child(1)').attr('id', 'pgcUserMenuSave_gclh');
+                $('#pgc_gclh .dropdown-menu.menu-user form li:nth-last-child(1)').attr('id', 'pgcUserMenuWarning_gclh');
+
+                $("#pgcUserMenuButton_gclh").click(function(e) {
+                    console.log('click')
+                    $('#pgcUserMenu_gclh').toggle();
+                })
+
+                $('#pgcUserMenuSave_gclh').click(function(e) {
+                    SaveSettings(e);
+                });
+
+            } else {waitCount++; if (waitCount <= 1000) setTimeout(function(){checkForGClh(waitCount);}, 10);}
+        }
+        checkForGClh(0);
     }
 
     /**
