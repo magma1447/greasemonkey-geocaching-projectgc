@@ -392,7 +392,7 @@
             </form>\
         </ul>';
 
-        let pgc = '<li id="pgc"><div class="player-profile">' + $($('.user-menu li')[1]).find('a').html() + '</div></li>';
+        let pgc = '<li id="pgc"><div class="player-profile">' + $('#gc-header .player-profile').html() + '</div></li>';
         $('.user-menu').prepend(pgc);
         // Icon
         $('#pgc div').prepend('<a href="' + pgcUrl + '"></a>');
@@ -405,8 +405,9 @@
         $('#pgc .username + span').html(subscriptionContent);
 
         // Menu Toggle
-        let button = $($('.user-menu li')[3]).clone();
+        let button = $('.toggle-user-menu').last().parent().clone();
         $(button).find('button').attr('id', 'pgcUserMenuButton');
+        $(button).attr('id', 'pgcButton');
         $(button).append(settings);
         // Add Toggle Button
         $('#pgc').after(button);
@@ -415,7 +416,7 @@
             $('#pgcUserMenu').show();
         })
         $('body').click(function(e) {
-            if (e.target != $("#pgcUserMenuButton")[0] && e.target != $("#pgcUserMenuButton svg")[0] && e.target != $("#pgcUserMenuButton svg use")[0]) {
+            if (!$(e.target).parents('#pgcUserMenu')[0] && (!$(e.target).parents('#pgcButton')[0] && $("#pgcUserMenu").css('display') != 'none')) {
                 $("#pgcUserMenu").hide();
             }
         })
@@ -448,7 +449,6 @@
                 $('#pgc_gclh .dropdown-menu.menu-user form li:nth-last-child(1)').attr('id', 'pgcUserMenuWarning_gclh');
 
                 $("#pgcUserMenuButton_gclh").click(function(e) {
-                    console.log('click')
                     $('#pgcUserMenu_gclh').toggle();
                 })
 
