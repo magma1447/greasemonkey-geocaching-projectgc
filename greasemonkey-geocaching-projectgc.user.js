@@ -401,7 +401,7 @@
         $('#pgc img').appendTo('#pgc a');
         // Username
         $('#pgc .username').html(loggedInContent);
-        // Subscription 
+        // Subscription
         $('#pgc .username + span').html(subscriptionContent);
 
         // Menu Toggle
@@ -424,7 +424,7 @@
             SaveSettings(e);
         });
 
-        // Workaroud for users that also use the GClh
+        // Workaround for users that also use the GClh
         function checkForGClh(waitCount) {
             if ($('#GClh_II_running')[0] && $('gclh_nav#ctl00_gcNavigation')[0]) {
                 let gclh_pgc = '<li id="pgc_gclh" class="li-user"><div class="li-user-info">' + $($('.li-user')[0]).find('a').html() + '</div>'
@@ -572,10 +572,12 @@
 
             // Get geocache data from Project-GC
             url = pgcApiUrl + 'GetCacheDataFromGccode&gccode=' + gccode;
-            if (lastUpdated)
+            if (lastUpdated) {
                 url += '&lastUpdated=' + lastUpdated;
-            if (lastFound)
+            }
+            if (lastFound) {
                 url += '&lastFound=' + lastFound;
+            }
 
             GM.xmlHttpRequest({
                 method: "GET",
