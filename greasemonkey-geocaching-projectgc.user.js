@@ -32,6 +32,8 @@
 // @connect     s3.amazonaws.com
 // @connect     nominatim.openstreetmap.org
 // @connect     *
+// @updateURL       https://github.com/magma1447/greasemonkey-geocaching-projectgc/raw/master/greasemonkey-geocaching-projectgc.user.js
+// @downloadURL     https://github.com/magma1447/greasemonkey-geocaching-projectgc/raw/master/greasemonkey-geocaching-projectgc.user.js
 // @license     The MIT License (MIT)
 // ==/UserScript==
 
