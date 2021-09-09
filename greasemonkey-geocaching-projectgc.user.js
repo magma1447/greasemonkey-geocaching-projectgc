@@ -136,10 +136,6 @@
                 title: 'Add FP from PGC',
                 default: true
             },
-            addPgcFppDec: {
-                title: 'Add FP from PGC but FP% has two decimals',
-                default: false
-            },
             showWeekday: {
                 title: 'Show weekday of the place date',
                 default: true
@@ -642,24 +638,12 @@
                             $('#ctl00_ContentBody_mcd1 span.message__owner').before('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(cacheOwner) + '"><img src="' + externalLinkIcon + '" title="PGC Profile Stats"></a>');
                         }
 
-                        // Add FP/FP%/FPW below the current FP
+                        // Add FP/FP%/FPW below the current FP + mouseover for FP% and FPW with decimals
                         if (IsSettingEnabled('addPgcFp')) {
-                            fp = parseInt(+cacheData.favorite_points, 10),
-                                fpp = parseInt(+cacheData.favorite_points_pct, 10),
-                                fpw = parseInt(+cacheData.favorite_points_wilson, 10);
-                            $('#uxFavContainerLink').append('<p style="text-align: center; background-color: #f0edeb;border-bottom-left-radius: 5px;border-bottom-right-radius:5px;">PGC: ' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W</p>');
-                            $('.favorite-container').css({
-                                "border-bottom-left-radius": "0",
-                                "border-bottom-right-radius": "0"
-                            });
-                        }
-                        
-                        // Add FP/FP%/FPW below the current FP but FP% has two decimals to match main site
-                        if (IsSettingEnabled('addPgcFppDec')) {
-                            fp = parseInt(+cacheData.favorite_points, 10),
-                                fpp = parseFloat(+cacheData.favorite_points_pct).toFixed(2),
-                                fpw = parseInt(+cacheData.favorite_points_wilson, 10);
-                            $('#uxFavContainerLink').append('<p style="text-align: center; background-color: #f0edeb;border-bottom-left-radius: 5px;border-bottom-right-radius:5px;">PGC: ' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W</p>');
+                            fp = (+cacheData.favorite_points),
+                                fpp = (+cacheData.favorite_points_pct),
+                                fpw = (+cacheData.favorite_points_wilson);
+                            $('#uxFavContainerLink').append('<p title= "' + parseFloat(fpp) + '%, ' + parseFloat(fpw) + 'W" style="text-align: center; background-color: #f0edeb;border-bottom-left-radius: 5px;border-bottom-right-radius:5px;">PGC: ' + parseInt(fp) + ' FP, ' + Math.round(fpp) + '%, ' + Math.round(fpw) + 'W</p>');
                             $('.favorite-container').css({
                                 "border-bottom-left-radius": "0",
                                 "border-bottom-right-radius": "0"
