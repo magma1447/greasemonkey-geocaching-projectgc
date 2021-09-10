@@ -15,7 +15,7 @@
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
-// @version     2.3.5
+// @version     2.3.6
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js
 // @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -32,6 +32,8 @@
 // @connect     s3.amazonaws.com
 // @connect     nominatim.openstreetmap.org
 // @connect     *
+// @updateURL       https://github.com/magma1447/greasemonkey-geocaching-projectgc/raw/master/greasemonkey-geocaching-projectgc.user.js
+// @downloadURL     https://github.com/magma1447/greasemonkey-geocaching-projectgc/raw/master/greasemonkey-geocaching-projectgc.user.js
 // @license     The MIT License (MIT)
 // ==/UserScript==
 
@@ -392,7 +394,7 @@
             </form>\
         </ul>';
 
-        let pgc = '<li id="pgc"><div class="player-profile">' + $($('.user-menu li')[1]).find('a').html() + '</div></li>';
+        let pgc = '<li id="pgc"><div class="player-profile">' + $('#gc-header .player-profile').html() + '</div></li>';
         $('.user-menu').prepend(pgc);
         // Icon
         $('#pgc div').prepend('<a href="' + pgcUrl + '"></a>');
@@ -405,8 +407,9 @@
         $('#pgc .username + span').html(subscriptionContent);
 
         // Menu Toggle
-        let button = $($('.user-menu li')[3]).clone();
+        let button = $('.toggle-user-menu').last().parent().clone();
         $(button).find('button').attr('id', 'pgcUserMenuButton');
+        $(button).attr('id', 'pgcButton');
         $(button).append(settings);
         // Add Toggle Button
         $('#pgc').after(button);
@@ -415,7 +418,7 @@
             $('#pgcUserMenu').show();
         })
         $('body').click(function(e) {
-            if (e.target != $("#pgcUserMenuButton")[0] && e.target != $("#pgcUserMenuButton svg")[0] && e.target != $("#pgcUserMenuButton svg use")[0]) {
+            if (!$(e.target).parents('#pgcUserMenu')[0] && (!$(e.target).parents('#pgcButton')[0] && $("#pgcUserMenu").css('display') != 'none')) {
                 $("#pgcUserMenu").hide();
             }
         })
@@ -448,7 +451,6 @@
                 $('#pgc_gclh .dropdown-menu.menu-user form li:nth-last-child(1)').attr('id', 'pgcUserMenuWarning_gclh');
 
                 $("#pgcUserMenuButton_gclh").click(function(e) {
-                    console.log('click')
                     $('#pgcUserMenu_gclh').toggle();
                 })
 
@@ -638,12 +640,12 @@
                             $('#ctl00_ContentBody_mcd1 span.message__owner').before('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(cacheOwner) + '"><img src="' + externalLinkIcon + '" title="PGC Profile Stats"></a>');
                         }
 
-                        // Add FP/FP%/FPW below the current FP
+                        // Add FP/FP%/FPW below the current FP + mouseover for FP% and FPW with decimals
                         if (IsSettingEnabled('addPgcFp')) {
-                            fp = parseInt(+cacheData.favorite_points, 10),
-                                fpp = parseInt(+cacheData.favorite_points_pct, 10),
-                                fpw = parseInt(+cacheData.favorite_points_wilson, 10);
-                            $('#uxFavContainerLink').append('<p style="text-align: center; background-color: #f0edeb;border-bottom-left-radius: 5px;border-bottom-right-radius:5px;">PGC: ' + fp + ' FP, ' + fpp + '%, ' + fpw + 'W</p>');
+                            fp = (+cacheData.favorite_points),
+                                fpp = (+cacheData.favorite_points_pct),
+                                fpw = (+cacheData.favorite_points_wilson);
+                            $('#uxFavContainerLink').append('<p title= "' + parseFloat(fpp) + '%, ' + parseFloat(fpw) + 'W" style="text-align: center; background-color: #f0edeb;border-bottom-left-radius: 5px;border-bottom-right-radius:5px;">PGC: ' + parseInt(fp) + ' FP, ' + Math.round(fpp) + '%, ' + Math.round(fpw) + 'W</p>');
                             $('.favorite-container').css({
                                 "border-bottom-left-radius": "0",
                                 "border-bottom-right-radius": "0"
