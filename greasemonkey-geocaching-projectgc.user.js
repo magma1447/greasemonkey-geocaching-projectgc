@@ -649,7 +649,7 @@
                                 "border-bottom-right-radius": "0"
                             });
                         }
-                        
+
                         // Add elevation (Metres above mean sea level = mamsl)
                         if (IsSettingEnabled('addElevation')) {
                             var formattedElevation = FormatDistance(cacheData.elevation),
