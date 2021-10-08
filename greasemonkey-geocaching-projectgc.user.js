@@ -15,9 +15,8 @@
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
-// @version     2.3.8
+// @version     2.3.9
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
-// @require     https://gist.githubusercontent.com/schurpf/26d9bf85384e70596561/raw/9c97aa67ff9c5d56be34a55ad6c18a314e5eb548/waitForKeyElements.js
 // @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant       GM_xmlhttpRequest
 // @grant       GM_setValue
@@ -2097,3 +2096,115 @@
     }
 }.call(this));
 // -- https://github.com/exif-js/exif-js
+
+
+// WaitForKeyElements
+// WaitForKeyElements was earlier used as a require, but it was deleted from Greasy fork.
+// Greasy fork does not allow to depend on github for example.
+// This code isn't maintained here. If it doesn't work we should find a new version.
+// Hopefully we can go back to depends again.
+// @require https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js
+var _____WB$wombat$assign$function_____ = function(name) {return (self._wb_wombat && self._wb_wombat.local_init && self._wb_wombat.local_init(name)) || self[name]; };
+if (!self.__WB_pmw) { self.__WB_pmw = function(obj) { this.__WB_source = obj; return this; } }
+{
+  let window = _____WB$wombat$assign$function_____("window");
+  let self = _____WB$wombat$assign$function_____("self");
+  let document = _____WB$wombat$assign$function_____("document");
+  let location = _____WB$wombat$assign$function_____("location");
+  let top = _____WB$wombat$assign$function_____("top");
+  let parent = _____WB$wombat$assign$function_____("parent");
+  let frames = _____WB$wombat$assign$function_____("frames");
+  let opener = _____WB$wombat$assign$function_____("opener");
+
+/*--- waitForKeyElements(): A utility function, for Greasemonkey scripts,
+that detects and handles AJAXed content.
+
+Usage example:
+waitForKeyElements ("div.comments", commentCallbackFunction);
+
+//--- Page-specific function to do what we want when the node is found.
+function commentCallbackFunction (jNode) {
+    jNode.text ("This comment changed by waitForKeyElements().");
+}
+
+IMPORTANT: This function requires your script to have loaded jQuery.
+*/
+
+function waitForKeyElements(
+selectorTxt, /* Required: The jQuery selector string that
+specifies the desired element(s).
+*/
+actionFunction, /* Required: The code to run when elements are
+found. It is passed a jNode to the matched
+element.
+*/
+bWaitOnce, /* Optional: If false, will continue to scan for
+new elements even after the first match is
+found.
+*/
+iframeSelector /* Optional: If set, identifies the iframe to
+search.
+*/
+) {
+    var targetNodes, btargetsFound;
+
+    if (typeof iframeSelector == "undefined")
+        targetNodes = $(selectorTxt);
+    else
+        targetNodes = $(iframeSelector).contents()
+        .find(selectorTxt);
+
+    if (targetNodes && targetNodes.length > 0) {
+        btargetsFound = true;
+        /*--- Found target node(s). Go through each and act if they
+        are new.
+        */
+        targetNodes.each(function () {
+            var jThis = $(this);
+            var alreadyFound = jThis.data('alreadyFound') || false;
+
+            if (!alreadyFound) {
+                //--- Call the payload function.
+                var cancelFound = actionFunction(jThis);
+                if (cancelFound)
+                    btargetsFound = false;
+                else
+                    jThis.data('alreadyFound', true);
+            }
+        });
+    }
+    else {
+        btargetsFound = false;
+    }
+
+    //--- Get the timer-control variable for this selector.
+    var controlObj = waitForKeyElements.controlObj || {};
+    var controlKey = selectorTxt.replace(/[^\w]/g, "_");
+    var timeControl = controlObj[controlKey];
+
+    //--- Now set or clear the timer as appropriate.
+    if (btargetsFound && bWaitOnce && timeControl) {
+        //--- The only condition where we need to clear the timer.
+        clearInterval(timeControl);
+        delete controlObj[controlKey];
+    }
+    else {
+        //--- Set a timer, if needed.
+        if (!timeControl) {
+            timeControl = setInterval(function () {
+                waitForKeyElements(selectorTxt,
+                actionFunction,
+                bWaitOnce,
+                iframeSelector
+                );
+            },
+            300
+            );
+            controlObj[controlKey] = timeControl;
+        }
+    }
+    waitForKeyElements.controlObj = controlObj;
+}
+
+}
+// -- WaitForKeyElements
