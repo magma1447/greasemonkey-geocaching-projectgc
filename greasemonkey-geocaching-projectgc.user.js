@@ -17,7 +17,7 @@
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
 // @version     2.3.8
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
-// @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js
+// @require     https://gist.githubusercontent.com/schurpf/26d9bf85384e70596561/raw/9c97aa67ff9c5d56be34a55ad6c18a314e5eb548/waitForKeyElements.js
 // @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant       GM_xmlhttpRequest
 // @grant       GM_setValue
