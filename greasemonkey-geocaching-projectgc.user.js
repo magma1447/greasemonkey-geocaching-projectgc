@@ -17,7 +17,7 @@
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
-// @version     2.3.12
+// @version     2.3.13
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require	https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -950,7 +950,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                         listId;
 
                     html += '<select id="comboVGPS" style="width: 138px;">';
-                    for (listId in vgpsLists) {
+                    for (k in vgpsLists) {
+                        var listId  vgpsLists[k].id;
+
                         selectedContent = '';
                         if (+selected === +listId) {
                             selectedContent = ' selected="selected"';
@@ -960,7 +962,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                         if (existsIn.indexOf(listId) > -1) {
                             existsContent = ' data-exists="true"';
                         }
-                        html += '<option value="' + listId + '"' + selectedContent + existsContent + '>' + vgpsLists[listId].name + '</option>';
+                        html += '<option value="' + listId + '"' + selectedContent + existsContent + '>' + vgpsLists[k].name + '</option>';
                     }
                     html += '</select>';
                     if (existsIn.indexOf(String(selected)) == -1) {
