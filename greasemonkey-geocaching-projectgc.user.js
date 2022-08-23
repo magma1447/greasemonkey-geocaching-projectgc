@@ -94,9 +94,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             Page_Bookmarks();
         } else if (path.match(/^\/map\/.*/) !== null) {
             Page_Map();
-        } else if(path.match(/^\/seek\/gallery\.aspx.*/) !== null) {
+        } else if (path.match(/^\/seek\/gallery\.aspx.*/) !== null) {
             Page_Gallery();
-        } else if(path.match(/^\/profile\/.*/) !== null) {
+        } else if (path.match(/^\/profile\/.*/) !== null) {
             Page_Profile();
         } else if (path.match(/^\/account\/drafts/) !== null) {
             Page_Drafts();
@@ -344,7 +344,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
                 function waitForHeader(waitCount) {
                     if ($('.user-menu')[0]) BuildPGCUserMenu();
-                    else {waitCount++; if (waitCount <= 1000) setTimeout(function(){waitForHeader(waitCount);}, 10);}
+                    else { waitCount++; if (waitCount <= 1000) setTimeout(function() { waitForHeader(waitCount); }, 10); }
                 }
                 waitForHeader(0);
                 Router();
@@ -394,7 +394,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         for (var item in items) {
             let isChecked = IsSettingEnabled(item) ? ' checked="checked"' : '';
             // Explicitly set the styles as some pages (i.e. https://www.geocaching.com/account/settings/profile) are missing the required css.
-            settings += '<li style="margin: .2em 1em; white-space: nowrap; display: flex;"><label style="font-weight: inherit; margin-bottom: 0" for="' + item + '"><input type="checkbox" id="' + item + '" name="' + item + '"' + isChecked + ' >&nbsp;' + items[item].title + '</label>&nbsp;<small>(default: ' + items[item].default + ')</small></li>';
+            settings += '<li style="margin: .2em 1em; white-space: nowrap; display: flex;"><label style="font-weight: inherit; margin-bottom: 0" for="' + item + '"><input type="checkbox" id="' + item + '" name="' + item + '"' + isChecked + ' >&nbsp;' + items[item].title + '</label>&nbsp;<small>(default: ' + items[item].default+')</small></li>';
         }
 
         settings += '\
@@ -443,14 +443,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // Workaround for users that also use the GClh
         function checkForGClh(waitCount) {
             if ($('#GClh_II_running')[0] && $('gclh_nav#ctl00_gcNavigation')[0]) {
-                let gclh_pgc = '<li id="pgc_gclh" class="li-user"><div class="li-user-info">' + $($('.li-user')[0]).find('a').html() + '</div>'
-                             + '<button id="pgcUserMenuButton_gclh" class="li-user-toggle dropdown">' + $($('.li-user')[0]).find('button').html() + '</button>'
-                             + settings + '</li>';
+                let gclh_pgc = '<li id="pgc_gclh" class="li-user"><div class="li-user-info">' + $($('.li-user')[0]).find('a').html() + '</div>' +
+                    '<button id="pgcUserMenuButton_gclh" class="li-user-toggle dropdown">' + $($('.li-user')[0]).find('button').html() + '</button>' +
+                    settings + '</li>';
                 $('#ctl00_uxLoginStatus_divSignedIn').prepend(gclh_pgc);
                 // Icon
                 $('#pgc_gclh img').attr('src', 'https://cdn2.project-gc.com/favicon.ico');
                 $('#pgc_gclh img').attr('style', 'border-radius:100%;');
-                $('#pgc_gclh img')[0].onclick = function() {open(pgcUrl);};
+                $('#pgc_gclh img')[0].onclick = function() { open(pgcUrl); };
                 // User
                 $('#pgc_gclh .user-name').html(loggedInContent);
                 // Subscription
@@ -471,7 +471,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     SaveSettings(e);
                 });
 
-            } else {waitCount++; if (waitCount <= 1000) setTimeout(function(){checkForGClh(waitCount);}, 10);}
+            } else { waitCount++; if (waitCount <= 1000) setTimeout(function() { checkForGClh(waitCount); }, 10); }
         }
         checkForGClh(0);
     }
@@ -616,20 +616,20 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     challengeCheckerResults = result.data.challengeCheckerResults;
 
                     // Add an alert in top if there are Found it-logs which doesn't seem to fulfill the requirements
-                    if(challengeCheckerResults !== false) {
+                    if (challengeCheckerResults !== false) {
                         var suspiciousFoundItLogs = [];
-                        for(var logId in challengeCheckerResults) {
-                            if(typeof challengeCheckerResults[logId] !== 'undefined' && challengeCheckerResults[logId]['status'] == 'fail') {
+                        for (var logId in challengeCheckerResults) {
+                            if (typeof challengeCheckerResults[logId] !== 'undefined' && challengeCheckerResults[logId]['status'] == 'fail') {
                                 suspiciousFoundItLogs.push(logId);
                             }
                         }
 
-                        if(suspiciousFoundItLogs.length != 0) {
+                        if (suspiciousFoundItLogs.length != 0) {
                             var suspiciousFoundItLog = '<p style="color: #ff6c00;" class=" NoBottomSpacing"><strong>Cache Issues:</strong></p>\
                                         <ul style="color: #ff6c00;" class="">\
                                             <li>The following Found it logs might not fulfill the requirements:<br>';
 
-                            for(var i = 0 ; i < suspiciousFoundItLogs.length ; i++) {
+                            for (var i = 0; i < suspiciousFoundItLogs.length; i++) {
                                 suspiciousFoundItLog = suspiciousFoundItLog + ' <a href="https://www.geocaching.com/seek/log.aspx?LID=' + suspiciousFoundItLogs[i] + '">' + challengeCheckerResults[suspiciousFoundItLogs[i]]['profileName'] + '</a><br>';
                             }
                             suspiciousFoundItLog = suspiciousFoundItLog + 'Please understand that the checker result is a cached result. Also the geocacher might very well have fulfilled it in the past, external factors might have changed.</li></ul>';
@@ -699,7 +699,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                         }
 
                         // Add bearing from home
-                        $('#lblDistFromHome').append(' <span>(' + Math.round(bearing*10)/10 + '&deg;)</span>');
+                        $('#lblDistFromHome').append(' <span>(' + Math.round(bearing * 10) / 10 + '&deg;)</span>');
 
                         // Add challenge checkers
                         if (IsSettingEnabled('addChallengeCheckers') && challengeCheckerTagIds.length > 0) {
@@ -720,18 +720,18 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                         if (IsSettingEnabled('addGeocacheLogsPerProfileCountry')) {
                             html = '<div id="geocacheLogsPerCountry" style="border: dashed; border-color: #aaa; border-width: thin;">';
 
-                            if(typeof(geocacheLogsPerCountry['willAttend']) != 'undefined' && geocacheLogsPerCountry['willAttend'].length > 0) {
+                            if (typeof(geocacheLogsPerCountry['willAttend']) != 'undefined' && geocacheLogsPerCountry['willAttend'].length > 0) {
                                 html += '<p style="margin-left: 10px; margin-bottom: 0;"><strong>Will attend logs per country</strong> <small>according to Project-GC.com</small></p>';
                                 html += '<ul style="list-style: none; margin-left: 0; margin-bottom: 0;">';
                                 var unknowns = null;
                                 for (var i = 0; i < geocacheLogsPerCountry['willAttend'].length; i++) {
-                                    if(geocacheLogsPerCountry['willAttend'][i].flagIcon.endsWith('blank.gif')) {
+                                    if (geocacheLogsPerCountry['willAttend'][i].flagIcon.endsWith('blank.gif')) {
                                         unknowns = geocacheLogsPerCountry['willAttend'][i].cnt;
                                         continue;
                                     }
                                     html += '<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;"><img src="' + cdnDomain + geocacheLogsPerCountry['willAttend'][i].flagIcon + '" alt="' + $('<div/>').text(geocacheLogsPerCountry['willAttend'][i].country).html() + '" title="' + $('<div/>').text(geocacheLogsPerCountry['willAttend'][i].country).html() + '"> ' + geocacheLogsPerCountry['willAttend'][i].cnt + '</span></li>';
                                 }
-                                if(unknowns !== null) {
+                                if (unknowns !== null) {
                                     html += '<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;">(plus ' + unknowns + ' undetermined)</span></li>';
                                 }
                                 html += '</ul>';
@@ -739,18 +739,18 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                                 html += '<span style="display: block; text-align: right; padding-right: 10px;"><small><a href="https://project-gc.com/Tools/EventStatistics?gccode=' + encodeURIComponent(gccode) + '">Event statistics</a></small></span>';
                             }
 
-                            if(typeof(geocacheLogsPerCountry['found']) != 'undefined' && geocacheLogsPerCountry['found'].length > 0) {
+                            if (typeof(geocacheLogsPerCountry['found']) != 'undefined' && geocacheLogsPerCountry['found'].length > 0) {
                                 html += '<p style="margin-left: 10px; margin-bottom: 0;"><strong>Found logs per country</strong> <small>according to Project-GC.com</small></p>';
                                 html += '<ul style="list-style: none; margin-left: 0; margin-bottom: 0;">';
                                 var unknowns = null;
                                 for (var i = 0; i < geocacheLogsPerCountry['found'].length; i++) {
-                                    if(geocacheLogsPerCountry['found'][i].flagIcon.endsWith('blank.gif')) {
+                                    if (geocacheLogsPerCountry['found'][i].flagIcon.endsWith('blank.gif')) {
                                         unknowns = geocacheLogsPerCountry['found'][i].cnt;
                                         continue;
                                     }
                                     html += '<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;"><img src="' + cdnDomain + geocacheLogsPerCountry['found'][i].flagIcon + '" alt="' + $('<div/>').text(geocacheLogsPerCountry['found'][i].country).html() + '" title="' + $('<div/>').text(geocacheLogsPerCountry['found'][i].country).html() + '"> ' + geocacheLogsPerCountry['found'][i].cnt + '</span></li>';
                                 }
-                                if(unknowns !== null) {
+                                if (unknowns !== null) {
                                     html += '<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;">(plus ' + unknowns + ' undetermined)</span></li>';
                                 }
                                 html += '</ul>';
@@ -786,7 +786,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         if (IsSettingEnabled('showWeekday')) {
             var match = $('meta[name="description"]')[1].content.match(/([0-9]{2})\/([0-9]{2})\/([0-9]{4})/);
             if (match) {
-                var date = new Date(match[3], match[1]-1, match[2]);
+                var date = new Date(match[3], match[1] - 1, match[2]);
                 var weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
                 var text = $($('#ctl00_ContentBody_mcd2')[0].childNodes[0]).text();
                 var pos = text.indexOf(':') + 2;
@@ -855,7 +855,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         }
 
         // If the first log is a DNF, display a blue warning on top of the page
-        if($('#cache_logs_table tr:first td div.LogDisplayRight strong img').attr('src') === '/images/logtypes/3.png') {
+        if ($('#cache_logs_table tr:first td div.LogDisplayRight strong img').attr('src') === '/images/logtypes/3.png') {
             var htmlFirstLogDnf = '<p style="color: #006cff;" class=" NoBottomSpacing"><strong>Cache Issues:</strong></p>\
                         <ul style="color: #006cff;" class="">\
                             <li>The latest log for this cache is a DNF, <a href="#cache_logs_table">please read the log</a> before your own search.</li>\
@@ -1011,7 +1011,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             $('\
                 <span>&nbsp;|&nbsp;</span><a id="pgc-logbook-yours" href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-2">Yours</a>\
                 <span>&nbsp;|&nbsp;</span><a href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-3">Friends\'</a>\
-                ').insertAfter( $('#ctl00_ContentBody_uxLogbookLink') );
+                ').insertAfter($('#ctl00_ContentBody_uxLogbookLink'));
         }
     }
 
@@ -1034,7 +1034,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             }
         }
 
-        if(IsSettingEnabled('parseExifLocation')) {
+        if (IsSettingEnabled('parseExifLocation')) {
             $(jNode).find('ul.LogImagesTable li>a').each(function() {
                 var url = $(this).attr('href');
                 var thumbnailUrl = url.replace('/img.geocaching.com/cache/log/large/', '/img.geocaching.com/cache/log/thumb/');
@@ -1049,7 +1049,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     EXIF.getData($(imgElm)[0], function() {
                         // console.log(EXIF.pretty(this));
                         var coords = GetCoordinatesFromExif(this);
-                        if(coords != false) {
+                        if (coords != false) {
                             $('<span style="color: #8c0b0b; font-weight: bold; float: right;">EXIF Location: <a href="https://maps.google.com/?q=' + coords + '" target="_blank">' + coords + '</a></span>').insertAfter($(imgElm).parent());
                         }
                     });
@@ -1058,28 +1058,28 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             });
         }
 
-        if(IsSettingEnabled('addCachedChallengeCheckerResults') && typeof(challengeCheckerResults) !== 'undefined' && challengeCheckerResults !== null) {
+        if (IsSettingEnabled('addCachedChallengeCheckerResults') && typeof(challengeCheckerResults) !== 'undefined' && challengeCheckerResults !== null) {
             var classes = $(jNode).attr('class');
             var logId = classes.match(/l-[0-9]+/)[0].replace('l-', '');
-            if(typeof(challengeCheckerResults[logId]) !== 'undefined') {
-                if(challengeCheckerResults[logId]['status'] == 'success') {
+            if (typeof(challengeCheckerResults[logId]) !== 'undefined') {
+                if (challengeCheckerResults[logId]['status'] == 'success') {
                     $(jNode).find('div.LogDisplayLeft').first().append('<hr style="margin-top: 12px; margin-bottom: 12px;"><p>Checker result<br>' + challengeCheckerResults[logId]['lastRun'] + ' UTC: <img src="' + challengeCheckerSuccessIcon + '"></p>');
-                }
-                else if(challengeCheckerResults[logId]['status'] == 'fail') {
+                } else if (challengeCheckerResults[logId]['status'] == 'fail') {
                     $(jNode).find('div.LogDisplayLeft').first().append('<hr style="margin-top: 12px; margin-bottom: 12px;"><p>Checker result<br>' + challengeCheckerResults[logId]['lastRun'] + ' UTC: <img src="' + challengeCheckerFailIcon + '"></p>');
                 }
             }
         }
 
-        if(IsSettingEnabled('hideLogVoting')) {
-            $('div.upvotes').css('display','none');
-            $('div.sort-logs').css('display','none');
+        if (IsSettingEnabled('hideLogVoting')) {
+            $('div.upvotes').css('display', 'none');
+            $('div.sort-logs').css('display', 'none');
         }
 
 
         // Save to latest logs
         if (latestLogs.length < 5) {
-            var node = $(jNode).find('div.HalfLeft.LogType h4 img[src]'),
+            // 2022-08-23 Fix for latestLogs, using span instead of div.
+            var node = $(jNode).find('span.h4 img[src]'),
                 logType = {};
 
             if (node.length === 0)
@@ -1187,13 +1187,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
     function Page_Gallery() {
         // Find location data in exif tags
-        if(IsSettingEnabled('parseExifLocation')) {
+        if (IsSettingEnabled('parseExifLocation')) {
             $(window).load(function() { // Wait until page is loaded. If the images aren't loaded before this starts it will fail.
                 $('#ctl00_ContentBody_GalleryItems_DataListGallery img').each(function() {
                     EXIF.getData($(this)[0], function() {
                         // console.log(EXIF.pretty(this));
                         var coords = GetCoordinatesFromExif(this);
-                        if(coords != false) {
+                        if (coords != false) {
                             $('<span class="OldWarning">EXIF Location<br><a href="https://maps.google.com/?q=' + coords + '" target="_blank">' + coords + '</a></span>').insertAfter(this.parentNode);
                         }
                     });
@@ -1213,7 +1213,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
              */
             return;
         }
-        var guid = search.substr(guid_start + 5/*, eof */);
+        var guid = search.substr(guid_start + 5 /*, eof */ );
 
         var url = "https://project-gc.com/Tools/MapBookmarklist?owner_name=" + owner_name + "&guid=" + guid;
         var icon = "https://cdn2.project-gc.com/images/map_app_16.png";
@@ -1231,7 +1231,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
     function Page_Drafts() {
         if (IsSettingEnabled("openDraftLogInSameWindow")) {
-          waitForKeyElements('#draftsHub > ul.draft-list > li.draft-item', Draft);
+            waitForKeyElements('#draftsHub > ul.draft-list > li.draft-item', Draft);
         }
     }
 
@@ -1243,9 +1243,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         var target = document.getElementById('currentMessage');
         var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
-                if(mutation.type === "childList") {
-                    var userlink = $(".user-meta a.current-user-image").attr("href"), username = $(".user-meta span.current-user-name").html();
-                    $(".user-meta span.current-user-name").html("<a href='"+userlink+"'>"+username+"</a>");
+                if (mutation.type === "childList") {
+                    var userlink = $(".user-meta a.current-user-image").attr("href"),
+                        username = $(".user-meta span.current-user-name").html();
+                    $(".user-meta span.current-user-name").html("<a href='" + userlink + "'>" + username + "</a>");
                 }
             });
         });
@@ -1260,17 +1261,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
         // Get rid of the Logs section if it's not asked for. But keep it if we asked for it, even though there are 0 logs.
-        if( getUrlParameter('lc') === false ) {
+        if (getUrlParameter('lc') === false) {
             $('div.item.ui-widget > div.item-header > h2.ui-sortable-handle').each(function() {
-                if( $(this).html() == 'Logs' ) {    // Will only work with English
+                if ($(this).html() == 'Logs') { // Will only work with English
                     $(this).parent().parent().addClass('no-print').css('display', 'none');
-                    return false;   // Break .each loop
+                    return false; // Break .each loop
                 }
             });
         }
 
 
-        if(IsSettingEnabled('hideMapFromPrintCachePage')) {
+        if (IsSettingEnabled('hideMapFromPrintCachePage')) {
             $('#map').parent().parent().addClass('no-print');
             $('#map').parent().prev().children('span.ui-icon').removeClass('ui-icon-minusthick').addClass('ui-icon-plusthick');
             $('#map').parent().css('display', 'none');
@@ -1278,8 +1279,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     }
 
 
-    function padLeft(str, n, padstr){
-        return Array(n-String(str).length+1).join(padstr||'0')+str;
+    function padLeft(str, n, padstr) {
+        return Array(n - String(str).length + 1).join(padstr || '0') + str;
     }
 
     function getUrlParameter(sParam) {
@@ -1338,284 +1339,284 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     var ExifTags = EXIF.Tags = {
 
         // version tags
-        0x9000 : "ExifVersion",             // EXIF version
-        0xA000 : "FlashpixVersion",         // Flashpix format version
+        0x9000: "ExifVersion", // EXIF version
+        0xA000: "FlashpixVersion", // Flashpix format version
 
         // colorspace tags
-        0xA001 : "ColorSpace",              // Color space information tag
+        0xA001: "ColorSpace", // Color space information tag
 
         // image configuration
-        0xA002 : "PixelXDimension",         // Valid width of meaningful image
-        0xA003 : "PixelYDimension",         // Valid height of meaningful image
-        0x9101 : "ComponentsConfiguration", // Information about channels
-        0x9102 : "CompressedBitsPerPixel",  // Compressed bits per pixel
+        0xA002: "PixelXDimension", // Valid width of meaningful image
+        0xA003: "PixelYDimension", // Valid height of meaningful image
+        0x9101: "ComponentsConfiguration", // Information about channels
+        0x9102: "CompressedBitsPerPixel", // Compressed bits per pixel
 
         // user information
-        0x927C : "MakerNote",               // Any desired information written by the manufacturer
-        0x9286 : "UserComment",             // Comments by user
+        0x927C: "MakerNote", // Any desired information written by the manufacturer
+        0x9286: "UserComment", // Comments by user
 
         // related file
-        0xA004 : "RelatedSoundFile",        // Name of related sound file
+        0xA004: "RelatedSoundFile", // Name of related sound file
 
         // date and time
-        0x9003 : "DateTimeOriginal",        // Date and time when the original image was generated
-        0x9004 : "DateTimeDigitized",       // Date and time when the image was stored digitally
-        0x9290 : "SubsecTime",              // Fractions of seconds for DateTime
-        0x9291 : "SubsecTimeOriginal",      // Fractions of seconds for DateTimeOriginal
-        0x9292 : "SubsecTimeDigitized",     // Fractions of seconds for DateTimeDigitized
+        0x9003: "DateTimeOriginal", // Date and time when the original image was generated
+        0x9004: "DateTimeDigitized", // Date and time when the image was stored digitally
+        0x9290: "SubsecTime", // Fractions of seconds for DateTime
+        0x9291: "SubsecTimeOriginal", // Fractions of seconds for DateTimeOriginal
+        0x9292: "SubsecTimeDigitized", // Fractions of seconds for DateTimeDigitized
 
         // picture-taking conditions
-        0x829A : "ExposureTime",            // Exposure time (in seconds)
-        0x829D : "FNumber",                 // F number
-        0x8822 : "ExposureProgram",         // Exposure program
-        0x8824 : "SpectralSensitivity",     // Spectral sensitivity
-        0x8827 : "ISOSpeedRatings",         // ISO speed rating
-        0x8828 : "OECF",                    // Optoelectric conversion factor
-        0x9201 : "ShutterSpeedValue",       // Shutter speed
-        0x9202 : "ApertureValue",           // Lens aperture
-        0x9203 : "BrightnessValue",         // Value of brightness
-        0x9204 : "ExposureBias",            // Exposure bias
-        0x9205 : "MaxApertureValue",        // Smallest F number of lens
-        0x9206 : "SubjectDistance",         // Distance to subject in meters
-        0x9207 : "MeteringMode",            // Metering mode
-        0x9208 : "LightSource",             // Kind of light source
-        0x9209 : "Flash",                   // Flash status
-        0x9214 : "SubjectArea",             // Location and area of main subject
-        0x920A : "FocalLength",             // Focal length of the lens in mm
-        0xA20B : "FlashEnergy",             // Strobe energy in BCPS
-        0xA20C : "SpatialFrequencyResponse",    //
-        0xA20E : "FocalPlaneXResolution",   // Number of pixels in width direction per FocalPlaneResolutionUnit
-        0xA20F : "FocalPlaneYResolution",   // Number of pixels in height direction per FocalPlaneResolutionUnit
-        0xA210 : "FocalPlaneResolutionUnit",    // Unit for measuring FocalPlaneXResolution and FocalPlaneYResolution
-        0xA214 : "SubjectLocation",         // Location of subject in image
-        0xA215 : "ExposureIndex",           // Exposure index selected on camera
-        0xA217 : "SensingMethod",           // Image sensor type
-        0xA300 : "FileSource",              // Image source (3 == DSC)
-        0xA301 : "SceneType",               // Scene type (1 == directly photographed)
-        0xA302 : "CFAPattern",              // Color filter array geometric pattern
-        0xA401 : "CustomRendered",          // Special processing
-        0xA402 : "ExposureMode",            // Exposure mode
-        0xA403 : "WhiteBalance",            // 1 = auto white balance, 2 = manual
-        0xA404 : "DigitalZoomRation",       // Digital zoom ratio
-        0xA405 : "FocalLengthIn35mmFilm",   // Equivalent foacl length assuming 35mm film camera (in mm)
-        0xA406 : "SceneCaptureType",        // Type of scene
-        0xA407 : "GainControl",             // Degree of overall image gain adjustment
-        0xA408 : "Contrast",                // Direction of contrast processing applied by camera
-        0xA409 : "Saturation",              // Direction of saturation processing applied by camera
-        0xA40A : "Sharpness",               // Direction of sharpness processing applied by camera
-        0xA40B : "DeviceSettingDescription",    //
-        0xA40C : "SubjectDistanceRange",    // Distance to subject
+        0x829A: "ExposureTime", // Exposure time (in seconds)
+        0x829D: "FNumber", // F number
+        0x8822: "ExposureProgram", // Exposure program
+        0x8824: "SpectralSensitivity", // Spectral sensitivity
+        0x8827: "ISOSpeedRatings", // ISO speed rating
+        0x8828: "OECF", // Optoelectric conversion factor
+        0x9201: "ShutterSpeedValue", // Shutter speed
+        0x9202: "ApertureValue", // Lens aperture
+        0x9203: "BrightnessValue", // Value of brightness
+        0x9204: "ExposureBias", // Exposure bias
+        0x9205: "MaxApertureValue", // Smallest F number of lens
+        0x9206: "SubjectDistance", // Distance to subject in meters
+        0x9207: "MeteringMode", // Metering mode
+        0x9208: "LightSource", // Kind of light source
+        0x9209: "Flash", // Flash status
+        0x9214: "SubjectArea", // Location and area of main subject
+        0x920A: "FocalLength", // Focal length of the lens in mm
+        0xA20B: "FlashEnergy", // Strobe energy in BCPS
+        0xA20C: "SpatialFrequencyResponse", //
+        0xA20E: "FocalPlaneXResolution", // Number of pixels in width direction per FocalPlaneResolutionUnit
+        0xA20F: "FocalPlaneYResolution", // Number of pixels in height direction per FocalPlaneResolutionUnit
+        0xA210: "FocalPlaneResolutionUnit", // Unit for measuring FocalPlaneXResolution and FocalPlaneYResolution
+        0xA214: "SubjectLocation", // Location of subject in image
+        0xA215: "ExposureIndex", // Exposure index selected on camera
+        0xA217: "SensingMethod", // Image sensor type
+        0xA300: "FileSource", // Image source (3 == DSC)
+        0xA301: "SceneType", // Scene type (1 == directly photographed)
+        0xA302: "CFAPattern", // Color filter array geometric pattern
+        0xA401: "CustomRendered", // Special processing
+        0xA402: "ExposureMode", // Exposure mode
+        0xA403: "WhiteBalance", // 1 = auto white balance, 2 = manual
+        0xA404: "DigitalZoomRation", // Digital zoom ratio
+        0xA405: "FocalLengthIn35mmFilm", // Equivalent foacl length assuming 35mm film camera (in mm)
+        0xA406: "SceneCaptureType", // Type of scene
+        0xA407: "GainControl", // Degree of overall image gain adjustment
+        0xA408: "Contrast", // Direction of contrast processing applied by camera
+        0xA409: "Saturation", // Direction of saturation processing applied by camera
+        0xA40A: "Sharpness", // Direction of sharpness processing applied by camera
+        0xA40B: "DeviceSettingDescription", //
+        0xA40C: "SubjectDistanceRange", // Distance to subject
 
         // other tags
-        0xA005 : "InteroperabilityIFDPointer",
-        0xA420 : "ImageUniqueID"            // Identifier assigned uniquely to each image
+        0xA005: "InteroperabilityIFDPointer",
+        0xA420: "ImageUniqueID" // Identifier assigned uniquely to each image
     };
 
     var TiffTags = EXIF.TiffTags = {
-        0x0100 : "ImageWidth",
-        0x0101 : "ImageHeight",
-        0x8769 : "ExifIFDPointer",
-        0x8825 : "GPSInfoIFDPointer",
-        0xA005 : "InteroperabilityIFDPointer",
-        0x0102 : "BitsPerSample",
-        0x0103 : "Compression",
-        0x0106 : "PhotometricInterpretation",
-        0x0112 : "Orientation",
-        0x0115 : "SamplesPerPixel",
-        0x011C : "PlanarConfiguration",
-        0x0212 : "YCbCrSubSampling",
-        0x0213 : "YCbCrPositioning",
-        0x011A : "XResolution",
-        0x011B : "YResolution",
-        0x0128 : "ResolutionUnit",
-        0x0111 : "StripOffsets",
-        0x0116 : "RowsPerStrip",
-        0x0117 : "StripByteCounts",
-        0x0201 : "JPEGInterchangeFormat",
-        0x0202 : "JPEGInterchangeFormatLength",
-        0x012D : "TransferFunction",
-        0x013E : "WhitePoint",
-        0x013F : "PrimaryChromaticities",
-        0x0211 : "YCbCrCoefficients",
-        0x0214 : "ReferenceBlackWhite",
-        0x0132 : "DateTime",
-        0x010E : "ImageDescription",
-        0x010F : "Make",
-        0x0110 : "Model",
-        0x0131 : "Software",
-        0x013B : "Artist",
-        0x8298 : "Copyright"
+        0x0100: "ImageWidth",
+        0x0101: "ImageHeight",
+        0x8769: "ExifIFDPointer",
+        0x8825: "GPSInfoIFDPointer",
+        0xA005: "InteroperabilityIFDPointer",
+        0x0102: "BitsPerSample",
+        0x0103: "Compression",
+        0x0106: "PhotometricInterpretation",
+        0x0112: "Orientation",
+        0x0115: "SamplesPerPixel",
+        0x011C: "PlanarConfiguration",
+        0x0212: "YCbCrSubSampling",
+        0x0213: "YCbCrPositioning",
+        0x011A: "XResolution",
+        0x011B: "YResolution",
+        0x0128: "ResolutionUnit",
+        0x0111: "StripOffsets",
+        0x0116: "RowsPerStrip",
+        0x0117: "StripByteCounts",
+        0x0201: "JPEGInterchangeFormat",
+        0x0202: "JPEGInterchangeFormatLength",
+        0x012D: "TransferFunction",
+        0x013E: "WhitePoint",
+        0x013F: "PrimaryChromaticities",
+        0x0211: "YCbCrCoefficients",
+        0x0214: "ReferenceBlackWhite",
+        0x0132: "DateTime",
+        0x010E: "ImageDescription",
+        0x010F: "Make",
+        0x0110: "Model",
+        0x0131: "Software",
+        0x013B: "Artist",
+        0x8298: "Copyright"
     };
 
     var GPSTags = EXIF.GPSTags = {
-        0x0000 : "GPSVersionID",
-        0x0001 : "GPSLatitudeRef",
-        0x0002 : "GPSLatitude",
-        0x0003 : "GPSLongitudeRef",
-        0x0004 : "GPSLongitude",
-        0x0005 : "GPSAltitudeRef",
-        0x0006 : "GPSAltitude",
-        0x0007 : "GPSTimeStamp",
-        0x0008 : "GPSSatellites",
-        0x0009 : "GPSStatus",
-        0x000A : "GPSMeasureMode",
-        0x000B : "GPSDOP",
-        0x000C : "GPSSpeedRef",
-        0x000D : "GPSSpeed",
-        0x000E : "GPSTrackRef",
-        0x000F : "GPSTrack",
-        0x0010 : "GPSImgDirectionRef",
-        0x0011 : "GPSImgDirection",
-        0x0012 : "GPSMapDatum",
-        0x0013 : "GPSDestLatitudeRef",
-        0x0014 : "GPSDestLatitude",
-        0x0015 : "GPSDestLongitudeRef",
-        0x0016 : "GPSDestLongitude",
-        0x0017 : "GPSDestBearingRef",
-        0x0018 : "GPSDestBearing",
-        0x0019 : "GPSDestDistanceRef",
-        0x001A : "GPSDestDistance",
-        0x001B : "GPSProcessingMethod",
-        0x001C : "GPSAreaInformation",
-        0x001D : "GPSDateStamp",
-        0x001E : "GPSDifferential"
+        0x0000: "GPSVersionID",
+        0x0001: "GPSLatitudeRef",
+        0x0002: "GPSLatitude",
+        0x0003: "GPSLongitudeRef",
+        0x0004: "GPSLongitude",
+        0x0005: "GPSAltitudeRef",
+        0x0006: "GPSAltitude",
+        0x0007: "GPSTimeStamp",
+        0x0008: "GPSSatellites",
+        0x0009: "GPSStatus",
+        0x000A: "GPSMeasureMode",
+        0x000B: "GPSDOP",
+        0x000C: "GPSSpeedRef",
+        0x000D: "GPSSpeed",
+        0x000E: "GPSTrackRef",
+        0x000F: "GPSTrack",
+        0x0010: "GPSImgDirectionRef",
+        0x0011: "GPSImgDirection",
+        0x0012: "GPSMapDatum",
+        0x0013: "GPSDestLatitudeRef",
+        0x0014: "GPSDestLatitude",
+        0x0015: "GPSDestLongitudeRef",
+        0x0016: "GPSDestLongitude",
+        0x0017: "GPSDestBearingRef",
+        0x0018: "GPSDestBearing",
+        0x0019: "GPSDestDistanceRef",
+        0x001A: "GPSDestDistance",
+        0x001B: "GPSProcessingMethod",
+        0x001C: "GPSAreaInformation",
+        0x001D: "GPSDateStamp",
+        0x001E: "GPSDifferential"
     };
 
     var StringValues = EXIF.StringValues = {
-        ExposureProgram : {
-            0 : "Not defined",
-            1 : "Manual",
-            2 : "Normal program",
-            3 : "Aperture priority",
-            4 : "Shutter priority",
-            5 : "Creative program",
-            6 : "Action program",
-            7 : "Portrait mode",
-            8 : "Landscape mode"
+        ExposureProgram: {
+            0: "Not defined",
+            1: "Manual",
+            2: "Normal program",
+            3: "Aperture priority",
+            4: "Shutter priority",
+            5: "Creative program",
+            6: "Action program",
+            7: "Portrait mode",
+            8: "Landscape mode"
         },
-        MeteringMode : {
-            0 : "Unknown",
-            1 : "Average",
-            2 : "CenterWeightedAverage",
-            3 : "Spot",
-            4 : "MultiSpot",
-            5 : "Pattern",
-            6 : "Partial",
-            255 : "Other"
+        MeteringMode: {
+            0: "Unknown",
+            1: "Average",
+            2: "CenterWeightedAverage",
+            3: "Spot",
+            4: "MultiSpot",
+            5: "Pattern",
+            6: "Partial",
+            255: "Other"
         },
-        LightSource : {
-            0 : "Unknown",
-            1 : "Daylight",
-            2 : "Fluorescent",
-            3 : "Tungsten (incandescent light)",
-            4 : "Flash",
-            9 : "Fine weather",
-            10 : "Cloudy weather",
-            11 : "Shade",
-            12 : "Daylight fluorescent (D 5700 - 7100K)",
-            13 : "Day white fluorescent (N 4600 - 5400K)",
-            14 : "Cool white fluorescent (W 3900 - 4500K)",
-            15 : "White fluorescent (WW 3200 - 3700K)",
-            17 : "Standard light A",
-            18 : "Standard light B",
-            19 : "Standard light C",
-            20 : "D55",
-            21 : "D65",
-            22 : "D75",
-            23 : "D50",
-            24 : "ISO studio tungsten",
-            255 : "Other"
+        LightSource: {
+            0: "Unknown",
+            1: "Daylight",
+            2: "Fluorescent",
+            3: "Tungsten (incandescent light)",
+            4: "Flash",
+            9: "Fine weather",
+            10: "Cloudy weather",
+            11: "Shade",
+            12: "Daylight fluorescent (D 5700 - 7100K)",
+            13: "Day white fluorescent (N 4600 - 5400K)",
+            14: "Cool white fluorescent (W 3900 - 4500K)",
+            15: "White fluorescent (WW 3200 - 3700K)",
+            17: "Standard light A",
+            18: "Standard light B",
+            19: "Standard light C",
+            20: "D55",
+            21: "D65",
+            22: "D75",
+            23: "D50",
+            24: "ISO studio tungsten",
+            255: "Other"
         },
-        Flash : {
-            0x0000 : "Flash did not fire",
-            0x0001 : "Flash fired",
-            0x0005 : "Strobe return light not detected",
-            0x0007 : "Strobe return light detected",
-            0x0009 : "Flash fired, compulsory flash mode",
-            0x000D : "Flash fired, compulsory flash mode, return light not detected",
-            0x000F : "Flash fired, compulsory flash mode, return light detected",
-            0x0010 : "Flash did not fire, compulsory flash mode",
-            0x0018 : "Flash did not fire, auto mode",
-            0x0019 : "Flash fired, auto mode",
-            0x001D : "Flash fired, auto mode, return light not detected",
-            0x001F : "Flash fired, auto mode, return light detected",
-            0x0020 : "No flash function",
-            0x0041 : "Flash fired, red-eye reduction mode",
-            0x0045 : "Flash fired, red-eye reduction mode, return light not detected",
-            0x0047 : "Flash fired, red-eye reduction mode, return light detected",
-            0x0049 : "Flash fired, compulsory flash mode, red-eye reduction mode",
-            0x004D : "Flash fired, compulsory flash mode, red-eye reduction mode, return light not detected",
-            0x004F : "Flash fired, compulsory flash mode, red-eye reduction mode, return light detected",
-            0x0059 : "Flash fired, auto mode, red-eye reduction mode",
-            0x005D : "Flash fired, auto mode, return light not detected, red-eye reduction mode",
-            0x005F : "Flash fired, auto mode, return light detected, red-eye reduction mode"
+        Flash: {
+            0x0000: "Flash did not fire",
+            0x0001: "Flash fired",
+            0x0005: "Strobe return light not detected",
+            0x0007: "Strobe return light detected",
+            0x0009: "Flash fired, compulsory flash mode",
+            0x000D: "Flash fired, compulsory flash mode, return light not detected",
+            0x000F: "Flash fired, compulsory flash mode, return light detected",
+            0x0010: "Flash did not fire, compulsory flash mode",
+            0x0018: "Flash did not fire, auto mode",
+            0x0019: "Flash fired, auto mode",
+            0x001D: "Flash fired, auto mode, return light not detected",
+            0x001F: "Flash fired, auto mode, return light detected",
+            0x0020: "No flash function",
+            0x0041: "Flash fired, red-eye reduction mode",
+            0x0045: "Flash fired, red-eye reduction mode, return light not detected",
+            0x0047: "Flash fired, red-eye reduction mode, return light detected",
+            0x0049: "Flash fired, compulsory flash mode, red-eye reduction mode",
+            0x004D: "Flash fired, compulsory flash mode, red-eye reduction mode, return light not detected",
+            0x004F: "Flash fired, compulsory flash mode, red-eye reduction mode, return light detected",
+            0x0059: "Flash fired, auto mode, red-eye reduction mode",
+            0x005D: "Flash fired, auto mode, return light not detected, red-eye reduction mode",
+            0x005F: "Flash fired, auto mode, return light detected, red-eye reduction mode"
         },
-        SensingMethod : {
-            1 : "Not defined",
-            2 : "One-chip color area sensor",
-            3 : "Two-chip color area sensor",
-            4 : "Three-chip color area sensor",
-            5 : "Color sequential area sensor",
-            7 : "Trilinear sensor",
-            8 : "Color sequential linear sensor"
+        SensingMethod: {
+            1: "Not defined",
+            2: "One-chip color area sensor",
+            3: "Two-chip color area sensor",
+            4: "Three-chip color area sensor",
+            5: "Color sequential area sensor",
+            7: "Trilinear sensor",
+            8: "Color sequential linear sensor"
         },
-        SceneCaptureType : {
-            0 : "Standard",
-            1 : "Landscape",
-            2 : "Portrait",
-            3 : "Night scene"
+        SceneCaptureType: {
+            0: "Standard",
+            1: "Landscape",
+            2: "Portrait",
+            3: "Night scene"
         },
-        SceneType : {
-            1 : "Directly photographed"
+        SceneType: {
+            1: "Directly photographed"
         },
-        CustomRendered : {
-            0 : "Normal process",
-            1 : "Custom process"
+        CustomRendered: {
+            0: "Normal process",
+            1: "Custom process"
         },
-        WhiteBalance : {
-            0 : "Auto white balance",
-            1 : "Manual white balance"
+        WhiteBalance: {
+            0: "Auto white balance",
+            1: "Manual white balance"
         },
-        GainControl : {
-            0 : "None",
-            1 : "Low gain up",
-            2 : "High gain up",
-            3 : "Low gain down",
-            4 : "High gain down"
+        GainControl: {
+            0: "None",
+            1: "Low gain up",
+            2: "High gain up",
+            3: "Low gain down",
+            4: "High gain down"
         },
-        Contrast : {
-            0 : "Normal",
-            1 : "Soft",
-            2 : "Hard"
+        Contrast: {
+            0: "Normal",
+            1: "Soft",
+            2: "Hard"
         },
-        Saturation : {
-            0 : "Normal",
-            1 : "Low saturation",
-            2 : "High saturation"
+        Saturation: {
+            0: "Normal",
+            1: "Low saturation",
+            2: "High saturation"
         },
-        Sharpness : {
-            0 : "Normal",
-            1 : "Soft",
-            2 : "Hard"
+        Sharpness: {
+            0: "Normal",
+            1: "Soft",
+            2: "Hard"
         },
-        SubjectDistanceRange : {
-            0 : "Unknown",
-            1 : "Macro",
-            2 : "Close view",
-            3 : "Distant view"
+        SubjectDistanceRange: {
+            0: "Unknown",
+            1: "Macro",
+            2: "Close view",
+            3: "Distant view"
         },
-        FileSource : {
-            3 : "DSC"
+        FileSource: {
+            3: "DSC"
         },
 
-        Components : {
-            0 : "",
-            1 : "Y",
-            2 : "Cb",
-            3 : "Cr",
-            4 : "R",
-            5 : "G",
-            6 : "B"
+        Components: {
+            0: "",
+            1: "Y",
+            2: "Cb",
+            3: "Cr",
+            4: "R",
+            5: "G",
+            6: "B"
         }
     };
 
@@ -1688,7 +1689,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 fileReader.onload = function(e) {
                     handleBinaryFile(e.target.result);
                 };
-                objectURLToBlob(img.src, function (blob) {
+                objectURLToBlob(img.src, function(blob) {
                     fileReader.readAsArrayBuffer(blob);
                 });
             } else {
@@ -1760,7 +1761,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 // offset += 2 + file.getShortAt(offset+2, true);
 
             } else {
-                offset += 2 + dataView.getUint16(offset+2);
+                offset += 2 + dataView.getUint16(offset + 2);
             }
 
         }
@@ -1780,26 +1781,26 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             length = file.byteLength;
 
 
-        var isFieldSegmentStart = function(dataView, offset){
+        var isFieldSegmentStart = function(dataView, offset) {
             return (
                 dataView.getUint8(offset) === 0x38 &&
-                dataView.getUint8(offset+1) === 0x42 &&
-                dataView.getUint8(offset+2) === 0x49 &&
-                dataView.getUint8(offset+3) === 0x4D &&
-                dataView.getUint8(offset+4) === 0x04 &&
-                dataView.getUint8(offset+5) === 0x04
+                dataView.getUint8(offset + 1) === 0x42 &&
+                dataView.getUint8(offset + 2) === 0x49 &&
+                dataView.getUint8(offset + 3) === 0x4D &&
+                dataView.getUint8(offset + 4) === 0x04 &&
+                dataView.getUint8(offset + 5) === 0x04
             );
         };
 
         while (offset < length) {
 
-            if ( isFieldSegmentStart(dataView, offset )){
+            if (isFieldSegmentStart(dataView, offset)) {
 
                 // Get the length of the name header (which is padded to an even number of bytes)
-                var nameHeaderLength = dataView.getUint8(offset+7);
-                if(nameHeaderLength % 2 !== 0) nameHeaderLength += 1;
+                var nameHeaderLength = dataView.getUint8(offset + 7);
+                if (nameHeaderLength % 2 !== 0) nameHeaderLength += 1;
                 // Check for pre photoshop 6 format
-                if(nameHeaderLength === 0) {
+                if (nameHeaderLength === 0) {
                     // Always 4
                     nameHeaderLength = 4;
                 }
@@ -1821,41 +1822,40 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
     }
     var IptcFieldMap = {
-        0x78 : 'caption',
-        0x6E : 'credit',
-        0x19 : 'keywords',
-        0x37 : 'dateCreated',
-        0x50 : 'byline',
-        0x55 : 'bylineTitle',
-        0x7A : 'captionWriter',
-        0x69 : 'headline',
-        0x74 : 'copyright',
-        0x0F : 'category'
+        0x78: 'caption',
+        0x6E: 'credit',
+        0x19: 'keywords',
+        0x37: 'dateCreated',
+        0x50: 'byline',
+        0x55: 'bylineTitle',
+        0x7A: 'captionWriter',
+        0x69: 'headline',
+        0x74: 'copyright',
+        0x0F: 'category'
     };
-    function readIPTCData(file, startOffset, sectionLength){
+
+    function readIPTCData(file, startOffset, sectionLength) {
         var dataView = new DataView(file);
         var data = {};
         var fieldValue, fieldName, dataSize, segmentType, segmentSize;
         var segmentStartPos = startOffset;
-        while(segmentStartPos < startOffset+sectionLength) {
-            if(dataView.getUint8(segmentStartPos) === 0x1C && dataView.getUint8(segmentStartPos+1) === 0x02){
-                segmentType = dataView.getUint8(segmentStartPos+2);
-                if(segmentType in IptcFieldMap) {
-                    dataSize = dataView.getInt16(segmentStartPos+3);
+        while (segmentStartPos < startOffset + sectionLength) {
+            if (dataView.getUint8(segmentStartPos) === 0x1C && dataView.getUint8(segmentStartPos + 1) === 0x02) {
+                segmentType = dataView.getUint8(segmentStartPos + 2);
+                if (segmentType in IptcFieldMap) {
+                    dataSize = dataView.getInt16(segmentStartPos + 3);
                     segmentSize = dataSize + 5;
                     fieldName = IptcFieldMap[segmentType];
-                    fieldValue = getStringFromDB(dataView, segmentStartPos+5, dataSize);
+                    fieldValue = getStringFromDB(dataView, segmentStartPos + 5, dataSize);
                     // Check if we already stored a value with this name
-                    if(data.hasOwnProperty(fieldName)) {
+                    if (data.hasOwnProperty(fieldName)) {
                         // Value already stored with this name, create multivalue field
-                        if(data[fieldName] instanceof Array) {
+                        if (data[fieldName] instanceof Array) {
                             data[fieldName].push(fieldValue);
-                        }
-                        else {
+                        } else {
                             data[fieldName] = [data[fieldName], fieldValue];
                         }
-                    }
-                    else {
+                    } else {
                         data[fieldName] = fieldValue;
                     }
                 }
@@ -1874,8 +1874,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             entryOffset, tag,
             i;
 
-        for (i=0;i<entries;i++) {
-            entryOffset = dirStart + i*12 + 2;
+        for (i = 0; i < entries; i++) {
+            entryOffset = dirStart + i * 12 + 2;
             tag = strings[file.getUint16(entryOffset, !bigEnd)];
             if (!tag && debug) console.log("Unknown tag: " + file.getUint16(entryOffset, !bigEnd));
             tags[tag] = readTagValue(file, entryOffset, tiffStart, dirStart, bigEnd);
@@ -1885,9 +1885,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
     function readTagValue(file, entryOffset, tiffStart, dirStart, bigEnd) {
-        var type = file.getUint16(entryOffset+2, !bigEnd),
-            numValues = file.getUint32(entryOffset+4, !bigEnd),
-            valueOffset = file.getUint32(entryOffset+8, !bigEnd) + tiffStart,
+        var type = file.getUint16(entryOffset + 2, !bigEnd),
+            numValues = file.getUint32(entryOffset + 4, !bigEnd),
+            valueOffset = file.getUint32(entryOffset + 8, !bigEnd) + tiffStart,
             offset,
             vals, val, n,
             numerator, denominator;
@@ -1900,7 +1900,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 } else {
                     offset = numValues > 4 ? valueOffset : (entryOffset + 8);
                     vals = [];
-                    for (n=0;n<numValues;n++) {
+                    for (n = 0; n < numValues; n++) {
                         vals[n] = file.getUint8(offset + n);
                     }
                     return vals;
@@ -1908,7 +1908,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
             case 2: // ascii, 8-bit byte
                 offset = numValues > 4 ? valueOffset : (entryOffset + 8);
-                return getStringFromDB(file, offset, numValues-1);
+                return getStringFromDB(file, offset, numValues - 1);
 
             case 3: // short, 16 bit int
                 if (numValues == 1) {
@@ -1916,8 +1916,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 } else {
                     offset = numValues > 2 ? valueOffset : (entryOffset + 8);
                     vals = [];
-                    for (n=0;n<numValues;n++) {
-                        vals[n] = file.getUint16(offset + 2*n, !bigEnd);
+                    for (n = 0; n < numValues; n++) {
+                        vals[n] = file.getUint16(offset + 2 * n, !bigEnd);
                     }
                     return vals;
                 }
@@ -1927,25 +1927,25 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     return file.getUint32(entryOffset + 8, !bigEnd);
                 } else {
                     vals = [];
-                    for (n=0;n<numValues;n++) {
-                        vals[n] = file.getUint32(valueOffset + 4*n, !bigEnd);
+                    for (n = 0; n < numValues; n++) {
+                        vals[n] = file.getUint32(valueOffset + 4 * n, !bigEnd);
                     }
                     return vals;
                 }
 
-            case 5:    // rational = two long values, first is numerator, second is denominator
+            case 5: // rational = two long values, first is numerator, second is denominator
                 if (numValues == 1) {
                     numerator = file.getUint32(valueOffset, !bigEnd);
-                    denominator = file.getUint32(valueOffset+4, !bigEnd);
+                    denominator = file.getUint32(valueOffset + 4, !bigEnd);
                     val = new Number(numerator / denominator);
                     val.numerator = numerator;
                     val.denominator = denominator;
                     return val;
                 } else {
                     vals = [];
-                    for (n=0;n<numValues;n++) {
-                        numerator = file.getUint32(valueOffset + 8*n, !bigEnd);
-                        denominator = file.getUint32(valueOffset+4 + 8*n, !bigEnd);
+                    for (n = 0; n < numValues; n++) {
+                        numerator = file.getUint32(valueOffset + 8 * n, !bigEnd);
+                        denominator = file.getUint32(valueOffset + 4 + 8 * n, !bigEnd);
                         vals[n] = new Number(numerator / denominator);
                         vals[n].numerator = numerator;
                         vals[n].denominator = denominator;
@@ -1958,19 +1958,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     return file.getInt32(entryOffset + 8, !bigEnd);
                 } else {
                     vals = [];
-                    for (n=0;n<numValues;n++) {
-                        vals[n] = file.getInt32(valueOffset + 4*n, !bigEnd);
+                    for (n = 0; n < numValues; n++) {
+                        vals[n] = file.getInt32(valueOffset + 4 * n, !bigEnd);
                     }
                     return vals;
                 }
 
             case 10: // signed rational, two slongs, first is numerator, second is denominator
                 if (numValues == 1) {
-                    return file.getInt32(valueOffset, !bigEnd) / file.getInt32(valueOffset+4, !bigEnd);
+                    return file.getInt32(valueOffset, !bigEnd) / file.getInt32(valueOffset + 4, !bigEnd);
                 } else {
                     vals = [];
-                    for (n=0;n<numValues;n++) {
-                        vals[n] = file.getInt32(valueOffset + 8*n, !bigEnd) / file.getInt32(valueOffset+4 + 8*n, !bigEnd);
+                    for (n = 0; n < numValues; n++) {
+                        vals[n] = file.getInt32(valueOffset + 8 * n, !bigEnd) / file.getInt32(valueOffset + 4 + 8 * n, !bigEnd);
                     }
                     return vals;
                 }
@@ -1979,7 +1979,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
     function getStringFromDB(buffer, start, length) {
         var outstr = "";
-        for (n = start; n < start+length; n++) {
+        for (n = start; n < start + length; n++) {
             outstr += String.fromCharCode(buffer.getUint8(n));
         }
         return outstr;
@@ -2006,15 +2006,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             return false;
         }
 
-        if (file.getUint16(tiffOffset+2, !bigEnd) != 0x002A) {
+        if (file.getUint16(tiffOffset + 2, !bigEnd) != 0x002A) {
             if (debug) console.log("Not valid TIFF data! (no 0x002A)");
             return false;
         }
 
-        var firstIFDOffset = file.getUint32(tiffOffset+4, !bigEnd);
+        var firstIFDOffset = file.getUint32(tiffOffset + 4, !bigEnd);
 
         if (firstIFDOffset < 0x00000008) {
-            if (debug) console.log("Not valid TIFF data! (First offset less than 8)", file.getUint32(tiffOffset+4, !bigEnd));
+            if (debug) console.log("Not valid TIFF data! (First offset less than 8)", file.getUint32(tiffOffset + 4, !bigEnd));
             return false;
         }
 
@@ -2024,30 +2024,30 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             exifData = readTags(file, tiffOffset, tiffOffset + tags.ExifIFDPointer, ExifTags, bigEnd);
             for (tag in exifData) {
                 switch (tag) {
-                    case "LightSource" :
-                    case "Flash" :
-                    case "MeteringMode" :
-                    case "ExposureProgram" :
-                    case "SensingMethod" :
-                    case "SceneCaptureType" :
-                    case "SceneType" :
-                    case "CustomRendered" :
-                    case "WhiteBalance" :
-                    case "GainControl" :
-                    case "Contrast" :
-                    case "Saturation" :
-                    case "Sharpness" :
-                    case "SubjectDistanceRange" :
-                    case "FileSource" :
+                    case "LightSource":
+                    case "Flash":
+                    case "MeteringMode":
+                    case "ExposureProgram":
+                    case "SensingMethod":
+                    case "SceneCaptureType":
+                    case "SceneType":
+                    case "CustomRendered":
+                    case "WhiteBalance":
+                    case "GainControl":
+                    case "Contrast":
+                    case "Saturation":
+                    case "Sharpness":
+                    case "SubjectDistanceRange":
+                    case "FileSource":
                         exifData[tag] = StringValues[tag][exifData[tag]];
                         break;
 
-                    case "ExifVersion" :
-                    case "FlashpixVersion" :
+                    case "ExifVersion":
+                    case "FlashpixVersion":
                         exifData[tag] = String.fromCharCode(exifData[tag][0], exifData[tag][1], exifData[tag][2], exifData[tag][3]);
                         break;
 
-                    case "ComponentsConfiguration" :
+                    case "ComponentsConfiguration":
                         exifData[tag] =
                             StringValues.Components[exifData[tag][0]] +
                             StringValues.Components[exifData[tag][1]] +
@@ -2063,7 +2063,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             gpsData = readTags(file, tiffOffset, tiffOffset + tags.GPSInfoIFDPointer, GPSTags, bigEnd);
             for (tag in gpsData) {
                 switch (tag) {
-                    case "GPSVersionID" :
+                    case "GPSVersionID":
                         gpsData[tag] = gpsData[tag][0] +
                             "." + gpsData[tag][1] +
                             "." + gpsData[tag][2] +
@@ -2140,4 +2140,3 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     }
 }.call(this));
 // -- https://github.com/exif-js/exif-js
-
