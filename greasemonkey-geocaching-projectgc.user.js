@@ -1009,7 +1009,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
         if (IsSettingEnabled('logbookLinks')) {
-            console.log($('#ctl00_ContentBody_uxLogbookLink'));
+            // 2022-08-24, fixes #112: Extra single quote showing up in LogBookLinks near "Friends".
             $('\
                 <span>&nbsp;|&nbsp;</span><a id="pgc-logbook-yours" href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-2">Yours</a>\
                 <span>&nbsp;|&nbsp;</span><a href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-3">Friends</a>\
