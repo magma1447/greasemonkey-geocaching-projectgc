@@ -855,7 +855,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         }
 
         // If the first log is a DNF, display a blue warning on top of the page
-        if($('#cache_logs_table tr:first td div.LogDisplayRight strong img').attr('src') === '/images/logtypes/3.png') {
+        // 2022-08-24, Issue #111, fixes display of blue text warning of last log is DNF.
+        if ($('#cache_logs_table span.h4 img').attr('src') === '/images/logtypes/3.png') {
             var htmlFirstLogDnf = '<p style="color: #006cff;" class=" NoBottomSpacing"><strong>Cache Issues:</strong></p>\
                         <ul style="color: #006cff;" class="">\
                             <li>The latest log for this cache is a DNF, <a href="#cache_logs_table">please read the log</a> before your own search.</li>\
