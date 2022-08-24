@@ -17,7 +17,7 @@
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
-// @version     2.3.14
+// @version     2.3.15
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require	https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -855,7 +855,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         }
 
         // If the first log is a DNF, display a blue warning on top of the page
-        if($('#cache_logs_table tr:first td div.LogDisplayRight strong img').attr('src') === '/images/logtypes/3.png') {
+        // 2022-08-24, Issue #111, fixes display of blue text warning of last log is DNF.
+        if ($('#cache_logs_table span.h4 img').attr('src') === '/images/logtypes/3.png') {
             var htmlFirstLogDnf = '<p style="color: #006cff;" class=" NoBottomSpacing"><strong>Cache Issues:</strong></p>\
                         <ul style="color: #006cff;" class="">\
                             <li>The latest log for this cache is a DNF, <a href="#cache_logs_table">please read the log</a> before your own search.</li>\
@@ -1008,9 +1009,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
         if (IsSettingEnabled('logbookLinks')) {
+            // 2022-08-24, fixes #112: Extra single quote showing up in LogBookLinks near "Friends".
             $('\
                 <span>&nbsp;|&nbsp;</span><a id="pgc-logbook-yours" href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-2">Yours</a>\
-                <span>&nbsp;|&nbsp;</span><a href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-3">Friends\'</a>\
+                <span>&nbsp;|&nbsp;</span><a href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-3">Friends</a>\
                 ').insertAfter( $('#ctl00_ContentBody_uxLogbookLink') );
         }
     }
@@ -1079,7 +1081,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
         // Save to latest logs
         if (latestLogs.length < 5) {
-            var node = $(jNode).find('div.HalfLeft.LogType h4 img[src]'),
+            // 2022-08-23, Issue #109: Fix for latestLogs, using span instead of div.
+            var node = $(jNode).find('span.h4 img[src]'),
                 logType = {};
 
             if (node.length === 0)
