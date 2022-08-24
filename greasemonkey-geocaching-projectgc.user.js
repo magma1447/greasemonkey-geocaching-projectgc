@@ -1079,7 +1079,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
         // Save to latest logs
         if (latestLogs.length < 5) {
-            var node = $(jNode).find('div.HalfLeft.LogType h4 img[src]'),
+            // 2022-08-23, Issue #109: Fix for latestLogs, using span instead of div.
+            var node = $(jNode).find('span.h4 img[src]'),
                 logType = {};
 
             if (node.length === 0)
