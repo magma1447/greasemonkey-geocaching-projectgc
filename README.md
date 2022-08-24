@@ -48,4 +48,5 @@ The client side script (this script) is MIT licensed (license file commited in r
 ## Credits
 * Idea and initial work: Jonas "lillfiluren" Högström.
 * Cleanup and actually make things work properly (cross browser compatible): "Surfoo".
+* Smashing bugs and working with community: [Greg Jewett (jewettg)](https://github.com/jewettg)
 * Other contributors, https://github.com/magma1447/greasemonkey-geocaching-projectgc/graphs/contributors
