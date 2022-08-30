@@ -66,6 +66,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         loggedIn = null,
         subscription = null,
         pgcUsername = null,
+		// fix 08/30/2022, Issue 113, imperialUnits boolean flag is now returned with the GetMyUsername to be used for elevation units.
+        imperialFlag = null, 
         gccomUsername = null,
         latestLogs = [],
         latestLogsAlert = false,
@@ -122,7 +124,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 default: true
             },
             addPgcMapLinks: {
-                title: 'Add PGC map links',
+                // title: 'Add PGC map links',
+				title: 'Add link to Project-GC live map',
                 default: true
             },
             addLatestLogs: {
@@ -135,7 +138,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             },
             addPGCLocation: {
                 title: 'Add PGC Location',
-                default: true
+				title: 'Add location from Project-GC',
+				default: true
             },
             addAddress: {
                 title: 'Add OSM reverse geocoded address',
@@ -146,7 +150,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 default: true
             },
             addPgcFp: {
-                title: 'Add FP from PGC',
+                // title: 'Add FP from PGC',
+				title: 'Add Favorite Points from Project-GC',
                 default: true
             },
             showWeekday: {
@@ -166,7 +171,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 default: false
             },
             addPgcGalleryLinks: {
-                title: 'Add links to PGC gallery',
+                // title: 'Add links to PGC gallery',
+				title: 'Add links to gallery',
                 default: true
             },
             addMapBookmarkListLinks: {
@@ -181,20 +187,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 title: 'Add elevation',
                 default: true
             },
-            imperial: {
-                title: 'Use imperial units',
-                default: false
-            },
+			// Fix 08/30/2022, Issue 113 - Units of Elevation are now determined automatically from the Settings in Project-GC, 
+            //     not this script.
+            // imperial: {
+            //    title: 'Use imperial units',
+            //    default: false
+            // },
             removeDisclaimer: {
                 title: 'Remove disclaimer',
-                default: false
+				// default: false
+				default: true
             },
             parseExifLocation: {
                 title: 'Parse Exif location',
                 default: true
             },
             addGeocacheLogsPerProfileCountry: {
-                title: 'Geocachelogs per profile country',
+                // title: 'Geocachelogs per profile country',
+				title: 'Add found logs per country'
                 default: true
             },
             openDraftLogInSameWindow: {
@@ -272,8 +282,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
     function FormatDistance(distance) {
         distance = parseInt(distance, 10);
-        distance = IsSettingEnabled('imperial') ? MetersToFeet(distance) : distance;
-        distance = distance.toLocaleString();
+		// fix 08/30/2022, Issue 113
+        // distance = IsSettingEnabled('imperial') ? MetersToFeet(distance) : distance;
+        distance = imperialFlag ? MetersToFeet(distance) : distance;
+		distance = distance.toLocaleString();
 
         return distance;
     }
@@ -339,6 +351,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 }
 
                 pgcUsername = result.data.username;
+				// fix 8/25/2022, Issue 113, imperialUnits boolean flag is now returned with the GetMyUsername to be used for units (ft or m) of elevation.
+                // and the imperial flag setting in the PGC script settings menu is removed.
+                imperialFlag = result.data.imperialUnits;
                 loggedIn = Boolean(result.data.loggedIn);
                 subscription = Boolean(result.data.subscription);
 
@@ -371,6 +386,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             subscriptionContent = '<a href="https://project-gc.com/Home/Membership" target="_blank">' + (subscription ? 'Paid' : 'Missing') + ' membership</a>';
         }
 
+        // Fix 08/30/2022, Issue 113 - "19rem" changed to "1rem" below to align the Setting Menu into the center of the page.  
         GM_addStyle('\
         #pgc .player-profile, #pgc_gclh .li-user-info {width: auto;}\
         #pgc .player-profile:hover {text-decoration: none;}\
@@ -383,7 +399,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         #pgcUserMenuForm input[type="checkbox"], #pgcUserMenuForm_gclh input[type="checkbox"] { opacity: inherit; width: inherit; height:inherit; overflow:inherit; position:inherit; }\
         #pgcUserMenuForm button, #pgcUserMenuForm_gclh button { display: inline-block !important; background: #ede5dc url(images/ui-bg_flat_100_ede5dc_40x100.png) 50% 50% repeat-x !important; border: 1px solid #cab6a3 !important; border-radius: 4px; color: #584528 !important; text-decoration: none; width: auto !important; font-size: 14px; padding: 4px 6px !important;}\
         #pgcUserMenuForm button:hover, #pgcUserMenuForm_gclh button:hover { background: #e4d8cb url(images/ui-bgflag_100_e4d8cb_40x100.png) 50% 50% repeat-x !important; }\
-        #pgcUserMenu, #pgcUserMenu_gclh { right: 19rem;  }\
+        #pgcUserMenu, #pgcUserMenu_gclh { right: 1rem;  }\
         #pgcUserMenu > form, #pgcUserMenu_gclh > form { background-color: white; color: #5f452a; }\
         .profile-panel .li-user-info {min-width: 160px;}\
         ');
@@ -668,7 +684,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                         // Add elevation (Metres above mean sea level = mamsl)
                         if (IsSettingEnabled('addElevation')) {
                             var formattedElevation = FormatDistance(cacheData.elevation),
-                                elevationUnit = IsSettingEnabled('imperial') ? 'ft' : 'm',
+							    // fix 8/30/2022, Issue 113
+                                // elevationUnit = IsSettingEnabled('imperial') ? 'ft' : 'm',
+								elevationUnit = imperialFlag ? 'ft' : 'm',
                                 elevationArrow = (cacheData.elevation >= 0) ? '&#x21a5;' : '&#x21a7;';
                             elevation = formattedElevation + ' ' + elevationUnit + ' ' + elevationArrow;
 
