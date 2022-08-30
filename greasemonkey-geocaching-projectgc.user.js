@@ -7,6 +7,8 @@
 // jshint newcap:false
 // jshint multistr:true
 
+
+// Ricks Change
 // ==UserScript==
 // @author	Ground Zero Communications AB
 // @license     The MIT License (MIT)
