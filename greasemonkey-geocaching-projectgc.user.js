@@ -66,7 +66,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         loggedIn = null,
         subscription = null,
         pgcUsername = null,
-		// fix 08/30/2022, Issue 113, imperialUnits boolean flag is now returned with the GetMyUsername to be used for elevation units.
+		// Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
         imperialFlag = null, 
         gccomUsername = null,
         latestLogs = [],
@@ -124,8 +124,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 default: true
             },
             addPgcMapLinks: {
-                // title: 'Add PGC map links',
-				title: 'Add link to Project-GC live map',
+                title: 'Add link to Project-GC live map',
                 default: true
             },
             addLatestLogs: {
@@ -137,8 +136,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 default: true
             },
             addPGCLocation: {
-                title: 'Add PGC Location',
-				title: 'Add location from Project-GC',
+                title: 'Add location from Project-GC',
 				default: true
             },
             addAddress: {
@@ -150,8 +148,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 default: true
             },
             addPgcFp: {
-                // title: 'Add FP from PGC',
-				title: 'Add Favorite Points from Project-GC',
+                title: 'Add Favorite Points from Project-GC',
                 default: true
             },
             showWeekday: {
@@ -171,8 +168,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 default: false
             },
             addPgcGalleryLinks: {
-                // title: 'Add links to PGC gallery',
-				title: 'Add links to gallery',
+             	title: 'Add links to gallery',
                 default: true
             },
             addMapBookmarkListLinks: {
@@ -187,24 +183,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 title: 'Add elevation',
                 default: true
             },
-			// Fix 08/30/2022, Issue 113 - Units of Elevation are now determined automatically from the Settings in Project-GC, 
-            //     not this script.
+			// Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
             // imperial: {
             //    title: 'Use imperial units',
             //    default: false
             // },
             removeDisclaimer: {
                 title: 'Remove disclaimer',
-				// default: false
 				default: true
             },
             parseExifLocation: {
-                title: 'Parse Exif location',
+                title: 'Display EXIF location info on old log photos that have it',
                 default: true
             },
             addGeocacheLogsPerProfileCountry: {
-                // title: 'Geocachelogs per profile country',
-				title: 'Add found logs per country'
+                title: 'Add found logs per country'
                 default: true
             },
             openDraftLogInSameWindow: {
@@ -282,8 +275,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
     function FormatDistance(distance) {
         distance = parseInt(distance, 10);
-		// fix 08/30/2022, Issue 113
-        // distance = IsSettingEnabled('imperial') ? MetersToFeet(distance) : distance;
+		// Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
         distance = imperialFlag ? MetersToFeet(distance) : distance;
 		distance = distance.toLocaleString();
 
@@ -351,9 +343,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 }
 
                 pgcUsername = result.data.username;
-				// fix 8/25/2022, Issue 113, imperialUnits boolean flag is now returned with the GetMyUsername to be used for units (ft or m) of elevation.
-                // and the imperial flag setting in the PGC script settings menu is removed.
-                imperialFlag = result.data.imperialUnits;
+				// Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
                 loggedIn = Boolean(result.data.loggedIn);
                 subscription = Boolean(result.data.subscription);
 
@@ -385,8 +375,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             loggedInContent = '<a href="' + pgcUrl + 'ProfileStats/' + pgcUsername + '"><strong' + (pgcUsername != gccomUsername ? ' style="color: red;"' : '') + '>' + pgcUsername + '</strong></a>';
             subscriptionContent = '<a href="https://project-gc.com/Home/Membership" target="_blank">' + (subscription ? 'Paid' : 'Missing') + ' membership</a>';
         }
-
-        // Fix 08/30/2022, Issue 113 - "19rem" changed to "1rem" below to align the Setting Menu into the center of the page.  
+        
+		Issue 113; fixed 2022-08-30 
         GM_addStyle('\
         #pgc .player-profile, #pgc_gclh .li-user-info {width: auto;}\
         #pgc .player-profile:hover {text-decoration: none;}\
@@ -684,9 +674,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                         // Add elevation (Metres above mean sea level = mamsl)
                         if (IsSettingEnabled('addElevation')) {
                             var formattedElevation = FormatDistance(cacheData.elevation),
-							    // fix 8/30/2022, Issue 113
-                                // elevationUnit = IsSettingEnabled('imperial') ? 'ft' : 'm',
-								elevationUnit = imperialFlag ? 'ft' : 'm',
+							    // Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
+                                elevationUnit = imperialFlag ? 'ft' : 'm',
                                 elevationArrow = (cacheData.elevation >= 0) ? '&#x21a5;' : '&#x21a7;';
                             elevation = formattedElevation + ' ' + elevationUnit + ' ' + elevationArrow;
 
