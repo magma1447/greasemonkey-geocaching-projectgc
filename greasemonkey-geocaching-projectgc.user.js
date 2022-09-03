@@ -184,10 +184,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 default: true
             },
 			// Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
-            // imperial: {
-            //    title: 'Use imperial units',
-            //    default: false
-            // },
             removeDisclaimer: {
                 title: 'Remove disclaimer',
 				default: true
