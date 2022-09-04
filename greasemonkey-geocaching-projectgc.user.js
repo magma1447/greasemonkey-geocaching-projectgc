@@ -17,7 +17,7 @@
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
-// @version     2.3.18
+// @version     2.3.17
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require	    https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -39,18 +39,13 @@
 // ==/UserScript==
 
 
-// MIT License
-// Copyright (c) 2014 Ground Zero Communications AB
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
-// (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, 
-// merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished
-// to do so, subject to the following conditions:
-// The above copyright notice and this permission notice (including the next paragraph) shall be included in all copies or substantial 
-// portions of the Software.
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
-// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+MIT License
+Copyright (c) 2014 Ground Zero Communications AB
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice (including the next paragraph) shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
 
 (function() {
 
@@ -194,7 +189,7 @@
                 default: true
             },
             addGeocacheLogsPerProfileCountry: {
-                title: 'Add found logs per country'
+                title: 'Add found logs per country',
                 default: true
             },
             openDraftLogInSameWindow: {
@@ -340,8 +335,7 @@
                 }
 
                 pgcUsername = result.data.username;
-				// Issue 133; fixed 2022-09-04 (Units of elevation obtained from Project-GC)
-                imperialFlag = result.data.imperialUnits;
+				// Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
                 loggedIn = Boolean(result.data.loggedIn);
                 subscription = Boolean(result.data.subscription);
 
@@ -374,23 +368,22 @@
             subscriptionContent = '<a href="https://project-gc.com/Home/Membership" target="_blank">' + (subscription ? 'Paid' : 'Missing') + ' membership</a>';
         }
         
-		// Issue 113; fixed 2022-08-30.
-        // 2022-09-04 GSJ; Fixed indentation issues.
+	//	Issue 113; fixed 2022-08-30 
         GM_addStyle('\
-            #pgc .player-profile, #pgc_gclh .li-user-info {width: auto;}\
-            #pgc .player-profile:hover {text-decoration: none;}\
-            #pgc .player-profile a:hover {text-decoration: underline;}\
-            #pgc .player-profile a {text-decoration: none;color: white;}\
-            #pgc_gclh img:hover {cursor:pointer;}\
-            #pgc_gclh .draft-indicator {display: none;}\
-            #pgcUserMenuForm > li:hover, #pgcUserMenuForm_gclh > li:hover { background-color: #e3dfc9; }\
-            #pgcUserMenuForm > li, #pgcUserMenuForm_gclh > li { display: block; }\
-            #pgcUserMenuForm input[type="checkbox"], #pgcUserMenuForm_gclh input[type="checkbox"] { opacity: inherit; width: inherit; height:inherit; overflow:inherit; position:inherit; }\
-            #pgcUserMenuForm button, #pgcUserMenuForm_gclh button { display: inline-block !important; background: #ede5dc url(images/ui-bg_flat_100_ede5dc_40x100.png) 50% 50% repeat-x !important; border: 1px solid #cab6a3 !important; border-radius: 4px; color: #584528 !important; text-decoration: none; width: auto !important; font-size: 14px; padding: 4px 6px !important;}\
-            #pgcUserMenuForm button:hover, #pgcUserMenuForm_gclh button:hover { background: #e4d8cb url(images/ui-bgflag_100_e4d8cb_40x100.png) 50% 50% repeat-x !important; }\
-            #pgcUserMenu, #pgcUserMenu_gclh { right: 1rem;  }\
-            #pgcUserMenu > form, #pgcUserMenu_gclh > form { background-color: white; color: #5f452a; }\
-            .profile-panel .li-user-info {min-width: 160px;}\
+        #pgc .player-profile, #pgc_gclh .li-user-info {width: auto;}\
+        #pgc .player-profile:hover {text-decoration: none;}\
+        #pgc .player-profile a:hover {text-decoration: underline;}\
+        #pgc .player-profile a {text-decoration: none;color: white;}\
+        #pgc_gclh img:hover {cursor:pointer;}\
+        #pgc_gclh .draft-indicator {display: none;}\
+        #pgcUserMenuForm > li:hover, #pgcUserMenuForm_gclh > li:hover { background-color: #e3dfc9; }\
+        #pgcUserMenuForm > li, #pgcUserMenuForm_gclh > li { display: block; }\
+        #pgcUserMenuForm input[type="checkbox"], #pgcUserMenuForm_gclh input[type="checkbox"] { opacity: inherit; width: inherit; height:inherit; overflow:inherit; position:inherit; }\
+        #pgcUserMenuForm button, #pgcUserMenuForm_gclh button { display: inline-block !important; background: #ede5dc url(images/ui-bg_flat_100_ede5dc_40x100.png) 50% 50% repeat-x !important; border: 1px solid #cab6a3 !important; border-radius: 4px; color: #584528 !important; text-decoration: none; width: auto !important; font-size: 14px; padding: 4px 6px !important;}\
+        #pgcUserMenuForm button:hover, #pgcUserMenuForm_gclh button:hover { background: #e4d8cb url(images/ui-bgflag_100_e4d8cb_40x100.png) 50% 50% repeat-x !important; }\
+        #pgcUserMenu, #pgcUserMenu_gclh { right: 1rem;  }\
+        #pgcUserMenu > form, #pgcUserMenu_gclh > form { background-color: white; color: #5f452a; }\
+        .profile-panel .li-user-info {min-width: 160px;}\
         ');
 
         var settings = '<ul id="pgcUserMenu" class="dropdown-menu menu-user submenu" style="display:none; z-index: 1005;"><form id="pgcUserMenuForm" style="display: block; columns: 2; font-size: 14px; background-color: #fff !important;">';
@@ -862,12 +855,11 @@
 
         // If the first log is a DNF, display a blue warning on top of the page
         // 2022-08-24, Issue #111, fixes display of blue text warning of last log is DNF.
-        // 2022-09-04 GSJ; Fixed indentation issues.
         if ($('#cache_logs_table span.h4 img').attr('src') === '/images/logtypes/3.png') {
             var htmlFirstLogDnf = '<p style="color: #006cff;" class=" NoBottomSpacing"><strong>Cache Issues:</strong></p>\
-                                   <ul style="color: #006cff;" class="">\
-                                   <li>The latest log for this cache is a DNF, <a href="#cache_logs_table">please read the log</a> before your own search.</li>\
-                                   </ul>';
+                        <ul style="color: #006cff;" class="">\
+                            <li>The latest log for this cache is a DNF, <a href="#cache_logs_table">please read the log</a> before your own search.</li>\
+                        </ul>';
             $('div.span-6.right.last').last().next().after(htmlFirstLogDnf);
 
         }
@@ -880,12 +872,11 @@
         }
 
         // Resolve the coordinates into an address
-        // 2022-09-04 GSJ; Fix syntax error.  Commas used, should be semi-colons.
         if (IsSettingEnabled('addAddress')) {
-            coordinates = $('#ctl00_ContentBody_MapLinks_MapLinks li a').attr('href');
-            latitude = coordinates.replace(/.*lat=([^&]*)&lng=.*/, "$1");
-            longitude = coordinates.replace(/.*&lng=(.*)$/, "$1");
-            url = 'https://nominatim.openstreetmap.org/reverse?lat=' + latitude + '&lon=' + longitude + '&format=json';
+            coordinates = $('#ctl00_ContentBody_MapLinks_MapLinks li a').attr('href'),
+                latitude = coordinates.replace(/.*lat=([^&]*)&lng=.*/, "$1"),
+                longitude = coordinates.replace(/.*&lng=(.*)$/, "$1"),
+                url = 'https://nominatim.openstreetmap.org/reverse?lat=' + latitude + '&lon=' + longitude + '&format=json';
 
             GM.xmlHttpRequest({
                 method: "GET",
@@ -1093,8 +1084,8 @@
             var node = $(jNode).find('span.h4 img[src]'),
                 logType = {};
 
-            // 2022-09-04 GSJ; removed line-break, causing linter issues, since no curly braces.
-            if (node.length === 0) return false;
+            if (node.length === 0)
+                return false;
 
             logType = {
                 'src': node.attr('src'),
@@ -1314,17 +1305,14 @@
 
 
 // https://github.com/exif-js/exif-js adjusted to use GM.xmlHttpRequest
-// The MIT License (MIT)
-// Copyright (c) 2008 Jacob Seidelin
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
-// to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-// and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR 
-// OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
-// OTHER DEALINGS IN THE SOFTWARE.
-
+// Original license:
+/*
+The MIT License (MIT)
+Copyright (c) 2008 Jacob Seidelin
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
 (function() {
     var debug = false;
 
