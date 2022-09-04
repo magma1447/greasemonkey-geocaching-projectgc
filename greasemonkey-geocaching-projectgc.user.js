@@ -339,7 +339,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 }
 
                 pgcUsername = result.data.username;
-				// Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
+				// Issue 133; fixed 2022-09-04 (Units of elevation obtained from Project-GC)
+                imperialFlag = result.data.imperialUnits;
                 loggedIn = Boolean(result.data.loggedIn);
                 subscription = Boolean(result.data.subscription);
 
