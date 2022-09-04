@@ -8,44 +8,49 @@
 // jshint multistr:true
 
 // ==UserScript==
-// @author	Ground Zero Communications AB
-// @license     The MIT License (MIT)
-// @name        Geocaching.com + Project-GC
-// @namespace   PGC
-// @description Adds links and data to Geocaching.com to make it collaborate with PGC
-// @icon        https://project-gc.com/favicon-32x32.png
-// @include     http://www.geocaching.com/*
-// @include     https://www.geocaching.com/*
-// @exclude     https://www.geocaching.com/profile/profilecontent.html
-// @version     2.3.17
-// @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
-// @require	    https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
-// @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
-// @grant       GM_xmlhttpRequest
-// @grant       GM_setValue
-// @grant       GM_getValue
-// @grant       GM_addStyle
-// @grant       GM.xmlHttpRequest
-// @grant       GM.setValue
-// @grant       GM.getValue
-// @connect     maps.googleapis.com
-// @connect     project-gc.com
-// @connect     img.geocaching.com
-// @connect     s3.amazonaws.com
-// @connect     nominatim.openstreetmap.org
-// @connect     *
+// @author          Ground Zero Communications AB
+// @license         The MIT License (MIT)
+// @name            Geocaching.com + Project-GC
+// @namespace       PGC
+// @description     Adds links and data to Geocaching.com to make it collaborate with PGC
+// @icon            https://project-gc.com/favicon-32x32.png
+// @include         http://www.geocaching.com/*
+// @include         https://www.geocaching.com/*
+// @exclude         https://www.geocaching.com/profile/profilecontent.html
+// @version         2.3.18
+// @require         http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
+// @require         https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
+// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
+// @grant           GM_xmlhttpRequest
+// @grant           GM_setValue
+// @grant           GM_getValue
+// @grant           GM_addStyle
+// @grant           GM.xmlHttpRequest
+// @grant           GM.setValue
+// @grant           GM.getValue
+// @connect         maps.googleapis.com
+// @connect         project-gc.com
+// @connect         img.geocaching.com
+// @connect         s3.amazonaws.com
+// @connect         nominatim.openstreetmap.org
+// @connect         *
 // @updateURL       https://github.com/magma1447/greasemonkey-geocaching-projectgc/raw/master/greasemonkey-geocaching-projectgc.user.js
 // @downloadURL     https://github.com/magma1447/greasemonkey-geocaching-projectgc/raw/master/greasemonkey-geocaching-projectgc.user.js
 // ==/UserScript==
 
 
-/*
-MIT License
-Copyright (c) 2014 Ground Zero Communications AB
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice (including the next paragraph) shall be included in all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+// MIT License
+// Copyright (c) 2014 Ground Zero Communications AB
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
+// (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify,
+// merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished
+// to do so, subject to the following conditions:
+// The above copyright notice and this permission notice (including the next paragraph) shall be included in all copies or substantial
+// portions of the Software.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (function() {
 
@@ -335,7 +340,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 }
 
                 pgcUsername = result.data.username;
-				// Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
+				// Issue 113 & #133; fixed 2022-09-04 (Units of elevation obtained from Project-GC)
+                imperialFlag = result.data.imperialUnits;
                 loggedIn = Boolean(result.data.loggedIn);
                 subscription = Boolean(result.data.subscription);
 
@@ -368,7 +374,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             subscriptionContent = '<a href="https://project-gc.com/Home/Membership" target="_blank">' + (subscription ? 'Paid' : 'Missing') + ' membership</a>';
         }
         
-	//	Issue 113; fixed 2022-08-30 
+	    // Issue 113; fixed 2022-08-30 
         GM_addStyle('\
         #pgc .player-profile, #pgc_gclh .li-user-info {width: auto;}\
         #pgc .player-profile:hover {text-decoration: none;}\
@@ -568,9 +574,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         document.getElementsByTagName('head')[0].appendChild(gcAlertOverride);
     }
 
-    /**
-     * Page_CachePage
-     */
+    // ==========================================
+    // Page_CachePage
+    // ==========================================
     function Page_CachePage() {
         var gccode = getGcCodeFromPage(),
             placedBy = $('#ctl00_ContentBody_mcd1 a').html(),
@@ -857,9 +863,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // 2022-08-24, Issue #111, fixes display of blue text warning of last log is DNF.
         if ($('#cache_logs_table span.h4 img').attr('src') === '/images/logtypes/3.png') {
             var htmlFirstLogDnf = '<p style="color: #006cff;" class=" NoBottomSpacing"><strong>Cache Issues:</strong></p>\
-                        <ul style="color: #006cff;" class="">\
-                            <li>The latest log for this cache is a DNF, <a href="#cache_logs_table">please read the log</a> before your own search.</li>\
-                        </ul>';
+                                   <ul style="color: #006cff;" class="">\
+                                   <li>The latest log for this cache is a DNF, <a href="#cache_logs_table">please read the log</a> before your own search.</li>\
+                                   </ul>';
             $('div.span-6.right.last').last().next().after(htmlFirstLogDnf);
 
         }
@@ -1084,8 +1090,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             var node = $(jNode).find('span.h4 img[src]'),
                 logType = {};
 
-            if (node.length === 0)
-                return false;
+            if (node.length === 0) {
+                 return false;
+            }
 
             logType = {
                 'src': node.attr('src'),
@@ -1306,13 +1313,18 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 // https://github.com/exif-js/exif-js adjusted to use GM.xmlHttpRequest
 // Original license:
-/*
-The MIT License (MIT)
-Copyright (c) 2008 Jacob Seidelin
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+// The MIT License (MIT)
+// Copyright (c) 2008 Jacob Seidelin
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files 
+// (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, 
+// publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to 
+// do so, subject to the following conditions:
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 (function() {
     var debug = false;
 
