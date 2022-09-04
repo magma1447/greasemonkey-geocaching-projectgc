@@ -373,22 +373,23 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             subscriptionContent = '<a href="https://project-gc.com/Home/Membership" target="_blank">' + (subscription ? 'Paid' : 'Missing') + ' membership</a>';
         }
         
-		Issue 113; fixed 2022-08-30 
+		// Issue 113; fixed 2022-08-30.
+        // 2022-09-04 GSJ; Fixed indentation issues.
         GM_addStyle('\
-        #pgc .player-profile, #pgc_gclh .li-user-info {width: auto;}\
-        #pgc .player-profile:hover {text-decoration: none;}\
-        #pgc .player-profile a:hover {text-decoration: underline;}\
-        #pgc .player-profile a {text-decoration: none;color: white;}\
-        #pgc_gclh img:hover {cursor:pointer;}\
-        #pgc_gclh .draft-indicator {display: none;}\
-        #pgcUserMenuForm > li:hover, #pgcUserMenuForm_gclh > li:hover { background-color: #e3dfc9; }\
-        #pgcUserMenuForm > li, #pgcUserMenuForm_gclh > li { display: block; }\
-        #pgcUserMenuForm input[type="checkbox"], #pgcUserMenuForm_gclh input[type="checkbox"] { opacity: inherit; width: inherit; height:inherit; overflow:inherit; position:inherit; }\
-        #pgcUserMenuForm button, #pgcUserMenuForm_gclh button { display: inline-block !important; background: #ede5dc url(images/ui-bg_flat_100_ede5dc_40x100.png) 50% 50% repeat-x !important; border: 1px solid #cab6a3 !important; border-radius: 4px; color: #584528 !important; text-decoration: none; width: auto !important; font-size: 14px; padding: 4px 6px !important;}\
-        #pgcUserMenuForm button:hover, #pgcUserMenuForm_gclh button:hover { background: #e4d8cb url(images/ui-bgflag_100_e4d8cb_40x100.png) 50% 50% repeat-x !important; }\
-        #pgcUserMenu, #pgcUserMenu_gclh { right: 1rem;  }\
-        #pgcUserMenu > form, #pgcUserMenu_gclh > form { background-color: white; color: #5f452a; }\
-        .profile-panel .li-user-info {min-width: 160px;}\
+            #pgc .player-profile, #pgc_gclh .li-user-info {width: auto;}\
+            #pgc .player-profile:hover {text-decoration: none;}\
+            #pgc .player-profile a:hover {text-decoration: underline;}\
+            #pgc .player-profile a {text-decoration: none;color: white;}\
+            #pgc_gclh img:hover {cursor:pointer;}\
+            #pgc_gclh .draft-indicator {display: none;}\
+            #pgcUserMenuForm > li:hover, #pgcUserMenuForm_gclh > li:hover { background-color: #e3dfc9; }\
+            #pgcUserMenuForm > li, #pgcUserMenuForm_gclh > li { display: block; }\
+            #pgcUserMenuForm input[type="checkbox"], #pgcUserMenuForm_gclh input[type="checkbox"] { opacity: inherit; width: inherit; height:inherit; overflow:inherit; position:inherit; }\
+            #pgcUserMenuForm button, #pgcUserMenuForm_gclh button { display: inline-block !important; background: #ede5dc url(images/ui-bg_flat_100_ede5dc_40x100.png) 50% 50% repeat-x !important; border: 1px solid #cab6a3 !important; border-radius: 4px; color: #584528 !important; text-decoration: none; width: auto !important; font-size: 14px; padding: 4px 6px !important;}\
+            #pgcUserMenuForm button:hover, #pgcUserMenuForm_gclh button:hover { background: #e4d8cb url(images/ui-bgflag_100_e4d8cb_40x100.png) 50% 50% repeat-x !important; }\
+            #pgcUserMenu, #pgcUserMenu_gclh { right: 1rem;  }\
+            #pgcUserMenu > form, #pgcUserMenu_gclh > form { background-color: white; color: #5f452a; }\
+            .profile-panel .li-user-info {min-width: 160px;}\
         ');
 
         var settings = '<ul id="pgcUserMenu" class="dropdown-menu menu-user submenu" style="display:none; z-index: 1005;"><form id="pgcUserMenuForm" style="display: block; columns: 2; font-size: 14px; background-color: #fff !important;">';
@@ -860,11 +861,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
         // If the first log is a DNF, display a blue warning on top of the page
         // 2022-08-24, Issue #111, fixes display of blue text warning of last log is DNF.
+        // 2022-09-04 GSJ; Fixed indentation issues.
         if ($('#cache_logs_table span.h4 img').attr('src') === '/images/logtypes/3.png') {
             var htmlFirstLogDnf = '<p style="color: #006cff;" class=" NoBottomSpacing"><strong>Cache Issues:</strong></p>\
-                        <ul style="color: #006cff;" class="">\
-                            <li>The latest log for this cache is a DNF, <a href="#cache_logs_table">please read the log</a> before your own search.</li>\
-                        </ul>';
+                                   <ul style="color: #006cff;" class="">\
+                                   <li>The latest log for this cache is a DNF, <a href="#cache_logs_table">please read the log</a> before your own search.</li>\
+                                   </ul>';
             $('div.span-6.right.last').last().next().after(htmlFirstLogDnf);
 
         }
@@ -877,11 +879,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         }
 
         // Resolve the coordinates into an address
+        // 2022-09-04 GSJ; Fix syntax error.  Commas used, should be semi-colons.
         if (IsSettingEnabled('addAddress')) {
-            coordinates = $('#ctl00_ContentBody_MapLinks_MapLinks li a').attr('href'),
-                latitude = coordinates.replace(/.*lat=([^&]*)&lng=.*/, "$1"),
-                longitude = coordinates.replace(/.*&lng=(.*)$/, "$1"),
-                url = 'https://nominatim.openstreetmap.org/reverse?lat=' + latitude + '&lon=' + longitude + '&format=json';
+            coordinates = $('#ctl00_ContentBody_MapLinks_MapLinks li a').attr('href');
+            latitude = coordinates.replace(/.*lat=([^&]*)&lng=.*/, "$1");
+            longitude = coordinates.replace(/.*&lng=(.*)$/, "$1");
+            url = 'https://nominatim.openstreetmap.org/reverse?lat=' + latitude + '&lon=' + longitude + '&format=json';
 
             GM.xmlHttpRequest({
                 method: "GET",
@@ -1089,8 +1092,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             var node = $(jNode).find('span.h4 img[src]'),
                 logType = {};
 
-            if (node.length === 0)
-                return false;
+            // 2022-09-04 GSJ; removed line-break, causing linter issues, since no curly braces.
+            if (node.length === 0) return false;
 
             logType = {
                 'src': node.attr('src'),
