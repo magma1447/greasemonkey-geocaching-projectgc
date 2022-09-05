@@ -433,6 +433,8 @@
 
         $("#pgcUserMenuButton").click(function(e) {
             $('#pgcUserMenu').show();
+            // Issue 108; fixed 2022-09-05 (Settings menu now reloading page)
+            e.preventDefault();
         })
         $('body').click(function(e) {
             if (!$(e.target).parents('#pgcUserMenu')[0] && (!$(e.target).parents('#pgcButton')[0] && $("#pgcUserMenu").css('display') != 'none')) {
