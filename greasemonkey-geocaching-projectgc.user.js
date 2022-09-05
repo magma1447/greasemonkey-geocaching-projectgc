@@ -470,6 +470,7 @@
                 $('#pgc_gclh .dropdown-menu.menu-user form li:nth-last-child(1)').attr('id', 'pgcUserMenuWarning_gclh');
 
                 $("#pgcUserMenuButton_gclh").click(function(e) {
+                    e.preventDefault();
                     $('#pgcUserMenu_gclh').toggle();
                 })
 
