@@ -1,5 +1,15 @@
 {
   "VPGS": {
-    "send": "Add to VGPS tester"
-  }
+    "send": "Add to VGPS"
+  },
+  "settings": {
+    "showvpgs": "Show Virtual GPS",
+    "loggedinas": "Signed in on cachetur.no as:",
+    "notloggedin": "You are not logged in on cachetur.no",
+    "deactivated": "The Cachetur Assistant has been deactivated",
+    "opentrip": "Open on cachetur.no",
+    "refresh": "Refresh data from cachetur.no",
+    "showonmap": "Show caches from cachetur.no on map",
+    "fitroute": "Zoom to fit route"
+  },
 }
