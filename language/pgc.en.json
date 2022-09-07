@@ -21,6 +21,9 @@
     "addMapBookmarkListLinks": "Add links for bookmark lists",
     "decryptHints": "Automatically decrypt hints",
     "addElevation": "Add elevation",
-    "removeDisclaimer": "Remove disclaimer"
+    "removeDisclaimer": "Remove disclaimer",
+    "parseExifLocation": "Display EXIF location info on old log photos that have it",
+    "addGeocacheLogsPerProfileCountry": "Add found logs per country",
+    "openDraftLogInSameWindow": "Open <em>Compose Log</em> entries in <em>Drafts</em> in same window"
   }
 }
