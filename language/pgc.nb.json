@@ -1,5 +1,47 @@
 {
   "VPGS": {
-    "send": "Legg til VGPS"
+    "send": "Add to VGPS"
+  },
+  "settings": {
+    "showvpgs": "Show Virtual GPS",
+    "addcc": "Add challenge checkers",
+    "makeCopyFriendly": "Make copy friendly GC-Code and link",
+    "addPgcMapLinks": "Add link to Project-GC live map",
+    "addLatestLogs": "Add latest logs",
+    "cloneLogsPerType": "Clone number of logs per type",
+    "addPGCLocation": "Add location from Project-GC",
+    "addAddress": "Add OSM reverse geocoded address",
+    "removeUTM": "Remove UTM coordinates",
+    "addPgcFp": "Add Favorite Points from Project-GC",
+    "showWeekday": "Show weekday of the place date",
+    "profileStatsLinks": "Add links to Profile stats",
+    "tidy": "Tidy the web a bit";
+    "collapseDownloads": "Collapse download links",
+    "addPgcGalleryLinks": "Add links to gallery",
+    "addMapBookmarkListLinks": "Add links for bookmark lists",
+    "decryptHints": "Automatically decrypt hints",
+    "addElevation": "Add elevation",
+    "removeDisclaimer": "Remove disclaimer",
+    "parseExifLocation": "Display EXIF location info on old log photos that have it",
+    "addGeocacheLogsPerProfileCountry": "Add found logs per country",
+    "openDraftLogInSameWindow": "Open <em>Compose Log</em> entries in <em>Drafts</em> in same window",
+    "cachenoteFont": "Change personal cache note font to monospaced",
+    "logbookLinks": "Add links to logbook tabs",
+    "addMyNumberOfLogs": "Add my number of logs above log button",
+    "hideMapFromPrintCachePage": "Hide map from print cache page",
+    "addCachedChallengeCheckerResults": "Add icons for cached Challenge checker results",
+    "hideLogVoting": "Hide log upvote buttons and sorting options"
+  },
+  "pgcheader": {
+    "not": "Not logged in",
+    "Paid": "Paid",
+    "Missing": "Missing",
+    "membership": "membership",
+    "Cancel": "Cancel",
+    "Reset": "Reset",
+    "Save": "Save",
+    "pgcUserMenuWarning": "pgcUserMenuWarning",
+    "Reload": "Reload",
+    "activate": "the page to activate the new settings."
   }
 }
