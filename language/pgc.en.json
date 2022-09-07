@@ -11,6 +11,16 @@
     "cloneLogsPerType": "Clone number of logs per type",
     "addPGCLocation": "Add location from Project-GC",
     "addAddress": "Add OSM reverse geocoded address",
-    "removeUTM": "Remove UTM coordinates"
+    "removeUTM": "Remove UTM coordinates",
+    "addPgcFp": "Add Favorite Points from Project-GC",
+    "showWeekday": "Show weekday of the place date",
+    "profileStatsLinks": "Add links to Profile stats",
+    "tidy": "Tidy the web a bit";
+    "collapseDownloads": "Collapse download links",
+    "addPgcGalleryLinks": "Add links to gallery",
+    "addMapBookmarkListLinks": "Add links for bookmark lists",
+    "decryptHints": "Automatically decrypt hints",
+    "addElevation": "Add elevation",
+    "removeDisclaimer": "Remove disclaimer"
   }
 }
