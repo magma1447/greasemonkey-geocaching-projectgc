@@ -22,7 +22,7 @@
     "alt": "PGC Checker",
     "locked": "This cache has been locked and can no longer be logged."
   },
-  "settings": {
+  "pgcsettings": {
     "showvpgs": "Show Virtual GPS",
     "addcc": "Add challenge checkers",
     "makeCopyFriendly": "Make copy friendly GC-Code and link",
