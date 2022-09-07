@@ -31,5 +31,11 @@
     "hideMapFromPrintCachePage": "Hide map from print cache page",
     "addCachedChallengeCheckerResults": "Add icons for cached Challenge checker results",
     "hideLogVoting": "Hide log upvote buttons and sorting options"
+  },
+  "pgcheader": {
+    "not": "Not logged in",
+    "Paid": "Paid",
+    "Missing": "Missing",
+    "membership": "membership"
   }
 }
