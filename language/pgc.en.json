@@ -24,6 +24,12 @@
     "removeDisclaimer": "Remove disclaimer",
     "parseExifLocation": "Display EXIF location info on old log photos that have it",
     "addGeocacheLogsPerProfileCountry": "Add found logs per country",
-    "openDraftLogInSameWindow": "Open <em>Compose Log</em> entries in <em>Drafts</em> in same window"
+    "openDraftLogInSameWindow": "Open <em>Compose Log</em> entries in <em>Drafts</em> in same window",
+    "cachenoteFont": "Change personal cache note font to monospaced",
+    "logbookLinks": "Add links to logbook tabs",
+    "addMyNumberOfLogs": "Add my number of logs above log button",
+    "hideMapFromPrintCachePage": "Hide map from print cache page",
+    "addCachedChallengeCheckerResults": "Add icons for cached Challenge checker results",
+    "hideLogVoting": "Hide log upvote buttons and sorting options"
   }
 }
