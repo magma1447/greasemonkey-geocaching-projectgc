@@ -6,6 +6,11 @@
     "showvpgs": "Show Virtual GPS",
     "addcc": "Add challenge checkers",
     "makeCopyFriendly": "Make copy friendly GC-Code and link",
-    "addPgcMapLinks": "Add link to Project-GC live map"
+    "addPgcMapLinks": "Add link to Project-GC live map",
+    "addLatestLogs": "Add latest logs",
+    "cloneLogsPerType": "Clone number of logs per type",
+    "addPGCLocation": "Add location from Project-GC",
+    "addAddress": "Add OSM reverse geocoded address",
+    "removeUTM": "Remove UTM coordinates"
   }
 }
