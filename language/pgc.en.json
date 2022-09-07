@@ -36,6 +36,12 @@
     "not": "Not logged in",
     "Paid": "Paid",
     "Missing": "Missing",
-    "membership": "membership"
+    "membership": "membership",
+    "Cancel": "Cancel",
+    "Reset": "Reset",
+    "Save": "Save",
+    "pgcUserMenuWarning": "pgcUserMenuWarning",
+    "Reload": "Reload",
+    "activate": "the page to activate the new settings."
   }
 }
