@@ -60,7 +60,7 @@
     "plural": "(s)",
     "locked": "This cache has been locked and can no longer be logged."
   },
-  "other": {
+ "other": {
     "prcouuntry": "Found logs per country",
     "accord": "according to Project-GC.com",
     "unique": "unique countries",
@@ -81,7 +81,9 @@
     "Friends": "Friends",
     "latest2": "Latest logs:",
     "exif": "EXIF Location",
-    "map2": "Map this!"
+    "map2": "Map this!",
+    "map3": "Map this Bookmark list using Project-GC",
+    "map4": "Map this Bookmark list on Project-GC"
   
   }
 }
