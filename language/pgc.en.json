@@ -55,5 +55,18 @@
     "Reload": "Reload",
     "activate": "the page to activate the new settings.",
     "prcouuntry": "Found logs per country",
-    "accord": "according to Project-GC.com"
+    "accord": "according to Project-GC.com",
+    "unique": "unique countries",
+    "accordpgc": "logs according to Project-GC",
+    "live": "Project-GC Live map",
+    "issue": "Cache Issues:",
+    "latest": "The latest log for this cache is a DNF,",
+    "please": "please read the log",
+    "before": "before your own search.",
+    "print": "Print and Downloads",
+    "gallery": "Project-GC Gallery",
+    "map": "Map with Project-GC",
+    "prostats": "Project-GC Profile stats",
+    "decrypt": "Decrypt",
+    
 }
