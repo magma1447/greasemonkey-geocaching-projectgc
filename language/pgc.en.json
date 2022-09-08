@@ -53,5 +53,7 @@
     "Save": "Save",
     "pgcUserMenuWarning": "pgcUserMenuWarning",
     "Reload": "Reload",
-    "activate": "the page to activate the new settings."
+    "activate": "the page to activate the new settings.",
+    "prcouuntry": "Found logs per country",
+    "accord": "according to Project-GC.com"
 }
