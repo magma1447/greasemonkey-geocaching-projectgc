@@ -2,7 +2,7 @@
     "send": "Add to VGPS",
     "OK": "OK",
     "added": "Geocache added to Virtual-GPS!",
-    "not": "Geocache not added to Virtual-GPS :(",
+    "notadded": "Geocache not added to Virtual-GPS :(",
     "removed": "Geocache removed from Virtual-GPS!",
     "notre": "Geocache not removed from Virtual-GPS :(",
     "issue": "Cache Issues:",
