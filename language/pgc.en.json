@@ -5,7 +5,7 @@
     "Missing": "Missing",
     "membership": "membership"
   },
-  "menu": {
+    "menu": {
     "showvpgs": "Show Virtual GPS",
     "addcc": "Add challenge checkers",
     "makeCopyFriendly": "Make copy friendly GC-Code and link",
@@ -39,7 +39,6 @@
     "Save": "Save",
     "Reload": "Reload",
     "activate": "the page to activate the new settings."
-
   },
   "vpgs": {
     "send": "Add to VGPS",
@@ -51,7 +50,6 @@
     "notfull": "The following Found it logs might not fulfill the requirements:",
     "title": "Project-GC Challenge checker",
     "alt": "PGC Checker"
-
   },
   "cpage": {
     "suspiciousFoundItLog": "Please understand that the checker result is a cached result. Also the geocacher might very well have fulfilled it in the past, external factors might have changed.",
@@ -74,9 +72,16 @@
     "before": "before your own search.",
     "print": "Print and Downloads",
     "gallery": "Project-GC Gallery",
+    "gallery2": "Project-GC Gallery",
     "map": "Map with Project-GC",
     "prostats": "Project-GC Profile stats",
-    "decrypt": "Decrypt"
+    "prostats2": "PGC Profile stats",
+    "decrypt": "Decrypt",
+    "checker": "Checker result",
+    "Friends": "Friends",
+    "latest": "Latest logs:",
+    "exif": "EXIF Location",
+    "map": "Map this!"
   
   }
 }
