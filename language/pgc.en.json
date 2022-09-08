@@ -1,28 +1,21 @@
 {
-  "VPGS": {
     "send": "Add to VGPS",
     "OK": "OK",
     "added": "Geocache added to Virtual-GPS!",
     "not": "Geocache not added to Virtual-GPS :(",
     "removed": "Geocache removed from Virtual-GPS!",
-    "notre": "Geocache not removed from Virtual-GPS :("
-  },
-  "logs": {
+    "notre": "Geocache not removed from Virtual-GPS :(",
     "issue": "Cache Issues:",
     "notfull": "The following Found it logs might not fulfill the requirements:",
     "suspiciousFoundItLog": "Please understand that the checker result is a cached result. Also the geocacher might very well have fulfilled it in the past, external factors might have changed.",
     "stats": "PGC Profile Stats",
     "prcountry": "Will attend logs per country",
-    "pgc": "according to Project-GC.com"
-  },
-  "checker": {
+    "pgc": "according to Project-GC.com",
    "checkers": "Challenge checker",
     "plural": "(s)",
     "title": "Project-GC Challenge checker",
     "alt": "PGC Checker",
-    "locked": "This cache has been locked and can no longer be logged."
-  },
-  "pgcsettings": {
+    "locked": "This cache has been locked and can no longer be logged.",
     "showvpgs": "Show Virtual GPS",
     "addcc": "Add challenge checkers",
     "makeCopyFriendly": "Make copy friendly GC-Code and link",
@@ -50,9 +43,7 @@
     "addMyNumberOfLogs": "Add my number of logs above log button",
     "hideMapFromPrintCachePage": "Hide map from print cache page",
     "addCachedChallengeCheckerResults": "Add icons for cached Challenge checker results",
-    "hideLogVoting": "Hide log upvote buttons and sorting options"
-  },
-  "pgcheader": {
+    "hideLogVoting": "Hide log upvote buttons and sorting options",
     "not": "Not logged in",
     "Paid": "Paid",
     "Missing": "Missing",
@@ -63,6 +54,4 @@
     "pgcUserMenuWarning": "pgcUserMenuWarning",
     "Reload": "Reload",
     "activate": "the page to activate the new settings."
-  }
-  }
 }
