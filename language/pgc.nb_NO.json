@@ -1,40 +1,23 @@
 {
-  "VPGS": {
-    "send": "Add to VGPS",
-    "OK": "OK",
-    "added": "Geocache added to Virtual-GPS!",
-    "not": "Geocache not added to Virtual-GPS :(",
-    "removed": "Geocache removed from Virtual-GPS!",
-    "notre": "Geocache not removed from Virtual-GPS :("
+  "heder": {
+    "not": "Ikke innlogget",
+    "Paid": "Betalt",
+    "Missing": "Maglende",
+    "membership": "medlemsskap"
   },
-  "logs": {
-    "issue": "Cache Issues:",
-    "notfull": "The following Found it logs might not fulfill the requirements:",
-    "suspiciousFoundItLog": "Please understand that the checker result is a cached result. Also the geocacher might very well have fulfilled it in the past, external factors might have changed.",
-    "stats": "PGC Profile Stats",
-    "prcountry": "Will attend logs per country",
-    "pgc": "according to Project-GC.com"
-  },
-  "checker": {
-   "checkers": "Challenge checker",
-    "plural": "(s)",
-    "title": "Project-GC Challenge checker",
-    "alt": "PGC Checker",
-    "locked": "This cache has been locked and can no longer be logged."
-  },
-  "pgcsettings": {
-    "showvpgs": "Show Virtual GPS",
-    "addcc": "Add challenge checkers",
-    "makeCopyFriendly": "Make copy friendly GC-Code and link",
-    "addPgcMapLinks": "Add link to Project-GC live map",
-    "addLatestLogs": "Add latest logs",
-    "cloneLogsPerType": "Clone number of logs per type",
-    "addPGCLocation": "Add location from Project-GC",
-    "addAddress": "Add OSM reverse geocoded address",
-    "removeUTM": "Remove UTM coordinates",
-    "addPgcFp": "Add Favorite Points from Project-GC",
-    "showWeekday": "Show weekday of the place date",
-    "profileStatsLinks": "Add links to Profile stats",
+    "menu": {
+    "showvpgs": "Vis Virtual GPS",
+    "addcc": "Legg til challenge checkers",
+    "makeCopyFriendly": "Gjør GC-kode og linker kopi vennlige",
+    "addPgcMapLinks": "Legg til link til Project-GC live kart",
+    "addLatestLogs": "Vis siste logger",
+    "cloneLogsPerType": "Vis logger per type øverst og nederst",
+    "addPGCLocation": "Legg til lokasjon frs Project-GC",
+    "addAddress": "Vis adresse fra OSM",
+    "removeUTM": "Fjern UTM Koordinater",
+    "addPgcFp": "Legg til Favorit Poeng fra Project-GC",
+    "showWeekday": "Vis ukedag når cachen ble plasert",
+    "profileStatsLinks": "Legg til linker til Profil statistikk",
     "tidy": "Tidy the web a bit",
     "collapseDownloads": "Collapse download links",
     "addPgcGalleryLinks": "Add links to gallery",
@@ -50,19 +33,55 @@
     "addMyNumberOfLogs": "Add my number of logs above log button",
     "hideMapFromPrintCachePage": "Hide map from print cache page",
     "addCachedChallengeCheckerResults": "Add icons for cached Challenge checker results",
-    "hideLogVoting": "Hide log upvote buttons and sorting options"
-  },
-  "pgcheader": {
-    "not": "Not logged in",
-    "Paid": "Paid",
-    "Missing": "Missing",
-    "membership": "membership",
+    "hideLogVoting": "Hide log upvote buttons and sorting options",
     "Cancel": "Cancel",
     "Reset": "Reset",
     "Save": "Save",
-    "pgcUserMenuWarning": "pgcUserMenuWarning",
     "Reload": "Reload",
     "activate": "the page to activate the new settings."
-  }
+  },
+  "vpgs": {
+    "send": "Add to VGPS",
+    "added": "Geocache added to Virtual-GPS!",
+    "notadded": "Geocache not added to Virtual-GPS :(",
+    "removed": "Geocache removed from Virtual-GPS!",
+    "notre": "Geocache not removed from Virtual-GPS :(",
+    "issue": "Cache Issues:",
+    "notfull": "The following Found it logs might not fulfill the requirements:",
+    "title": "Project-GC Challenge checker",
+    "alt": "PGC Checker"
+  },
+  "cpage": {
+    "suspiciousFoundItLog": "Please understand that the checker result is a cached result. Also the geocacher might very well have fulfilled it in the past, external factors might have changed.",
+    "stats": "PGC Profile Stats",
+    "prcountry": "Will attend logs per country",
+    "pgc": "according to Project-GC.com",
+    "checkers": "Challenge checker",
+    "plural": "(s)",
+    "locked": "This cache has been locked and can no longer be logged."
+  },
+  "other": {
+    "prcouuntry": "Found logs per country",
+    "accord": "according to Project-GC.com",
+    "unique": "unique countries",
+    "accordpgc": "logs according to Project-GC",
+    "live": "Project-GC Live map",
+    "issue": "Cache Issues:",
+    "latest": "The latest log for this cache is a DNF,",
+    "please": "please read the log",
+    "before": "before your own search.",
+    "print": "Print and Downloads",
+    "gallery": "Project-GC Gallery",
+    "gallery2": "Project-GC Gallery",
+    "map": "Map with Project-GC",
+    "prostats": "Project-GC Profile stats",
+    "prostats2": "PGC Profile stats",
+    "decrypt": "Decrypt",
+    "checker": "Checker result",
+    "Friends": "Friends",
+    "latest": "Latest logs:",
+    "exif": "EXIF Location",
+    "map": "Map this!"
+  
   }
 }
