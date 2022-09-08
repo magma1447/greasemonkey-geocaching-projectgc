@@ -1,21 +1,11 @@
 {
-    "send": "Add to VGPS",
-    "OK": "OK",
-    "added": "Geocache added to Virtual-GPS!",
-    "notadded": "Geocache not added to Virtual-GPS :(",
-    "removed": "Geocache removed from Virtual-GPS!",
-    "notre": "Geocache not removed from Virtual-GPS :(",
-    "issue": "Cache Issues:",
-    "notfull": "The following Found it logs might not fulfill the requirements:",
-    "suspiciousFoundItLog": "Please understand that the checker result is a cached result. Also the geocacher might very well have fulfilled it in the past, external factors might have changed.",
-    "stats": "PGC Profile Stats",
-    "prcountry": "Will attend logs per country",
-    "pgc": "according to Project-GC.com",
-   "checkers": "Challenge checker",
-    "plural": "(s)",
-    "title": "Project-GC Challenge checker",
-    "alt": "PGC Checker",
-    "locked": "This cache has been locked and can no longer be logged.",
+  "heder": {
+    "not": "Not logged in",
+    "Paid": "Paid",
+    "Missing": "Missing",
+    "membership": "membership"
+  },
+  "menu": {
     "showvpgs": "Show Virtual GPS",
     "addcc": "Add challenge checkers",
     "makeCopyFriendly": "Make copy friendly GC-Code and link",
@@ -44,16 +34,36 @@
     "hideMapFromPrintCachePage": "Hide map from print cache page",
     "addCachedChallengeCheckerResults": "Add icons for cached Challenge checker results",
     "hideLogVoting": "Hide log upvote buttons and sorting options",
-    "not": "Not logged in",
-    "Paid": "Paid",
-    "Missing": "Missing",
-    "membership": "membership",
     "Cancel": "Cancel",
     "Reset": "Reset",
     "Save": "Save",
-    "pgcUserMenuWarning": "pgcUserMenuWarning",
     "Reload": "Reload",
+    "pgcUserMenuWarning": "pgcUserMenuWarning",
     "activate": "the page to activate the new settings.",
+
+  },
+  "vpgs": {
+    "send": "Add to VGPS",
+    "added": "Geocache added to Virtual-GPS!",
+    "notadded": "Geocache not added to Virtual-GPS :(",
+    "removed": "Geocache removed from Virtual-GPS!",
+    "notre": "Geocache not removed from Virtual-GPS :(",
+    "issue": "Cache Issues:",
+    "notfull": "The following Found it logs might not fulfill the requirements:",
+    "title": "Project-GC Challenge checker",
+    "alt": "PGC Checker"
+
+  },
+  "cpage": {
+    "suspiciousFoundItLog": "Please understand that the checker result is a cached result. Also the geocacher might very well have fulfilled it in the past, external factors might have changed.",
+    "stats": "PGC Profile Stats",
+    "prcountry": "Will attend logs per country",
+    "pgc": "according to Project-GC.com",
+    "checkers": "Challenge checker",
+    "plural": "(s)",
+    "locked": "This cache has been locked and can no longer be logged."
+  },
+  "other": {
     "prcouuntry": "Found logs per country",
     "accord": "according to Project-GC.com",
     "unique": "unique countries",
@@ -68,5 +78,6 @@
     "map": "Map with Project-GC",
     "prostats": "Project-GC Profile stats",
     "decrypt": "Decrypt"
-    
+  
+  }
 }
