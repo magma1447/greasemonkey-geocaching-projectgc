@@ -811,7 +811,7 @@ function loadTranslations() {
 
                         // Append the same number to the added logbook link
                         if (IsSettingEnabled('logbookLinks')) {
-                            $('#pgc-logbook-yours').html('Yours (' + myNumberOfLogs + ')')
+                            $('#pgc-logbook-yours').html(''+i18next.t('other.yours')+' (' + myNumberOfLogs + ')')
 
                         }
                     }
