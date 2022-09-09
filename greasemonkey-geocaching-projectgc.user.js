@@ -104,7 +104,7 @@ function loadTranslations() {
             ns: ['pgc'],
             defaultNS: 'pgc',
             backend: {
-                loadPath: 'https://raw.githubusercontent.com/magma1447/greasemonkey-geocaching-projectgc/master//language/{{ns}}.{{lng}}.json',
+                loadPath: 'https://raw.githubusercontent.com/magma1447/greasemonkey-geocaching-projectgc/master/language/{{ns}}.{{lng}}.json',
                 crossDomain: true
             }
         }, (err, t) => {
