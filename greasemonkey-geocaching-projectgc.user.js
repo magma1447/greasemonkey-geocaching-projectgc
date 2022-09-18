@@ -51,14 +51,15 @@
 // to do so, subject to the following conditions:
 // The above copyright notice and this permission notice (including the next paragraph) shall be included in all copies or substantial
 // portions of the Software.
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
-// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (function() {
 
     'use strict';
+var _language = "";
 
     var pgcUrl = 'https://project-gc.com/',
         cdnDomain = 'https://cdn2.project-gc.com/',
@@ -72,52 +73,54 @@
         subscription = null,
         pgcUsername = null,
 		// Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
-        imperialFlag = null, 
+        imperialFlag = null,
         gccomUsername = null,
         latestLogs = [],
         latestLogsAlert = false,
         settings = {},
         path = window.location.pathname,
         challengeCheckerResults = null;
+        _language = "";
+
 
     // Don't run the script for iframes
     if (window.top == window.self) {
-       loadTranslations();
+                loadTranslations();
     }
 
     function Main() {
         ReadSettings();
         CheckPGCLogin();
+                console.log('last');
 
     }
 
-
-function loadTranslations() {
+    function loadTranslations() {
     i18next
         .use(i18nextXHRBackend)
         .use(i18nextBrowserLanguageDetector)
         .init({
-            whitelist: ['nb_NO', 'en'],
-            preload: ['nb_NO', 'en'],
-            fallbackLng: ['en'],
+            whitelist: ['nb_NO', 'en', 'en_US'],
+            preload: ['nb_NO', 'en', 'en_US'],
+            fallbackLng: ['en_US'],
             'lng': navigator.language || navigator.userLanguage,
-            ns: ['pgc'],
-            defaultNS: 'pgc',
+            ns: ['userscript'],
+            defaultNS: ['userscript'],
             backend: {
-                loadPath: 'https://raw.githubusercontent.com/magma1447/greasemonkey-geocaching-projectgc/master/language/{{ns}}.{{lng}}.json',
+                loadPath: pgcUrl + 'locale/{{lng}}/{{ns}}.json',
                 crossDomain: true
             }
         }, (err, t) => {
             if (err) {
                 if (err.indexOf("failed parsing" > -1)) {
-                    i18next.changeLanguage('en');
+                    i18next.changeLanguage('en_US');
 
                     return loadTranslations();
                 }
                 return console.log("Error occurred when loading language data", err);
             }
 
-           Main();
+        Main();
         });
 }
     function Router() {
@@ -367,7 +370,6 @@ function loadTranslations() {
             url: pgcApiUrl + 'GetMyUsername',
             onload: function(response) {
                 var result = JSON.parse(response.responseText);
-
                 if (result.status !== 'OK') {
                     alert(response.responseText);
                     return false;
@@ -378,6 +380,8 @@ function loadTranslations() {
                 imperialFlag = result.data.imperialUnits;
                 loggedIn = Boolean(result.data.loggedIn);
                 subscription = Boolean(result.data.subscription);
+                _language = result.data.locale; //untested code
+                i18next.changeLanguage(_language);//untested code**
 
                 function waitForHeader(waitCount) {
                     if ($('.user-menu')[0]) BuildPGCUserMenu();
@@ -407,8 +411,8 @@ function loadTranslations() {
             loggedInContent = '<a href="' + pgcUrl + 'ProfileStats/' + pgcUsername + '"><strong' + (pgcUsername != gccomUsername ? ' style="color: red;"' : '') + '>' + pgcUsername + '</strong></a>';
             subscriptionContent = '<a href="https://project-gc.com/Home/Membership" target="_blank">' + (subscription ? i18next.t("heder.Paid") : i18next.t("heder.Missing")) + ' ' + i18next.t("heder.membership") + '</a>';
         }
-        
-	    // Issue 113; fixed 2022-08-30 
+
+	    // Issue 113; fixed 2022-08-30
         GM_addStyle('\
         #pgc .player-profile, #pgc_gclh .li-user-info {width: auto;}\
         #pgc .player-profile:hover {text-decoration: none;}\
@@ -435,7 +439,7 @@ function loadTranslations() {
             settings += '<li style="margin: .2em 1em; white-space: nowrap; display: flex;"><label style="font-weight: inherit; margin-bottom: 0" for="' + item + '"><input type="checkbox" id="' + item + '" name="' + item + '"' + isChecked + ' >&nbsp;' + items[item].title + '</label>&nbsp;<small>(default: ' + items[item].default + ')</small></li>';
         }
 
-      settings += '\
+        settings += '\
                 <li style="margin: .2em 1em; background: 0;">\
                     <button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); document.getElementById(\'pgcUserMenu\').style.display=\"none\"; return false;">' + i18next.t("menu.Cancel") + '</button>\
                     <button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); return false;">' + i18next.t("menu.Reset") + '</button>\
@@ -504,7 +508,6 @@ function loadTranslations() {
                 $('#pgc_gclh .dropdown-menu.menu-user form li:nth-last-child(1)').attr('id', 'pgcUserMenuWarning_gclh');
 
                 $("#pgcUserMenuButton_gclh").click(function(e) {
-                    e.preventDefault();
                     $('#pgcUserMenu_gclh').toggle();
                 })
 
@@ -806,12 +809,12 @@ function loadTranslations() {
 
                         // Add my number of logs above the log button
                         if (IsSettingEnabled('addMyNumberOfLogs')) {
-                            $('<p style="margin: 0;"><small>'+i18next.t('other.have')+' ' + myNumberOfLogs + ' '+i18next.t('other.accordpgc')+'</small></p>').insertBefore('#ctl00_ContentBody_GeoNav_logButton');
+                            $('<p style="margin: 0;"><small>You have ' + myNumberOfLogs + ' '+i18next.t('other.accordpgc')+'</small></p>').insertBefore('#ctl00_ContentBody_GeoNav_logButton');
                         }
 
                         // Append the same number to the added logbook link
                         if (IsSettingEnabled('logbookLinks')) {
-                            $('#pgc-logbook-yours').html(''+i18next.t('other.yours')+' (' + myNumberOfLogs + ')')
+                            $('#pgc-logbook-yours').html('Yours (' + myNumberOfLogs + ')')
 
                         }
                     }
@@ -1107,7 +1110,7 @@ function loadTranslations() {
             var logId = classes.match(/l-[0-9]+/)[0].replace('l-', '');
             if(typeof(challengeCheckerResults[logId]) !== 'undefined') {
                 if(challengeCheckerResults[logId]['status'] == 'success') {
-                    $(jNode).find('div.LogDisplayLeft').first().append('<hr style="margin-top: 12px; margin-bottom: 12px;"><p>Checker result<br>' + challengeCheckerResults[logId]['lastRun'] + ' UTC: <img src="' + challengeCheckerSuccessIcon + '"></p>');
+                    $(jNode).find('div.LogDisplayLeft').first().append('<hr style="margin-top: 12px; margin-bottom: 12px;"><p><br>' + challengeCheckerResults[logId]['lastRun'] + ' UTC: <img src="' + challengeCheckerSuccessIcon + '"></p>');
                 }
                 else if(challengeCheckerResults[logId]['status'] == 'fail') {
                     $(jNode).find('div.LogDisplayLeft').first().append('<hr style="margin-top: 12px; margin-bottom: 12px;"><p>'+i18next.t("other.checker")+'<br>' + challengeCheckerResults[logId]['lastRun'] + ' UTC: <img src="' + challengeCheckerFailIcon + '"></p>');
@@ -1352,14 +1355,14 @@ function loadTranslations() {
 // Original license:
 // The MIT License (MIT)
 // Copyright (c) 2008 Jacob Seidelin
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files 
-// (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, 
-// publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to 
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
+// (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge,
+// publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to
 // do so, subject to the following conditions:
 // The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
-// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (function() {
@@ -2187,3 +2190,4 @@ function loadTranslations() {
     }
 }.call(this));
 // -- https://github.com/exif-js/exif-js
+
