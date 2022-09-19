@@ -90,7 +90,6 @@
     function Main() {
         ReadSettings();
         CheckPGCLogin();
-
     }
 
      function loadTranslations() {
@@ -411,7 +410,7 @@
             subscriptionContent = '<a href="https://project-gc.com/Home/Membership" target="_blank">' + (subscription ? i18next.t("heder.Paid") : i18next.t("heder.Missing")) + ' ' + i18next.t("heder.membership") + '</a>';
         }
 
-	    // Issue 113; fixed 2022-08-30
+        // Issue 113; fixed 2022-08-30
         GM_addStyle('\
         #pgc .player-profile, #pgc_gclh .li-user-info {width: auto;}\
         #pgc .player-profile:hover {text-decoration: none;}\
