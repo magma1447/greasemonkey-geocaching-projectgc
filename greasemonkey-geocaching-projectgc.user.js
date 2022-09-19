@@ -18,7 +18,7 @@
 // @match           http://www.geocaching.com/*
 // @match           https://www.geocaching.com/*
 // @exclude         https://www.geocaching.com/profile/profilecontent.html
-// @version         2.4.1
+// @version         2.4.0
 // @require         http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require         https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -59,7 +59,6 @@
 (function() {
 
     'use strict';
-    var _language = "";
 
     var pgcUrl = 'https://project-gc.com/',
         cdnDomain = 'https://cdn2.project-gc.com/',
@@ -79,7 +78,7 @@
         latestLogsAlert = false,
         settings = {},
         path = window.location.pathname,
-        challengeCheckerResults = null;
+        challengeCheckerResults = null,
         _language = "";
 
 
@@ -2089,16 +2088,16 @@
                     case "Sharpness" :
                     case "SubjectDistanceRange" :
                     case "FileSource" :
-                         exifData[tag] = StringValues[tag][exifData[tag]];
+                        exifData[tag] = StringValues[tag][exifData[tag]];
                         break;
 
                     case "ExifVersion" :
                     case "FlashpixVersion" :
-                         exifData[tag] = String.fromCharCode(exifData[tag][0], exifData[tag][1], exifData[tag][2], exifData[tag][3]);
+                        exifData[tag] = String.fromCharCode(exifData[tag][0], exifData[tag][1], exifData[tag][2], exifData[tag][3]);
                         break;
 
                     case "ComponentsConfiguration" :
-                         exifData[tag] =
+                        exifData[tag] =
                             StringValues.Components[exifData[tag][0]] +
                             StringValues.Components[exifData[tag][1]] +
                             StringValues.Components[exifData[tag][2]] +
