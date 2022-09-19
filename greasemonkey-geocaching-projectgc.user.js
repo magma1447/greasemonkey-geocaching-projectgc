@@ -18,7 +18,7 @@
 // @include         http://www.geocaching.com/*
 // @include         https://www.geocaching.com/*
 // @exclude         https://www.geocaching.com/profile/profilecontent.html
-// @version         2.3.20
+// @version         2.4.01
 // @require         http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require         https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -95,19 +95,20 @@ var _language = "";
 
     }
 
-    function loadTranslations() {
+     function loadTranslations() {
     i18next
         .use(i18nextXHRBackend)
         .use(i18nextBrowserLanguageDetector)
         .init({
-            whitelist: ['nb_NO', 'en', 'en_US'],
-            preload: ['nb_NO', 'en', 'en_US'],
-            fallbackLng: ['en_US'],
+            supportedLngs: ['ca_ES', 'cs_CZ', 'da_DK', 'de_DE', 'en_AU', 'en_CA', 'en_GB', 'en_US', 'es_ES', 'fi_FI', 'fr_FR', 'hu_HU', 'it_IT', 'ko_KR', 'lv_LV', 'nb_NO', 'nl_NL', 'pl_PL', 'pt_BR', 'pt_PT', 'sk_SK', 'sl_SI', 'sv_SE', 'tr_TR', 'zh_TW'],
+            whitelist: ['ca_ES', 'cs_CZ', 'da_DK', 'de_DE', 'en_AU', 'en_CA', 'en_GB', 'en_US', 'es_ES', 'fi_FI', 'fr_FR', 'hu_HU', 'it_IT', 'ko_KR', 'lv_LV', 'nb_NO', 'nl_NL', 'pl_PL', 'pt_BR', 'pt_PT', 'sk_SK', 'sl_SI', 'sv_SE', 'tr_TR', 'zh_TW'],
+            preload: ['ca_ES', 'cs_CZ', 'da_DK', 'de_DE', 'en_AU', 'en_CA', 'en_GB', 'en_US', 'es_ES', 'fi_FI', 'fr_FR', 'hu_HU', 'it_IT', 'ko_KR', 'lv_LV', 'nb_NO', 'nl_NL', 'pl_PL', 'pt_BR', 'pt_PT', 'sk_SK', 'sl_SI', 'sv_SE', 'tr_TR', 'zh_TW'],
+            fallbackLng: ['en_US', 'nb_NO', 'sv_SE'],
             'lng': navigator.language || navigator.userLanguage,
             ns: ['userscript'],
             defaultNS: ['userscript'],
             backend: {
-                loadPath: pgcUrl + 'locale/{{lng}}/{{ns}}.json',
+                loadPath: pgcUrl + 'locale/{{ns}}.php?lng={{lng}}',
                 crossDomain: true
             }
         }, (err, t) => {
