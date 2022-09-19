@@ -15,10 +15,10 @@
 // @namespace       PGC
 // @description     Adds links and data to Geocaching.com to make it collaborate with PGC
 // @icon            https://project-gc.com/favicon-32x32.png
-// @include         http://www.geocaching.com/*
-// @include         https://www.geocaching.com/*
+// @match           http://www.geocaching.com/*
+// @match           https://www.geocaching.com/*
 // @exclude         https://www.geocaching.com/profile/profilecontent.html
-// @version         2.4.0
+// @version         2.4.1
 // @require         http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require         https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -59,7 +59,7 @@
 (function() {
 
     'use strict';
-var _language = "";
+    var _language = "";
 
     var pgcUrl = 'https://project-gc.com/',
         cdnDomain = 'https://cdn2.project-gc.com/',
@@ -72,7 +72,7 @@ var _language = "";
         loggedIn = null,
         subscription = null,
         pgcUsername = null,
-		// Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
+   // Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
         imperialFlag = null,
         gccomUsername = null,
         latestLogs = [],
@@ -85,13 +85,12 @@ var _language = "";
 
     // Don't run the script for iframes
     if (window.top == window.self) {
-                loadTranslations();
+        loadTranslations();
     }
 
     function Main() {
         ReadSettings();
         CheckPGCLogin();
-                console.log('last');
 
     }
 
@@ -446,7 +445,7 @@ var _language = "";
                     <button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); return false;">' + i18next.t("menu.Reset") + '</button>\
                     <button id="pgcUserMenuSave">' + i18next.t("menu.Save") + '</button>\
                 </li>\
-                 <li id="pgcUserMenuWarning" style="display: none; margin: .5em 1em; color: red; background: 0;"><a href="#" onclick="location.reload();" style="color: red; padding: 0; text-decoration: underline; display: inline;">' + i18next.t("menu.Reload") + '</a> ' + i18next.t("menu.activate") + '</li>\
+                    <li id="pgcUserMenuWarning" style="display: none; margin: .5em 1em; color: red; background: 0;"><a href="#" onclick="location.reload();" style="color: red; padding: 0; text-decoration: underline; display: inline;">' + i18next.t("menu.Reload") + '</a> ' + i18next.t("menu.activate") + '</li>\
             </form>\
         </ul>';
 
@@ -548,8 +547,8 @@ var _language = "";
             url: url,
             onload: function(response) {
                 var result = JSON.parse(response.responseText),
-                     msg = (result.status === 'OK') ? i18next.t('vpgs.added') : i18next.t('vpgs.notadded');
-
+                    msg = (result.status === 'OK') ? i18next.t('vpgs.added') : i18next.t('vpgs.notadded');
+		    
                 $('#btnAddToVGPS').css('display', 'none');
                 $('#btnRemoveFromVGPS').css('display', '');
 
@@ -716,7 +715,7 @@ var _language = "";
 							    // Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
                                 elevationUnit = imperialFlag ? 'ft' : 'm',
                                 elevationArrow = (cacheData.elevation >= 0) ? '&#x21a5;' : '&#x21a7;';
-                            elevation = formattedElevation + ' ' + elevationUnit + ' ' + elevationArrow;
+                                elevation = formattedElevation + ' ' + elevationUnit + ' ' + elevationArrow;
 
                             if (cacheData.elevation >= 0) {
                                 html = '<span> (' + elevation + ')</span>';
@@ -2090,16 +2089,16 @@ var _language = "";
                     case "Sharpness" :
                     case "SubjectDistanceRange" :
                     case "FileSource" :
-                        exifData[tag] = StringValues[tag][exifData[tag]];
+                         exifData[tag] = StringValues[tag][exifData[tag]];
                         break;
 
                     case "ExifVersion" :
                     case "FlashpixVersion" :
-                        exifData[tag] = String.fromCharCode(exifData[tag][0], exifData[tag][1], exifData[tag][2], exifData[tag][3]);
+                         exifData[tag] = String.fromCharCode(exifData[tag][0], exifData[tag][1], exifData[tag][2], exifData[tag][3]);
                         break;
 
                     case "ComponentsConfiguration" :
-                        exifData[tag] =
+                         exifData[tag] =
                             StringValues.Components[exifData[tag][0]] +
                             StringValues.Components[exifData[tag][1]] +
                             StringValues.Components[exifData[tag][2]] +
@@ -2172,8 +2171,8 @@ var _language = "";
                     } else {
                         strPretty += a + " : [" + data[a].length + " values]\r\n";
                     }
-                } else {
-                    strPretty += a + " : " + data[a] + "\r\n";
+                    } else {
+                        strPretty += a + " : " + data[a] + "\r\n";
                 }
             }
         }
