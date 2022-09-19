@@ -799,7 +799,7 @@
                                     html += '<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;">(plus ' + unknowns + ' undetermined)</span></li>';
                                 }
                                 html += '</ul>';
-                                html += '<span style="display: block; text-align: right; padding-right: 10px;"><small>' + geocacheLogsPerCountry['found'].length + ''+i18next.t('other.unique')+'</small></span>';
+                                html += '<span style="display: block; text-align: right; padding-right: 10px;"><small>' + geocacheLogsPerCountry['found'].length + ' ' +i18next.t('other.unique')+'</small></span>';
                             }
 
                             html += '</div>';
@@ -814,7 +814,7 @@
 
                         // Append the same number to the added logbook link
                         if (IsSettingEnabled('logbookLinks')) {
-                            $('#pgc-logbook-yours').html('Yours (' + myNumberOfLogs + ')')
+                            $('#pgc-logbook-yours').html(''+i18next.t('other.yours')+' (' + myNumberOfLogs + ')')
 
                         }
                     }
