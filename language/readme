@@ -1,0 +1,17 @@
+Example for translation of this bit:
+ "heder": {
+    "not": "Not logged in",
+    "Paid": "Paid",
+    "Missing": "Missing",
+    "membership": "membership"
+  },
+  
+  
+   "heder": {
+    "not": "ONLY TRANSLATE THIS PART",
+    "Paid": "ONLY TRANSLATE THIS PART",
+    "Missing": "ONLY TRANSLATE THIS PART",
+    "membership": "ONLY TRANSLATE THIS PART"
+  },
+  
+  And be aware of commas

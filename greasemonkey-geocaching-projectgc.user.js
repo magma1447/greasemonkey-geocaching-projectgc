@@ -1,9 +1,10 @@
-﻿/* global $: true */
+/* global $: true */
 /* global waitForKeyElements: true */
 /* global GM_xmlhttpRequest: true */
 /* global GM_getValue: true */
 /* global GM_setValue: true */
 /* global unsafeWindow: true */
+/* globals i18next, i18nextXHRBackend, i18nextBrowserLanguageDetector */
 // jshint newcap:false
 // jshint multistr:true
 
@@ -14,13 +15,16 @@
 // @namespace       PGC
 // @description     Adds links and data to Geocaching.com to make it collaborate with PGC
 // @icon            https://project-gc.com/favicon-32x32.png
-// @include         http://www.geocaching.com/*
-// @include         https://www.geocaching.com/*
+// @match           http://www.geocaching.com/*
+// @match           https://www.geocaching.com/*
 // @exclude         https://www.geocaching.com/profile/profilecontent.html
-// @version         2.3.19
+// @version         2.4.0
 // @require         http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require         https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
+// @require         https://unpkg.com/i18next@21.9.1/i18next.min.js
+// @require         https://unpkg.com/i18next-xhr-backend@3.2.2/i18nextXHRBackend.js
+// @require         https://unpkg.com/i18next-browser-languagedetector@6.1.4/i18nextBrowserLanguageDetector.js
 // @grant           GM_xmlhttpRequest
 // @grant           GM_setValue
 // @grant           GM_getValue
@@ -47,9 +51,9 @@
 // to do so, subject to the following conditions:
 // The above copyright notice and this permission notice (including the next paragraph) shall be included in all copies or substantial
 // portions of the Software.
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
-// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (function() {
@@ -67,18 +71,20 @@
         loggedIn = null,
         subscription = null,
         pgcUsername = null,
-		// Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
-        imperialFlag = null, 
+        // Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
+        imperialFlag = null,
         gccomUsername = null,
         latestLogs = [],
         latestLogsAlert = false,
         settings = {},
         path = window.location.pathname,
-        challengeCheckerResults = null;
+        challengeCheckerResults = null,
+        _language = "";
+
 
     // Don't run the script for iframes
     if (window.top == window.self) {
-        Main();
+        loadTranslations(); // Will call Main() when completed
     }
 
     function Main() {
@@ -86,6 +92,35 @@
         CheckPGCLogin();
     }
 
+     function loadTranslations() {
+    i18next
+        .use(i18nextXHRBackend)
+        .use(i18nextBrowserLanguageDetector)
+        .init({
+            supportedLngs: ['ca_ES', 'cs_CZ', 'da_DK', 'de_DE', 'en_AU', 'en_CA', 'en_GB', 'en_US', 'es_ES', 'fi_FI', 'fr_FR', 'hu_HU', 'it_IT', 'ko_KR', 'lv_LV', 'nb_NO', 'nl_NL', 'pl_PL', 'pt_BR', 'pt_PT', 'sk_SK', 'sl_SI', 'sv_SE', 'tr_TR', 'zh_TW'],
+            whitelist: ['ca_ES', 'cs_CZ', 'da_DK', 'de_DE', 'en_AU', 'en_CA', 'en_GB', 'en_US', 'es_ES', 'fi_FI', 'fr_FR', 'hu_HU', 'it_IT', 'ko_KR', 'lv_LV', 'nb_NO', 'nl_NL', 'pl_PL', 'pt_BR', 'pt_PT', 'sk_SK', 'sl_SI', 'sv_SE', 'tr_TR', 'zh_TW'],
+            preload: ['ca_ES', 'cs_CZ', 'da_DK', 'de_DE', 'en_AU', 'en_CA', 'en_GB', 'en_US', 'es_ES', 'fi_FI', 'fr_FR', 'hu_HU', 'it_IT', 'ko_KR', 'lv_LV', 'nb_NO', 'nl_NL', 'pl_PL', 'pt_BR', 'pt_PT', 'sk_SK', 'sl_SI', 'sv_SE', 'tr_TR', 'zh_TW'],
+            fallbackLng: ['en_US', 'nb_NO', 'sv_SE'],
+            'lng': navigator.language || navigator.userLanguage,
+            ns: ['userscript'],
+            defaultNS: ['userscript'],
+            backend: {
+                loadPath: pgcUrl + 'locale/{{ns}}.php?lng={{lng}}',
+                crossDomain: true
+            }
+        }, (err, t) => {
+            if (err) {
+                if (err.indexOf("failed parsing" > -1)) {
+                    i18next.changeLanguage('en_US');
+
+                    return loadTranslations();
+                }
+                return console.log("Error occurred when loading language data", err);
+            }
+
+        Main();
+        });
+}
     function Router() {
         if (path.match(/^\/geocache\/.*/) !== null) {
             Page_CachePage();
@@ -113,116 +148,116 @@
     function GetSettingsItems() {
         var items = {
             showVGPS: {
-                title: 'Show Virtual GPS',
+                title: i18next.t('menu.showvpgs'),
                 default: true
             },
             addChallengeCheckers: {
-                title: 'Add challenge checkers',
+                title: i18next.t('menu.addcc'),
                 default: true
             },
             makeCopyFriendly: {
-                title: 'Make copy friendly GC-Code and link',
+                title: i18next.t('menu.makeCopyFriendly'),
                 default: true
             },
             addPgcMapLinks: {
-                title: 'Add link to Project-GC live map',
+                title: i18next.t('menu.addPgcMapLinks'),
                 default: true
             },
             addLatestLogs: {
-                title: 'Add latest logs',
+                title: i18next.t('menu.addLatestLogs'),
                 default: true
             },
             cloneLogsPerType: {
-                title: 'Clone number of logs per type',
+                title: i18next.t('menu.cloneLogsPerType'),
                 default: true
             },
             addPGCLocation: {
-                title: 'Add location from Project-GC',
+                title: i18next.t('menu.addPGCLocation'),
 				default: true
             },
             addAddress: {
-                title: 'Add OSM reverse geocoded address',
+                title: i18next.t('menu.addAddress'),
                 default: true
             },
             removeUTM: {
-                title: 'Remove UTM coordinates',
+                title: i18next.t('menu.removeUTM'),
                 default: true
             },
             addPgcFp: {
-                title: 'Add Favorite Points from Project-GC',
+                title: i18next.t('menu.addPgcFp'),
                 default: true
             },
             showWeekday: {
-                title: 'Show weekday of the place date',
+                title: i18next.t('menu.showWeekday'),
                 default: true
             },
             profileStatsLinks: {
-                title: 'Add links to Profile stats',
+                title: i18next.t('menu.profileStatsLinks'),
                 default: true
             },
             tidy: {
-                title: 'Tidy the web a bit',
+                title: i18next.t('menu.tidy'),
                 default: true
             },
             collapseDownloads: {
-                title: 'Collapse download links',
+                title: i18next.t('menu.collapseDownloads'),
                 default: false
             },
             addPgcGalleryLinks: {
-             	title: 'Add links to gallery',
+                title: i18next.t('menu.addPgcGalleryLinks'),
                 default: true
             },
             addMapBookmarkListLinks: {
-                title: 'Add links for bookmark lists',
+                title: i18next.t('menu.addMapBookmarkListLinks'),
                 default: true
             },
             decryptHints: {
-                title: 'Automatically decrypt hints',
+                title: i18next.t('menu.decryptHints'),
                 default: true
             },
             addElevation: {
-                title: 'Add elevation',
+                title: i18next.t('menu.addElevation'),
                 default: true
             },
 			// Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
             removeDisclaimer: {
-                title: 'Remove disclaimer',
-				default: true
+                title: i18next.t('menu.removeDisclaimer'),
+                default: true
             },
             parseExifLocation: {
-                title: 'Display EXIF location info on old log photos that have it',
+                title: i18next.t('menu.parseExifLocation'),
                 default: true
             },
             addGeocacheLogsPerProfileCountry: {
-                title: 'Add found logs per country',
+                title: i18next.t('menu.addGeocacheLogsPerProfileCountry'),
                 default: true
             },
             openDraftLogInSameWindow: {
-                title: 'Open <em>Compose Log</em> entries in <em>Drafts</em> in same window',
+                title: i18next.t('menu.openDraftLogInSameWindow'),
                 default: true
             },
             cachenoteFont: {
-                title: 'Change personal cache note font to monospaced',
+                title: i18next.t('menu.cachenoteFont'),
                 default: true
             },
             logbookLinks: {
-                title: 'Add links to logbook tabs',
+                title: i18next.t('menu.logbookLinks'),
                 default: true
             },
             addMyNumberOfLogs: {
-                title: 'Add my number of logs above log button',
+                title: i18next.t('menu.addMyNumberOfLogs'),
                 default: true
             },
             hideMapFromPrintCachePage: {
-                title: 'Hide map from print cache page',
+                title: i18next.t('menu.hideMapFromPrintCachePage'),
                 default: true
             },
             addCachedChallengeCheckerResults: {
-                title: 'Add icons for cached Challenge checker results',
+                title: i18next.t('menu.addCachedChallengeCheckerResults'),
                 default: true
             },
             hideLogVoting: {
-                title: 'Hide log upvote buttons and sorting options',
+                title: i18next.t('menu.hideLogVoting'),
                 default: false
             }
         };
@@ -333,7 +368,6 @@
             url: pgcApiUrl + 'GetMyUsername',
             onload: function(response) {
                 var result = JSON.parse(response.responseText);
-
                 if (result.status !== 'OK') {
                     alert(response.responseText);
                     return false;
@@ -344,6 +378,8 @@
                 imperialFlag = result.data.imperialUnits;
                 loggedIn = Boolean(result.data.loggedIn);
                 subscription = Boolean(result.data.subscription);
+                _language = result.data.locale; //untested code
+                i18next.changeLanguage(_language);//untested code**
 
                 function waitForHeader(waitCount) {
                     if ($('.user-menu')[0]) BuildPGCUserMenu();
@@ -368,13 +404,13 @@
         }
 
         if (loggedIn === false) {
-            loggedInContent = '<a href="' + pgcUrl + 'User/Login" target="_blank">Not logged in</a>';
+            loggedInContent = '<a href="' + pgcUrl + 'User/Login" target="_blank">' + i18next.t("heder.not") + '</a>';
         } else {
             loggedInContent = '<a href="' + pgcUrl + 'ProfileStats/' + pgcUsername + '"><strong' + (pgcUsername != gccomUsername ? ' style="color: red;"' : '') + '>' + pgcUsername + '</strong></a>';
-            subscriptionContent = '<a href="https://project-gc.com/Home/Membership" target="_blank">' + (subscription ? 'Paid' : 'Missing') + ' membership</a>';
+            subscriptionContent = '<a href="https://project-gc.com/Home/Membership" target="_blank">' + (subscription ? i18next.t("heder.Paid") : i18next.t("heder.Missing")) + ' ' + i18next.t("heder.membership") + '</a>';
         }
-        
-	    // Issue 113; fixed 2022-08-30 
+
+        // Issue 113; fixed 2022-08-30
         GM_addStyle('\
         #pgc .player-profile, #pgc_gclh .li-user-info {width: auto;}\
         #pgc .player-profile:hover {text-decoration: none;}\
@@ -403,11 +439,11 @@
 
         settings += '\
                 <li style="margin: .2em 1em; background: 0;">\
-                    <button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); document.getElementById(\'pgcUserMenu\').style.display=\"none\"; return false;">Cancel</button>\
-                    <button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); return false;">Reset</button>\
-                    <button id="pgcUserMenuSave">Save</button>\
+                    <button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); document.getElementById(\'pgcUserMenu\').style.display=\"none\"; return false;">' + i18next.t("menu.Cancel") + '</button>\
+                    <button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); return false;">' + i18next.t("menu.Reset") + '</button>\
+                    <button id="pgcUserMenuSave">' + i18next.t("menu.Save") + '</button>\
                 </li>\
-                <li id="pgcUserMenuWarning" style="display: none; margin: .5em 1em; color: red; background: 0;"><a href="#" onclick="location.reload();" style="color: red; padding: 0; text-decoration: underline; display: inline;">Reload</a> the page to activate the new settings.</li>\
+                <li id="pgcUserMenuWarning" style="display: none; margin: .5em 1em; color: red; background: 0;"><a href="#" onclick="location.reload();" style="color: red; padding: 0; text-decoration: underline; display: inline;">' + i18next.t("menu.Reload") + '</a> ' + i18next.t("menu.activate") + '</li>\
             </form>\
         </ul>';
 
@@ -510,7 +546,7 @@
             url: url,
             onload: function(response) {
                 var result = JSON.parse(response.responseText),
-                    msg = (result.status === 'OK') ? 'Geocache added to Virtual-GPS!' : 'Geocache not added to Virtual-GPS :(';
+                    msg = (result.status === 'OK') ? i18next.t('vpgs.added') : i18next.t('vpgs.notadded');
 
                 $('#btnAddToVGPS').css('display', 'none');
                 $('#btnRemoveFromVGPS').css('display', '');
@@ -546,7 +582,7 @@
             url: url,
             onload: function(response) {
                 var result = JSON.parse(response.responseText),
-                    msg = (result.status === 'OK') ? 'Geocache removed from Virtual-GPS!' : 'Geocache not removed from Virtual-GPS :(';
+                    msg = (result.status === 'OK') ? i18next.t('vpgs.removed') : i18next.t('vpgs.notre');
 
                 $('#btnAddToVGPS').css('display', '');
                 $('#btnRemoveFromVGPS').css('display', 'none');
@@ -632,14 +668,14 @@
                         }
 
                         if(suspiciousFoundItLogs.length != 0) {
-                            var suspiciousFoundItLog = '<p style="color: #ff6c00;" class=" NoBottomSpacing"><strong>Cache Issues:</strong></p>\
+                            var suspiciousFoundItLog = '<p style="color: #ff6c00;" class=" NoBottomSpacing"><strong>' + i18next.t('vpgs.issue') + '</strong></p>\
                                         <ul style="color: #ff6c00;" class="">\
-                                            <li>The following Found it logs might not fulfill the requirements:<br>';
+                                            <li>' + i18next.t('vpgs.notfull') + ' <br>';
 
                             for(var i = 0 ; i < suspiciousFoundItLogs.length ; i++) {
                                 suspiciousFoundItLog = suspiciousFoundItLog + ' <a href="https://www.geocaching.com/seek/log.aspx?LID=' + suspiciousFoundItLogs[i] + '">' + challengeCheckerResults[suspiciousFoundItLogs[i]]['profileName'] + '</a><br>';
                             }
-                            suspiciousFoundItLog = suspiciousFoundItLog + 'Please understand that the checker result is a cached result. Also the geocacher might very well have fulfilled it in the past, external factors might have changed.</li></ul>';
+                            suspiciousFoundItLog = suspiciousFoundItLog + i18next.t('cpage.suspiciousFoundItLog') +'</li></ul>';
 
                             $('div.span-6.right.last').last().next().after(suspiciousFoundItLog);
                         }
@@ -657,7 +693,7 @@
                         // Append link to Profile Stats for the cache owner
                         // Need to real cache owner name from PGC since the web only has placed by
                         if (IsSettingEnabled('profileStatsLinks')) {
-                            $('#ctl00_ContentBody_mcd1 span.message__owner').before('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(cacheOwner) + '"><img src="' + externalLinkIcon + '" title="PGC Profile Stats"></a>');
+                            $('#ctl00_ContentBody_mcd1 span.message__owner').before('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(cacheOwner) + '"><img src="' + externalLinkIcon + '" title=' + i18next.t('cpage.stasts') +'></a>');
                         }
 
                         // Add FP/FP%/FPW below the current FP + mouseover for FP% and FPW with decimals
@@ -678,7 +714,7 @@
 							    // Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
                                 elevationUnit = imperialFlag ? 'ft' : 'm',
                                 elevationArrow = (cacheData.elevation >= 0) ? '&#x21a5;' : '&#x21a7;';
-                            elevation = formattedElevation + ' ' + elevationUnit + ' ' + elevationArrow;
+                                elevation = formattedElevation + ' ' + elevationUnit + ' ' + elevationArrow;
 
                             if (cacheData.elevation >= 0) {
                                 html = '<span> (' + elevation + ')</span>';
@@ -711,9 +747,9 @@
 
                         // Add challenge checkers
                         if (IsSettingEnabled('addChallengeCheckers') && challengeCheckerTagIds.length > 0) {
-                            html = '<div id="checkerWidget" class="CacheDetailNavigationWidget TopSpacing BottomSpacing"><h3 class="WidgetHeader">Challenge checker(s)</h3><div class="WidgetBody" id="PGC_ChallengeCheckers">';
+                            html = '<div id="checkerWidget" class="CacheDetailNavigationWidget TopSpacing BottomSpacing"><h3 class="WidgetHeader">' + i18next.t('cpage.checkers') +'' + i18next.t('cpage.plural') +'</h3><div class="WidgetBody" id="PGC_ChallengeCheckers">';
                             for (var i = 0; i < challengeCheckerTagIds.length; i++) {
-                                html += '<a href="https://project-gc.com/Challenges/' + gccode + '/' + challengeCheckerTagIds[i] + '" style="display: block; width: 200px; margin: 0 auto;"><img src="https://cdn2.project-gc.com/Images/Checker/' + challengeCheckerTagIds[i] + '" title="Project-GC Challenge checker" alt="PGC Checker"></a>';
+                                html += '<a href="https://project-gc.com/Challenges/' + gccode + '/' + challengeCheckerTagIds[i] + '" style="display: block; width: 200px; margin: 0 auto;"><img src="https://cdn2.project-gc.com/Images/Checker/' + challengeCheckerTagIds[i] + '" title=' + i18next.t('vpgs.title') +' alt=' + i18next.t('vpgs.alt') +'></a>';
                             }
                             html += '</div></div>';
                             $('#ctl00_ContentBody_detailWidget').before(html);
@@ -721,7 +757,7 @@
 
                         // Display warning message if cache is logged and no longer be logged
                         if (cacheData.locked) {
-                            $('ul.OldWarning').append('<li>This cache has been locked and can no longer be logged.</li>');
+                            $('ul.OldWarning').append('<li>' + i18next.t('cpage.locked') +'</li>');
                         }
 
                         // Add geocache logs per profile country table
@@ -729,7 +765,7 @@
                             html = '<div id="geocacheLogsPerCountry" style="border: dashed; border-color: #aaa; border-width: thin;">';
 
                             if(typeof(geocacheLogsPerCountry['willAttend']) != 'undefined' && geocacheLogsPerCountry['willAttend'].length > 0) {
-                                html += '<p style="margin-left: 10px; margin-bottom: 0;"><strong>Will attend logs per country</strong> <small>according to Project-GC.com</small></p>';
+                                html += '<p style="margin-left: 10px; margin-bottom: 0;"><strong>' + i18next.t('cpage.prcountry') +'</strong> <small>' + i18next.t('cpage.pgc') +'</small></p>';
                                 html += '<ul style="list-style: none; margin-left: 0; margin-bottom: 0;">';
                                 var unknowns = null;
                                 for (var i = 0; i < geocacheLogsPerCountry['willAttend'].length; i++) {
@@ -748,7 +784,7 @@
                             }
 
                             if(typeof(geocacheLogsPerCountry['found']) != 'undefined' && geocacheLogsPerCountry['found'].length > 0) {
-                                html += '<p style="margin-left: 10px; margin-bottom: 0;"><strong>Found logs per country</strong> <small>according to Project-GC.com</small></p>';
+                                html += '<p style="margin-left: 10px; margin-bottom: 0;"><strong> '+i18next.t('other.prcouuntry')+'</strong> <small>'+i18next.t('other.accord')+'</small></p>';
                                 html += '<ul style="list-style: none; margin-left: 0; margin-bottom: 0;">';
                                 var unknowns = null;
                                 for (var i = 0; i < geocacheLogsPerCountry['found'].length; i++) {
@@ -762,7 +798,7 @@
                                     html += '<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;">(plus ' + unknowns + ' undetermined)</span></li>';
                                 }
                                 html += '</ul>';
-                                html += '<span style="display: block; text-align: right; padding-right: 10px;"><small>' + geocacheLogsPerCountry['found'].length + ' unique countries</small></span>';
+                                html += '<span style="display: block; text-align: right; padding-right: 10px;"><small>' + geocacheLogsPerCountry['found'].length + ' ' +i18next.t('other.unique')+'</small></span>';
                             }
 
                             html += '</div>';
@@ -772,12 +808,12 @@
 
                         // Add my number of logs above the log button
                         if (IsSettingEnabled('addMyNumberOfLogs')) {
-                            $('<p style="margin: 0;"><small>You have ' + myNumberOfLogs + ' logs according to Project-GC</small></p>').insertBefore('#ctl00_ContentBody_GeoNav_logButton');
+                            $('<p style="margin: 0;"><small>'+i18next.t('other.have')+' ' + myNumberOfLogs + ' '+i18next.t('other.accordpgc')+'</small></p>').insertBefore('#ctl00_ContentBody_GeoNav_logButton');
                         }
 
                         // Append the same number to the added logbook link
                         if (IsSettingEnabled('logbookLinks')) {
-                            $('#pgc-logbook-yours').html('Yours (' + myNumberOfLogs + ')')
+                            $('#pgc-logbook-yours').html(''+i18next.t('other.yours')+' (' + myNumberOfLogs + ')')
 
                         }
                     }
@@ -840,7 +876,7 @@
             //     '<div style="margin-bottom: 8px;"><a target="_blank" href="' + mapUrl + '">Project-GC map</a> (<a target="_blank" href="' + mapUrl + '&onefound=on">incl found</a>)</div>'
             // );
             $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').append(
-                '<div style="margin-bottom: 8px;"><a target="_blank" href="' + mapUrl + '">Project-GC Live map</a></div>'
+                '<div style="margin-bottom: 8px;"><a target="_blank" href="' + mapUrl + '">'+i18next.t('other.live')+'</a></div>'
             );
         }
 
@@ -865,9 +901,9 @@
         // If the first log is a DNF, display a blue warning on top of the page
         // 2022-08-24, Issue #111, fixes display of blue text warning of last log is DNF.
         if ($('#cache_logs_table span.h4 img').attr('src') === '/images/logtypes/3.png') {
-            var htmlFirstLogDnf = '<p style="color: #006cff;" class=" NoBottomSpacing"><strong>Cache Issues:</strong></p>\
+            var htmlFirstLogDnf = '<p style="color: #006cff;" class=" NoBottomSpacing"><strong>'+i18next.t('other.issue')+'</strong></p>\
                                    <ul style="color: #006cff;" class="">\
-                                   <li>The latest log for this cache is a DNF, <a href="#cache_logs_table">please read the log</a> before your own search.</li>\
+                                   <li>'+i18next.t('other.latest')+' <a href="#cache_logs_table">'+i18next.t('other.please')+'</a>'+i18next.t('other.before')+' </li>\
                                    </ul>';
             $('div.span-6.right.last').last().next().after(htmlFirstLogDnf);
 
@@ -876,7 +912,7 @@
         // Collapse download links
         // http://www.w3schools.com/charsets/ref_utf_geometric.asp (x25BA, x25BC)
         if (IsSettingEnabled('collapseDownloads')) {
-            $('<p style="cursor: pointer; margin: 0;" id="DownloadLinksToggle" onclick="$(\'#divContentMain div.DownloadLinks, #DownloadLinksToggle .arrow\').toggle();"><span class="arrow">&#x25BA;</span><span class="arrow open">&#x25BC;</span>Print and Downloads</p>').insertBefore('#divContentMain div.DownloadLinks');
+            $('<p style="cursor: pointer; margin: 0;" id="DownloadLinksToggle" onclick="$(\'#divContentMain div.DownloadLinks, #DownloadLinksToggle .arrow\').toggle();"><span class="arrow">&#x25BA;</span><span class="arrow open">&#x25BC;</span>'+i18next.t('other.print')+'</p>').insertBefore('#divContentMain div.DownloadLinks');
             $('#divContentMain div.DownloadLinks, #DownloadLinksToggle .arrow.open').hide();
         }
 
@@ -914,7 +950,7 @@
 
         // Add link to PGC gallery
         if (subscription && IsSettingEnabled('addPgcGalleryLinks')) {
-            var html = '<a href="' + pgcUrl + 'Tools/Gallery?gccode=' + gccode + '&submit=Filter"><img src="' + galleryLinkIcon + '" title="Project-GC Gallery"></a> ';
+            var html = '<a href="' + pgcUrl + 'Tools/Gallery?gccode=' + gccode + '&submit=Filter"><img src="' + galleryLinkIcon + '" title='+i18next.t('other.gallery')+'></a> ';
             $('.CacheDetailNavigation ul li:first').append(html);
         }
 
@@ -926,20 +962,20 @@
 
                 // Add the map link
                 url = 'https://project-gc.com/Tools/MapBookmarklist?owner_name=' + encodeURIComponent(owner) + '&guid=' + encodeURIComponent(guid);
-                $(this).children(':nth-child(1)').append('&nbsp;<a href="' + url + '"><img src="' + mapLinkIcon + '" title="Map with Project-GC"></a>');
+                $(this).children(':nth-child(1)').append('&nbsp;<a href="' + url + '"><img src="' + mapLinkIcon + '" title='+i18next.t('other.map')+'></a>');
 
                 // Add gallery link for the bookmark list
                 url = 'https://project-gc.com/Tools/Gallery?bml_owner=' + encodeURIComponent(owner) + '&bml_guid=' + encodeURIComponent(guid) + '&submit=Filter';
-                $(this).children(':nth-child(1)').append('&nbsp;<a href="' + url + '"><img src="' + galleryLinkIcon + '" title="Project-GC Gallery"></a>');
+                $(this).children(':nth-child(1)').append('&nbsp;<a href="' + url + '"><img src="' + galleryLinkIcon + '" title='+i18next.t('other.gallery')+'></a>');
 
                 // Add profile stats link to the owner
                 url = 'https://project-gc.com/ProfileStats/' + encodeURIComponent(owner);
-                $(this).children(':nth-child(3)').append('&nbsp;<a href="' + url + '"><img src="' + externalLinkIcon + '" title="Project-GC Profile stats"></a>');
+                $(this).children(':nth-child(3)').append('&nbsp;<a href="' + url + '"><img src="' + externalLinkIcon + '" title='+i18next.t('other.prostats')+'></a>');
             });
         }
 
         // Decrypt the hint
-        if (IsSettingEnabled('decryptHints') && $('#ctl00_ContentBody_lnkDH')[0].title == 'Decrypt') {
+        if (IsSettingEnabled('decryptHints') && $('#ctl00_ContentBody_lnkDH')[0].title == i18next.t('other.decrypt')) {
             $('#ctl00_ContentBody_lnkDH')[0].click();
         }
 
@@ -955,7 +991,7 @@
                         existsIn = result.data.existsIn,
                         selectedContent,
                         existsContent,
-                        html = '<li><img width="16" height="16" src="https://cdn2.project-gc.com/images/mobile_telephone_32.png"> <strong>Add to VGPS</strong><br />',
+                        html = '<li><img width="16" height="16" src="https://cdn2.project-gc.com/images/mobile_telephone_32.png"> <strong> ' + i18next.t('vpgs.send') + ' </strong><br />',
                         listId;
 
                     html += '<select id="comboVGPS" style="width: 138px;">';
@@ -1020,7 +1056,7 @@
             // 2022-08-24, fixes #112: Extra single quote showing up in LogBookLinks near "Friends".
             $('\
                 <span>&nbsp;|&nbsp;</span><a id="pgc-logbook-yours" href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-2">Yours</a>\
-                <span>&nbsp;|&nbsp;</span><a href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-3">Friends</a>\
+                <span>&nbsp;|&nbsp;</span><a href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-3">'+i18next.t("other.Friends")+'</a>\
                 ').insertAfter( $('#ctl00_ContentBody_uxLogbookLink') );
         }
     }
@@ -1039,8 +1075,8 @@
             var profileName = profileNameElm.html();
 
             if (typeof profileName !== 'undefined') {
-                profileName = profileNameElm.append('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(profileName) + '"><img src="' + externalLinkIcon + '" title="PGC Profile Stats"></a>')
-                    .append('<a href="' + pgcUrl + 'Tools/Gallery?profile_name=' + encodeURIComponent(profileName) + '&submit=Filter"><img src="' + galleryLinkIcon + '" title="PGC Gallery"></a>');
+                profileName = profileNameElm.append('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(profileName) + '"><img src="' + externalLinkIcon + '" title='+i18next.t("other.prostats2")+'></a>')
+                    .append('<a href="' + pgcUrl + 'Tools/Gallery?profile_name=' + encodeURIComponent(profileName) + '&submit=Filter"><img src="' + galleryLinkIcon + '" title='+i18next.t("other.gallery2")+'></a>');
             }
         }
 
@@ -1073,10 +1109,10 @@
             var logId = classes.match(/l-[0-9]+/)[0].replace('l-', '');
             if(typeof(challengeCheckerResults[logId]) !== 'undefined') {
                 if(challengeCheckerResults[logId]['status'] == 'success') {
-                    $(jNode).find('div.LogDisplayLeft').first().append('<hr style="margin-top: 12px; margin-bottom: 12px;"><p>Checker result<br>' + challengeCheckerResults[logId]['lastRun'] + ' UTC: <img src="' + challengeCheckerSuccessIcon + '"></p>');
+                    $(jNode).find('div.LogDisplayLeft').first().append('<hr style="margin-top: 12px; margin-bottom: 12px;"><p><br>' + challengeCheckerResults[logId]['lastRun'] + ' UTC: <img src="' + challengeCheckerSuccessIcon + '"></p>');
                 }
                 else if(challengeCheckerResults[logId]['status'] == 'fail') {
-                    $(jNode).find('div.LogDisplayLeft').first().append('<hr style="margin-top: 12px; margin-bottom: 12px;"><p>Checker result<br>' + challengeCheckerResults[logId]['lastRun'] + ' UTC: <img src="' + challengeCheckerFailIcon + '"></p>');
+                    $(jNode).find('div.LogDisplayLeft').first().append('<hr style="margin-top: 12px; margin-bottom: 12px;"><p>'+i18next.t("other.checker")+'<br>' + challengeCheckerResults[logId]['lastRun'] + ' UTC: <img src="' + challengeCheckerFailIcon + '"></p>');
                 }
             }
         }
@@ -1123,9 +1159,9 @@
                 $('#ctl00_ContentBody_size p').removeClass('AlignCenter').addClass('NoBottomSpacing');
 
                 if (latestLogsAlert) {
-                    $('#ctl00_ContentBody_size').append('<p class="NoBottomSpacing OldWarning" id="latestLogIcons"><strong>Latest logs:</strong> <span>' + images + '</span></p>');
+                    $('#ctl00_ContentBody_size').append('<p class="NoBottomSpacing OldWarning" id="latestLogIcons"><strong>'+i18next.t("other.latest2")+'</strong> <span>' + images + '</span></p>');
                 } else {
-                    $('#ctl00_ContentBody_size').append('<p class="NoBottomSpacing" id="latestLogIcons">Latest logs: <span>' + images + '</span></p>');
+                    $('#ctl00_ContentBody_size').append('<p class="NoBottomSpacing" id="latestLogIcons">'+i18next.t("other.latest2")+' <span>' + images + '</span></p>');
                 }
             }
         }
@@ -1206,7 +1242,7 @@
                         // console.log(EXIF.pretty(this));
                         var coords = GetCoordinatesFromExif(this);
                         if(coords != false) {
-                            $('<span class="OldWarning">EXIF Location<br><a href="https://maps.google.com/?q=' + coords + '" target="_blank">' + coords + '</a></span>').insertAfter(this.parentNode);
+                            $('<span class="OldWarning">'+i18next.t("other.exif")+'<br><a href="https://maps.google.com/?q=' + coords + '" target="_blank">' + coords + '</a></span>').insertAfter(this.parentNode);
                         }
                     });
                 });
@@ -1231,12 +1267,12 @@
         var icon = "https://cdn2.project-gc.com/images/map_app_16.png";
 
         /* Heading link */
-        var html = ' <a href="' + url + '" title="Map this Bookmark list using Project-GC" style="padding-left:20px;"><img src="' + icon + '" /> Map this!</a>';
+        var html = ' <a href="' + url + '" title='+i18next.t("other.map3")+'><img src="' + icon + '" />'+i18next.t("other.map2")+' </a>';
 
         $("#ctl00_ContentBody_lbHeading").after(html);
 
         /* Footer button */
-        var html2 = '<p><input type="button" onclick="window.location.href= \'' + url + '\'" value="Map this Bookmark list on Project-GC" /></p>';
+        var html2 = '<p><input type="button" onclick="window.location.href= \'' + url + '\'" value='+i18next.t("other.map4")+' /></p>';
 
         $("#ctl00_ContentBody_ListInfo_btnDownload").parent().before(html2);
     }
@@ -1318,14 +1354,14 @@
 // Original license:
 // The MIT License (MIT)
 // Copyright (c) 2008 Jacob Seidelin
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files 
-// (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, 
-// publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to 
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
+// (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge,
+// publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to
 // do so, subject to the following conditions:
 // The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
-// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (function() {
@@ -2134,8 +2170,8 @@
                     } else {
                         strPretty += a + " : [" + data[a].length + " values]\r\n";
                     }
-                } else {
-                    strPretty += a + " : " + data[a] + "\r\n";
+                    } else {
+                        strPretty += a + " : " + data[a] + "\r\n";
                 }
             }
         }
