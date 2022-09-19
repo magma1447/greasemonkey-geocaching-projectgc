@@ -1,5 +1,5 @@
 Example for translation of this bit:
- "heder": {
+ "header": {
     "not": "Not logged in",
     "Paid": "Paid",
     "Missing": "Missing",
@@ -7,7 +7,7 @@ Example for translation of this bit:
   },
   
   
-   "heder": {
+   "header": {
     "not": "ONLY TRANSLATE THIS PART",
     "Paid": "ONLY TRANSLATE THIS PART",
     "Missing": "ONLY TRANSLATE THIS PART",
