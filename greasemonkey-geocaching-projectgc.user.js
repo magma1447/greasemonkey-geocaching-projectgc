@@ -809,7 +809,7 @@
 
                         // Add my number of logs above the log button
                         if (IsSettingEnabled('addMyNumberOfLogs')) {
-                            $('<p style="margin: 0;"><small>You have ' + myNumberOfLogs + ' '+i18next.t('other.accordpgc')+'</small></p>').insertBefore('#ctl00_ContentBody_GeoNav_logButton');
+                            $('<p style="margin: 0;"><small>'+i18next.t('other.have')+' ' + myNumberOfLogs + ' '+i18next.t('other.accordpgc')+'</small></p>').insertBefore('#ctl00_ContentBody_GeoNav_logButton');
                         }
 
                         // Append the same number to the added logbook link
