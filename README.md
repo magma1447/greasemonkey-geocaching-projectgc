@@ -25,5 +25,6 @@ Please read [LICENSE](https://github.com/magma1447/greasemonkey-geocaching-proje
 
 * Idea and initial work: Jonas "lillfiluren" Högström.
 * Cleanup and actually make things work properly (cross browser compatible) by [Surfoo](https://github.com/Surfoo).
-* Smashing bugs and working with community: [Greg Jewett (jewettg)](https://github.com/jewettg)
+* Smashing bugs and working with community: [Greg Jewett (jewettg)](https://github.com/jewettg).
+* Translation implementation by [cghove](https://github.com/cghove).
 * Many other various [contributors](https://github.com/magma1447/greasemonkey-geocaching-projectgc/graphs/contributors).  *Thank you!*
