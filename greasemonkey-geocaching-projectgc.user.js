@@ -71,7 +71,7 @@
         loggedIn = null,
         subscription = null,
         pgcUsername = null,
-   // Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
+        // Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
         imperialFlag = null,
         gccomUsername = null,
         latestLogs = [],
@@ -84,7 +84,7 @@
 
     // Don't run the script for iframes
     if (window.top == window.self) {
-        loadTranslations();
+        loadTranslations(); // Will call Main() when completed
     }
 
     function Main() {
@@ -223,7 +223,7 @@
 			// Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
             removeDisclaimer: {
                 title: i18next.t('menu.removeDisclaimer'),
-				default: true
+                default: true
             },
             parseExifLocation: {
                 title: i18next.t('menu.parseExifLocation'),
@@ -444,7 +444,7 @@
                     <button onclick="document.getElementById(\'pgcUserMenuForm\').reset(); return false;">' + i18next.t("menu.Reset") + '</button>\
                     <button id="pgcUserMenuSave">' + i18next.t("menu.Save") + '</button>\
                 </li>\
-                    <li id="pgcUserMenuWarning" style="display: none; margin: .5em 1em; color: red; background: 0;"><a href="#" onclick="location.reload();" style="color: red; padding: 0; text-decoration: underline; display: inline;">' + i18next.t("menu.Reload") + '</a> ' + i18next.t("menu.activate") + '</li>\
+                <li id="pgcUserMenuWarning" style="display: none; margin: .5em 1em; color: red; background: 0;"><a href="#" onclick="location.reload();" style="color: red; padding: 0; text-decoration: underline; display: inline;">' + i18next.t("menu.Reload") + '</a> ' + i18next.t("menu.activate") + '</li>\
             </form>\
         </ul>';
 
@@ -547,7 +547,7 @@
             onload: function(response) {
                 var result = JSON.parse(response.responseText),
                     msg = (result.status === 'OK') ? i18next.t('vpgs.added') : i18next.t('vpgs.notadded');
-		    
+
                 $('#btnAddToVGPS').css('display', 'none');
                 $('#btnRemoveFromVGPS').css('display', '');
 
