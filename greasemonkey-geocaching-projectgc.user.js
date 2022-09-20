@@ -18,7 +18,7 @@
 // @match           http://www.geocaching.com/*
 // @match           https://www.geocaching.com/*
 // @exclude         https://www.geocaching.com/profile/profilecontent.html
-// @version         2.4.2
+// @version         2.4.3
 // @require         http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require         https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -693,7 +693,7 @@
                         // Append link to Profile Stats for the cache owner
                         // Need to real cache owner name from PGC since the web only has placed by
                         if (IsSettingEnabled('profileStatsLinks')) {
-                            $('#ctl00_ContentBody_mcd1 span.message__owner').before('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(cacheOwner) + '"><img src="' + externalLinkIcon + '" title=' + i18next.t('cpage.stasts') +'></a>');
+                            $('#ctl00_ContentBody_mcd1 span.message__owner').before('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(cacheOwner) + '"><img src="' + externalLinkIcon + '" title="' + i18next.t('cpage.stats') +'"></a>');
                         }
 
                         // Add FP/FP%/FPW below the current FP + mouseover for FP% and FPW with decimals
@@ -749,7 +749,7 @@
                         if (IsSettingEnabled('addChallengeCheckers') && challengeCheckerTagIds.length > 0) {
                             html = '<div id="checkerWidget" class="CacheDetailNavigationWidget TopSpacing BottomSpacing"><h3 class="WidgetHeader">' + i18next.t('cpage.checkers') +'' + i18next.t('cpage.plural') +'</h3><div class="WidgetBody" id="PGC_ChallengeCheckers">';
                             for (var i = 0; i < challengeCheckerTagIds.length; i++) {
-                                html += '<a href="https://project-gc.com/Challenges/' + gccode + '/' + challengeCheckerTagIds[i] + '" style="display: block; width: 200px; margin: 0 auto;"><img src="https://cdn2.project-gc.com/Images/Checker/' + challengeCheckerTagIds[i] + '" title=' + i18next.t('vpgs.title') +' alt=' + i18next.t('vpgs.alt') +'></a>';
+                                html += '<a href="https://project-gc.com/Challenges/' + gccode + '/' + challengeCheckerTagIds[i] + '" style="display: block; width: 200px; margin: 0 auto;"><img src="https://cdn2.project-gc.com/Images/Checker/' + challengeCheckerTagIds[i] + '" title="' + i18next.t('vpgs.title') +'" alt=' + i18next.t('vpgs.alt') +'></a>';
                             }
                             html += '</div></div>';
                             $('#ctl00_ContentBody_detailWidget').before(html);
@@ -950,7 +950,7 @@
 
         // Add link to PGC gallery
         if (subscription && IsSettingEnabled('addPgcGalleryLinks')) {
-            var html = '<a href="' + pgcUrl + 'Tools/Gallery?gccode=' + gccode + '&submit=Filter"><img src="' + galleryLinkIcon + '" title='+i18next.t('other.gallery')+'></a> ';
+            var html = '<a href="' + pgcUrl + 'Tools/Gallery?gccode=' + gccode + '&submit=Filter"><img src="' + galleryLinkIcon + '" title="'+i18next.t('other.gallery')+'"></a> ';
             $('.CacheDetailNavigation ul li:first').append(html);
         }
 
@@ -962,15 +962,15 @@
 
                 // Add the map link
                 url = 'https://project-gc.com/Tools/MapBookmarklist?owner_name=' + encodeURIComponent(owner) + '&guid=' + encodeURIComponent(guid);
-                $(this).children(':nth-child(1)').append('&nbsp;<a href="' + url + '"><img src="' + mapLinkIcon + '" title='+i18next.t('other.map')+'></a>');
+                $(this).children(':nth-child(1)').append('&nbsp;<a href="' + url + '"><img src="' + mapLinkIcon + '" title="'+i18next.t('other.map')+'"></a>');
 
                 // Add gallery link for the bookmark list
                 url = 'https://project-gc.com/Tools/Gallery?bml_owner=' + encodeURIComponent(owner) + '&bml_guid=' + encodeURIComponent(guid) + '&submit=Filter';
-                $(this).children(':nth-child(1)').append('&nbsp;<a href="' + url + '"><img src="' + galleryLinkIcon + '" title='+i18next.t('other.gallery')+'></a>');
+                $(this).children(':nth-child(1)').append('&nbsp;<a href="' + url + '"><img src="' + galleryLinkIcon + '" title="'+i18next.t('other.gallery')+'"></a>');
 
                 // Add profile stats link to the owner
                 url = 'https://project-gc.com/ProfileStats/' + encodeURIComponent(owner);
-                $(this).children(':nth-child(3)').append('&nbsp;<a href="' + url + '"><img src="' + externalLinkIcon + '" title='+i18next.t('other.prostats')+'></a>');
+                $(this).children(':nth-child(3)').append('&nbsp;<a href="' + url + '"><img src="' + externalLinkIcon + '" title="'+i18next.t('other.prostats')+'"></a>');
             });
         }
 
@@ -1075,8 +1075,8 @@
             var profileName = profileNameElm.html();
 
             if (typeof profileName !== 'undefined') {
-                profileName = profileNameElm.append('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(profileName) + '"><img src="' + externalLinkIcon + '" title='+i18next.t("other.prostats")+'></a>')
-                    .append('<a href="' + pgcUrl + 'Tools/Gallery?profile_name=' + encodeURIComponent(profileName) + '&submit=Filter"><img src="' + galleryLinkIcon + '" title='+i18next.t("other.gallery")+'></a>');
+                profileName = profileNameElm.append('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(profileName) + '"><img src="' + externalLinkIcon + '" title="'+i18next.t("other.prostats")+'"></a>')
+                    .append('<a href="' + pgcUrl + 'Tools/Gallery?profile_name=' + encodeURIComponent(profileName) + '&submit=Filter"><img src="' + galleryLinkIcon + '" title="'+i18next.t("other.gallery")+'"></a>');
             }
         }
 
@@ -1267,7 +1267,7 @@
         var icon = "https://cdn2.project-gc.com/images/map_app_16.png";
 
         /* Heading link */
-        var html = ' <a href="' + url + '" title='+i18next.t("other.map3")+'><img src="' + icon + '" />'+i18next.t("other.map2")+' </a>';
+        var html = ' <a href="' + url + '" title="'+i18next.t("other.map3")+'"><img src="' + icon + '" />'+i18next.t("other.map2")+' </a>';
 
         $("#ctl00_ContentBody_lbHeading").after(html);
 
