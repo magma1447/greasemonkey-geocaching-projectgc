@@ -18,7 +18,7 @@
 // @match           http://www.geocaching.com/*
 // @match           https://www.geocaching.com/*
 // @exclude         https://www.geocaching.com/profile/profilecontent.html
-// @version         2.4.3
+// @version         2.4.4
 // @require         http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require         https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -1171,8 +1171,8 @@
         if (IsSettingEnabled('showVGPS')) {
 
             setTimeout(function() {
-                $('#map_canvas div.leaflet-popup-pane').bind('DOMSubtreeModified', function() {
-                    if ($('#pgc_vgps').length === 0) {
+                $('#map_canvas div.leaflet-popup-pane').bind('DOMSubtreeModified', function(event) {
+                    if (event.target.className == 'leaflet-popup-pane' && $('#pgc_vgps').length === 0) {
                         var gccode = $('#gmCacheInfo div.code').text();
 
                         $('#gmCacheInfo div.links').after('<div id="pgc_vgps"></div>');
@@ -1195,13 +1195,19 @@
                                 html = '<img src="https://cdn2.project-gc.com/images/mobile_telephone_32.png" style="width: 24px; height: 24px; margin-bottom: -6px;">';
 
                                 html += '<select id="comboVGPS" style="margin-bottom: 4px;">';
-                                for (listId in vgpsLists) {
+                                for (let k in vgpsLists) {
+                                    listId = vgpsLists[k].id;
+
                                     selectedContent = '';
                                     if (+selected === +listId) {
                                         selectedContent = ' selected="selected"';
                                     }
+                                    existsContent = '';
+                                    if (existsIn.indexOf(listId) > -1) {
+                                        existsContent = ' data-exists="true"';
+                                    }
 
-                                    html += '<option value="' + listId + '"' + selectedContent + existsContent + '>' + vgpsLists[listId].name + '</option>';
+                                    html += '<option value="' + listId + '"' + selectedContent + existsContent + '>' + vgpsLists[k].name + '</option>';
                                 }
                                 html += '</select>';
 
