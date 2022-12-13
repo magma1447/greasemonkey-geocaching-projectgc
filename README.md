@@ -1,52 +1,30 @@
 ﻿# greasemonkey-geocaching-projectgc
 
-Adds links and data to Geocaching.com to make it collaborate with Project-GC.com.
-Some (most) features are for paying members at Project-GC only.
+This tool is a user-enabled script that extends the user experience at the Geocaching.com website, primarily by integrating Project-GC into it. The audience for this script are primarily geocaching power-users, however some of the basic features can make the novice or beginner experience better as well.
+
+This script was originally written by Jonas "lillfiluren" Högström; and has been maintained and improved upon by various other geocaching community members].
 
 ## Compatibility
-* Requires Greasemonkey to run in Firefox.
-* Requires Tampermonkey to run in Chrome.
 
-## Existing features
-* Add to/remove from VGPS form.
-* Adds Favorite points (FP/FP%/FPW).
-* Adds challenge checker links if a checker exists at Project-GC.
-* Adds address for the coordinates (Google reverse geocoding).
-* Clones number of logs per type to the top.
-* Add a "latest logs" to the top.
-* Add links to Profile stats for cache owner.
-* Add links to Profile stats for every profile in the logbooks.
-* Adds a copy friendly link to the geocache page, and copy friendly gccode.
-* Adds link to Project-GC gallery.
-* Minor adjustments to tidy the web.
-  * Remove rot13 decrypt widget.
-  * Remove "Description" text.
-  * Change some spacings.
-* Adds country/region/county data from Project-GC.
-* Show the real cache owner name after the "placed by".
-* Add links to PGC profile gallery for each name in the logbook.
-* Add links to gallery from bookmark lists, from geocache pages.
-* Add links to plot bookmark lists on maps, from geocache pages.
-* Add links to Profile stats for bookmark list owners, from geocache pages.
-* Autodecrypt hints.
-* Add meters/feet above mean sea level.
-* Add warning if the latest log is a DNF.
-* Show exif location data for images in Gallery and Logbook.
-* Adds button to map bookmark lists.
-* Remove open in new tab from Drafts.
-* Found/Will attend/Attended per country.
-* Monospace font for personal cache notes.
-* Minor tweaks on Print cache page.
-* Hide up-vote buttons from logs.
+* Known to be compatible with Mozilla Firefox (using TamperMonkey and GreaseMonkey)
+* Known to be compatible with Google Chrome (using TamperMonkey)
 
-## Open source libraries used
-Exif parsing solved with a fork of https://github.com/exif-js/exif-js
+## Existing Features
+
+Please review the [Feature List](https://project-gc.com/w/Project-GC_Userscript/Feature_List) on the Project-GC WIKI.
+
+## Citations: Open Source libraries used
+
+Please see [citations](https://project-gc.com/w/Project-GC_UserScript) (at bottom of page).
 
 ## License
-The client side script (this script) is MIT licensed (license file commited in repository). However, the server side API is property of Ground Zero Communications AB.
+
+Please read [LICENSE](https://github.com/magma1447/greasemonkey-geocaching-projectgc/blob/fbb9b106e26151ea3d93662bbcd4a6fd40d4f234/LICENSE) within Repository.
 
 ## Credits
+
 * Idea and initial work: Jonas "lillfiluren" Högström.
-* Cleanup and actually make things work properly (cross browser compatible): "Surfoo".
-* Smashing bugs and working with community: [Greg Jewett (jewettg)](https://github.com/jewettg)
-* Other contributors, https://github.com/magma1447/greasemonkey-geocaching-projectgc/graphs/contributors
+* Cleanup and actually make things work properly (cross browser compatible) by [Surfoo](https://github.com/Surfoo).
+* Smashing bugs and working with community: [Greg Jewett (jewettg)](https://github.com/jewettg).
+* Translation implementation by [cghove](https://github.com/cghove).
+* Many other various [contributors](https://github.com/magma1447/greasemonkey-geocaching-projectgc/graphs/contributors).  *Thank you!*

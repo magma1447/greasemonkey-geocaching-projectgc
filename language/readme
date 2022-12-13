@@ -1,0 +1,17 @@
+Example for translation of this bit:
+ "header": {
+    "not": "Not logged in",
+    "Paid": "Paid",
+    "Missing": "Missing",
+    "membership": "membership"
+  },
+  
+  
+   "header": {
+    "not": "ONLY TRANSLATE THIS PART",
+    "Paid": "ONLY TRANSLATE THIS PART",
+    "Missing": "ONLY TRANSLATE THIS PART",
+    "membership": "ONLY TRANSLATE THIS PART"
+  },
+  
+  And be aware of commas
