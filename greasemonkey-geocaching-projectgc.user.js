@@ -890,7 +890,7 @@
         }
 
         // Remove ads
-        // PGC can't really do this officially
+        // Project-GC shouldn't provide the option to hide ads
         // $('#ctl00_ContentBody_uxBanManWidget').remove();
 
         // Remove disclaimer
