@@ -901,12 +901,11 @@
         // If the first log is a DNF, display a blue warning on top of the page
         // 2022-08-24, Issue #111, fixes display of blue text warning of last log is DNF.
         if ($('#cache_logs_table span.h4 img').attr('src') === '/images/logtypes/3.png') {
-            var htmlFirstLogDnf = '<p style="color: #006cff;" class=" NoBottomSpacing"><strong>'+i18next.t('other.issue')+'</strong></p>\
+            var htmlFirstLogDnf = '<p style="color: #006cff;" class=" NoBottomSpacing"><strong>' + i18next.t('other.issue') + '</strong></p>\
                                    <ul style="color: #006cff;" class="">\
-                                   <li>'+i18next.t('other.latest')+' <a href="#cache_logs_table">'+i18next.t('other.please')+'</a>'+i18next.t('other.before')+' </li>\
+                                   <li>' + i18next.t('other.latest') + ' <a href="#cache_logs_table">' + i18next.t('other.please') + '</a> ' + i18next.t('other.before')+'</li>\
                                    </ul>';
             $('div.span-6.right.last').last().next().after(htmlFirstLogDnf);
-
         }
 
         // Collapse download links
