@@ -19,7 +19,7 @@
 // @match           https://www.geocaching.com/*
 // @exclude         https://www.geocaching.com/profile/profilecontent.html
 // @exclude         https://www.geocaching.com/help/*
-// @version         2.4.7
+// @version         2.4.8
 // @require         http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require         https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -112,9 +112,10 @@
         }, (err, t) => {
             if (err) {
                 if (err.indexOf("failed parsing" > -1)) {
-                    i18next.changeLanguage('en_US');
-
-                    return loadTranslations();
+                    if(lng != 'en_US') {
+                        i18next.changeLanguage('en_US');
+                        return loadTranslations();
+                    }
                 }
                 return console.log("Error occurred when loading language data", err);
             }
