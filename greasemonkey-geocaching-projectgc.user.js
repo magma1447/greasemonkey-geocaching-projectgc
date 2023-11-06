@@ -19,7 +19,7 @@
 // @match           https://www.geocaching.com/*
 // @exclude         https://www.geocaching.com/profile/profilecontent.html
 // @exclude         https://www.geocaching.com/help/*
-// @version         2.4.10
+// @version         2.4.11
 // @require         http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require         https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -854,7 +854,7 @@
         // Make it easier to copy the gccode
         if (IsSettingEnabled('makeCopyFriendly')) {
             $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').
-            html('<div style="margin-right: 15px; margin-bottom: 10px;"><p id="ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoCode" style="font-size: 125%; margin-bottom: 0">' + gccode + '</p>' +
+            html('<div style="margin-right: 15px; margin-bottom: 10px;"><p style="font-size: 125%; margin-bottom: 0"><span id="ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoCode">' + gccode + '</span></p>' +
                 '<input size="25" type="text" value="https://coord.info/' + encodeURIComponent(gccode) + '" onclick="this.setSelectionRange(0, this.value.length);"></div>');
             $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').css('font-weight', 'inherit').css('margin-right', '27px');
             $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel div input').css('padding', '0');
