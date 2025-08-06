@@ -19,7 +19,7 @@
 // @match           https://www.geocaching.com/*
 // @exclude         https://www.geocaching.com/profile/profilecontent.html
 // @exclude         https://www.geocaching.com/help/*
-// @version         2.4.11
+// @version         2.5.0
 // @require         http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require         https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -949,14 +949,14 @@
 
         // Add link to PGC gallery
         if (subscription && IsSettingEnabled('addPgcGalleryLinks')) {
-            var html = '<a href="' + pgcUrl + 'Tools/Gallery?gccode=' + gccode + '&submit=Filter"><img src="' + galleryLinkIcon + '" title="' + i18next.t('other.gallery')+'"></a> ';
+            var html = '<a href="' + pgcUrl + 'Tools/Gallery?filter_gc_val=' + gccode + '&submit=Filter"><img src="' + galleryLinkIcon + '" title="' + i18next.t('other.gallery')+'"></a> ';
             $('.CacheDetailNavigation ul li:first').append(html);
         }
 
         // Add map links for each bookmarklist
         if (IsSettingEnabled('addMapBookmarkListLinks')) {
             $('ul.BookmarkList li').each(function() {
-                var guid = $(this).children(':nth-child(1)').attr('href').replace(/.*\?guid=(.*)/, "$1");
+                var bmlCode = $(this)..children(':nth-child(1)').attr('href').replace(/.*\/lists\/(.*)/, "$1");
                 var owner = $(this).children(':nth-child(3)').text();
 
                 // Add the map link
@@ -964,7 +964,7 @@
                 $(this).children(':nth-child(1)').append('&nbsp;<a href="' + url + '"><img src="' + mapLinkIcon + '" title="' + i18next.t('other.map')+'"></a>');
 
                 // Add gallery link for the bookmark list
-                url = 'https://project-gc.com/Tools/Gallery?bml_owner=' + encodeURIComponent(owner) + '&bml_guid=' + encodeURIComponent(guid) + '&submit=Filter';
+                url = 'https://project-gc.com/Tools/Gallery?filter_bml_ownerProfileName=' + encodeURIComponent(owner) + '&filter_bml_bmlReferenceCode=' + encodeURIComponent(bmlCode) + '&submit=Filter';
                 $(this).children(':nth-child(1)').append('&nbsp;<a href="' + url + '"><img src="' + galleryLinkIcon + '" title="' + i18next.t('other.gallery')+'"></a>');
 
                 // Add profile stats link to the owner
@@ -1075,7 +1075,7 @@
 
             if (typeof profileName !== 'undefined') {
                 profileName = profileNameElm.append('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(profileName) + '"><img src="' + externalLinkIcon + '" title="' + i18next.t("other.prostats")+'"></a>')
-                    .append('<a href="' + pgcUrl + 'Tools/Gallery?profile_name=' + encodeURIComponent(profileName) + '&submit=Filter"><img src="' + galleryLinkIcon + '" title="' + i18next.t("other.gallery")+'"></a>');
+                    .append('<a href="' + pgcUrl + 'Tools/Gallery?filter_pr_profileName=' + encodeURIComponent(profileName) + '&submit=Filter"><img src="' + galleryLinkIcon + '" title="' + i18next.t("other.gallery")+'"></a>');
             }
         }
 
