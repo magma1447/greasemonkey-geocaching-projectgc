@@ -19,7 +19,7 @@
 // @match           https://www.geocaching.com/*
 // @exclude         https://www.geocaching.com/profile/profilecontent.html
 // @exclude         https://www.geocaching.com/help/*
-// @version         2.5.1
+// @version         2.5.2
 // @require         http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require         https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -960,7 +960,7 @@
                 var owner = $(this).children(':nth-child(3)').text();
 
                 // Add the map link
-                url = 'https://project-gc.com/Tools/MapBookmarklist?filters_pr_profileName=' + encodeURIComponent(pgcUser) + '&filters_bml_ownerProfileName=encodeURIComponent(owner) + '&filters_bml_bmlReferenceCode=' + encodeURIComponent(bmlCode) + '&submit=Filter';
+                url = 'https://project-gc.com/Tools/MapBookmarklist?filters_pr_profileName=' + encodeURIComponent(pgcUsername) + '&filters_bml_ownerProfileName=' + encodeURIComponent(owner) + '&filters_bml_bmlReferenceCode=' + encodeURIComponent(bmlCode) + '&submit=Filter';
                 $(this).children(':nth-child(1)').append('&nbsp;<a href="' + url + '"><img src="' + mapLinkIcon + '" title="' + i18next.t('other.map')+'"></a>');
 
                 // Add gallery link for the bookmark list
@@ -1269,8 +1269,8 @@
         }
         var guid = search.substr(guid_start + 5/*, eof */);
 
-        var url = "https://project-gc.com/Tools/MapBookmarklist?owner_name=" + owner_name + "&guid=" + guid;
-        var url = 'https://project-gc.com/Tools/MapBookmarklist?filters_pr_profileName=' + encodeURIComponent(pgcUser) + '&filters_bml_ownerProfileName=encodeURIComponent(owner_name) + '&filters_bml_bmlReferenceCode=bmlcode&submit=Filter';
+        //var url = "https://project-gc.com/Tools/MapBookmarklist?owner_name=" + owner_name + "&guid=" + guid;
+        var url = 'https://project-gc.com/Tools/MapBookmarklist?filters_pr_profileName=' + encodeURIComponent(pgcUsername) + '&filters_bml_ownerProfileName=' + encodeURIComponent(owner_name) + '&filters_bml_bmlReferenceCode=bmlcode&submit=Filter';
         var icon = "https://cdn2.project-gc.com/images/map_app_16.png";
 
         /* Heading link */
