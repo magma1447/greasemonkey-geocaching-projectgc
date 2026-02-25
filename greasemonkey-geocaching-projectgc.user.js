@@ -7,6 +7,7 @@
 /* globals i18next, i18nextXHRBackend, i18nextBrowserLanguageDetector */
 // jshint newcap:false
 // jshint multistr:true
+// jshint esversion:8
 
 // ==UserScript==
 // @author          Ground Zero Communications AB
@@ -98,11 +99,18 @@
             .use(i18nextXHRBackend)
             .use(i18nextBrowserLanguageDetector)
             .init({
-                supportedLngs: ['ca_ES', 'cs_CZ', 'da_DK', 'de_DE', 'en_AU', 'en_CA', 'en_GB', 'en_US', 'es_ES', 'fi_FI', 'fr_FR', 'hu_HU', 'it_IT', 'ko_KR', 'lv_LV', 'nb_NO', 'nl_NL', 'pl_PL', 'pt_BR', 'pt_PT', 'sk_SK', 'sl_SI', 'sv_SE', 'tr_TR'],
-                whitelist: ['ca_ES', 'cs_CZ', 'da_DK', 'de_DE', 'en_AU', 'en_CA', 'en_GB', 'en_US', 'es_ES', 'fi_FI', 'fr_FR', 'hu_HU', 'it_IT', 'ko_KR', 'lv_LV', 'nb_NO', 'nl_NL', 'pl_PL', 'pt_BR', 'pt_PT', 'sk_SK', 'sl_SI', 'sv_SE', 'tr_TR'],
-                //preload: ['ca_ES', 'cs_CZ', 'da_DK', 'de_DE', 'en_AU', 'en_CA', 'en_GB', 'en_US', 'es_ES', 'fi_FI', 'fr_FR', 'hu_HU', 'it_IT', 'ko_KR', 'lv_LV', 'nb_NO', 'nl_NL', 'pl_PL', 'pt_BR', 'pt_PT', 'sk_SK', 'sl_SI', 'sv_SE', 'tr_TR'],
-                fallbackLng: ['en_US', 'nb_NO', 'sv_SE'],
-                'lng': navigator.language || navigator.userLanguage,
+                supportedLngs: [
+                    'ca_ES', 'cs_CZ', 'da_DK', 'de_DE', 'en_AU', 'en_CA', 'en_GB', 'en_US', 'es_ES', 'fi_FI',
+                    'fr_FR', 'hu_HU', 'it_IT', 'ko_KR', 'lv_LV', 'nb_NO', 'nl_NL', 'pl_PL', 'pt_BR', 'pt_PT',
+                    'sk_SK', 'sl_SI', 'sv_SE', 'tr_TR'
+                ],
+                whitelist: [
+                    'ca_ES', 'cs_CZ', 'da_DK', 'de_DE', 'en_AU', 'en_CA', 'en_GB', 'en_US', 'es_ES', 'fi_FI',
+                    'fr_FR', 'hu_HU', 'it_IT', 'ko_KR', 'lv_LV', 'nb_NO', 'nl_NL', 'pl_PL', 'pt_BR', 'pt_PT',
+                    'sk_SK', 'sl_SI', 'sv_SE', 'tr_TR'
+                ],
+                fallbackLng: [ 'en_US' ],
+                'lng': navigator.language,
                 ns: ['userscript'],
                 defaultNS: ['userscript'],
                 backend: {
@@ -145,7 +153,7 @@
     }
 
     function GetSettingsItems() {
-        const items = {
+        return {
             showVGPS: {
                 title: i18next.t('menu.showvpgs'),
                 default: true
@@ -256,7 +264,6 @@
                 default: false
             }
         };
-        return items;
     }
 
     async function ReadSettings() {
@@ -332,8 +339,17 @@
                 i18next.changeLanguage(_language);//untested code**
 
                 function waitForHeader(waitCount) {
-                    if ($('.user-menu')[0]) BuildPGCUserMenu();
-                    else {waitCount++; if (waitCount <= 1000) setTimeout(function(){waitForHeader(waitCount);}, 10);}
+                    if ($('.user-menu')[0]) {
+                        BuildPGCUserMenu();
+                    }
+                    else {
+                        waitCount++;
+                        if (waitCount <= 1000) {
+                            setTimeout(function () {
+                                waitForHeader(waitCount);
+                            }, 10);
+                        }
+                    }
                 }
                 waitForHeader(0);
                 Router();
@@ -356,7 +372,7 @@
         if (loggedIn === false) {
             loggedInContent = '<a href="' + pgcUrl + 'User/Login" target="_blank">' + i18next.t("header.not") + '</a>';
         } else {
-            loggedInContent = '<a href="' + pgcUrl + 'ProfileStats/' + pgcUsername + '"><strong' + (pgcUsername != gccomUsername ? ' style="color: red;"' : '') + '>' + pgcUsername + '</strong></a>';
+            loggedInContent = '<a href="' + pgcUrl + 'ProfileStats/' + pgcUsername + '"><strong' + (pgcUsername !== gccomUsername ? ' style="color: red;"' : '') + '>' + pgcUsername + '</strong></a>';
             subscriptionContent = '<a href="https://project-gc.com/Home/Membership" target="_blank">' + (subscription ? i18next.t("header.Paid") : i18next.t("header.Missing")) + ' ' + i18next.t("header.membership") + '</a>';
         }
 
@@ -464,7 +480,15 @@
                     SaveSettings(e);
                 });
 
-            } else {waitCount++; if (waitCount <= 1000) setTimeout(function(){checkForGClh(waitCount);}, 10);}
+            }
+            else {
+                waitCount++;
+                if (waitCount <= 1000) {
+                    setTimeout(function () {
+                        checkForGClh(waitCount);
+                    }, 10);
+                }
+            }
         }
         checkForGClh(0);
     }
@@ -617,7 +641,7 @@
                             }
                         }
 
-                        if(suspiciousFoundItLogs.length != 0) {
+                        if(suspiciousFoundItLogs.length !== 0) {
                             let suspiciousFoundItLog = '<p style="color: #ff6c00;" class=" NoBottomSpacing"><strong>' + i18next.t('vpgs.issue') + '</strong></p>\
                                         <ul style="color: #ff6c00;" class="">\
                                             <li>' + i18next.t('vpgs.notfull') + ' <br>';
@@ -633,7 +657,7 @@
                     //--
 
 
-                    if (result.status == 'OK' && typeof cacheData !== 'undefined') {
+                    if (result.status === 'OK' && typeof cacheData !== 'undefined') {
 
                         // If placed by != owner, show the real owner as well.
                         if (placedBy !== cacheOwner) {
@@ -959,7 +983,7 @@
                         html += '<option value="' + listId + '"' + selectedContent + existsContent + '>' + vgpsLists[k].name + '</option>';
                     }
                     html += '</select>';
-                    if (existsIn.indexOf(String(selected)) == -1) {
+                    if (existsIn.indexOf(String(selected)) === -1) {
                         html += '&nbsp;<button id="btnAddToVGPS">+</button>';
                         html += '&nbsp;<button id="btnRemoveFromVGPS" style="display: none;">-</button>';
                     } else {
@@ -972,7 +996,7 @@
 
                     $('#comboVGPS').change(function() {
                         selected = $(this).find(':selected').val();
-                        if (existsIn.indexOf(String(selected)) == -1) {
+                        if (existsIn.indexOf(String(selected)) === -1) {
                             $('#btnAddToVGPS').css('display', '');
                             $('#btnRemoveFromVGPS').css('display', 'none');
                         } else {
@@ -1097,7 +1121,7 @@
 
             setTimeout(function() {
                 $('#map_canvas div.leaflet-popup-pane').bind('DOMSubtreeModified', function(event) {
-                    if (event.target.className == 'leaflet-popup-pane' && $('#pgc_vgps').length === 0) {
+                    if (event.target.className === 'leaflet-popup-pane' && $('#pgc_vgps').length === 0) {
                         const gccode = $('#gmCacheInfo div.code').first().text();
 
                         $('#gmCacheInfo div.links').after('<div id="pgc_vgps"></div>');
@@ -1136,7 +1160,7 @@
                                 }
                                 html += '</select>';
 
-                                if (existsIn.indexOf(String(selected)) == -1) {
+                                if (existsIn.indexOf(String(selected)) === -1) {
                                     html += '&nbsp;<button id="btnAddToVGPS">+</button>';
                                     html += '&nbsp;<button id="btnRemoveFromVGPS" style="display: none;">-</button>';
                                 } else {
@@ -1170,13 +1194,13 @@
 
         const search = window.location.search;
         const guidStart = search.indexOf("guid=");
-        if (guidStart == -1) {
+        if (guidStart === -1) {
             /* the guid= not found in URL
              * something is wrong so we will not generate bad URL
              */
             return;
         }
-        const guid = search.substr(guidStart + 5/*, eof */);
+        // const guid = search.substr(guidStart + 5/*, eof */);
 
         //const url = "https://project-gc.com/Tools/MapBookmarklist?ownerName=" + ownerName + "&guid=" + guid;
         const url = 'https://project-gc.com/Tools/MapBookmarklist?filters_pr_profileName=' + encodeURIComponent(pgcUsername) + '&filters_bml_ownerProfileName=' + encodeURIComponent(ownerName) + '&filters_bml_bmlReferenceCode=bmlcode&submit=Filter';
@@ -1241,10 +1265,6 @@
         }
     }
 
-
-    function padLeft(str, n, padstr){
-        return Array(n-String(str).length+1).join(padstr||'0')+str;
-    }
 
     function getUrlParameter(sParam) {
         let sPageURL = decodeURIComponent(window.location.search.substring(1)),
