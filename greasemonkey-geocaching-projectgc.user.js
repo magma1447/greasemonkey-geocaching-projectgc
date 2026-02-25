@@ -1,8 +1,6 @@
 /* global $: true */
 /* global waitForKeyElements: true */
-/* global GM_xmlhttpRequest: true */
-/* global GM_getValue: true */
-/* global GM_setValue: true */
+/* global GM: true */
 /* global unsafeWindow: true */
 /* globals i18next, i18nextXHRBackend, i18nextBrowserLanguageDetector */
 // jshint newcap:false
@@ -27,13 +25,10 @@
 // @require         https://unpkg.com/i18next@21.9.1/i18next.min.js
 // @require         https://unpkg.com/i18next-xhr-backend@3.2.2/i18nextXHRBackend.js
 // @require         https://unpkg.com/i18next-browser-languagedetector@6.1.4/i18nextBrowserLanguageDetector.js
-// @grant           GM_xmlhttpRequest
-// @grant           GM_setValue
-// @grant           GM_getValue
-// @grant           GM_addStyle
 // @grant           GM.xmlHttpRequest
 // @grant           GM.setValue
 // @grant           GM.getValue
+// @grant           GM.addStyle
 // @connect         maps.googleapis.com
 // @connect         project-gc.com
 // @connect         img.geocaching.com
@@ -84,14 +79,14 @@
         _language = "";
 
 
-    function MetersToFeet(meters) {
+    function metersToFeet(meters) {
         return Math.round(meters * 3.28084);
     }
 
-    function FormatDistance(distance) {
+    function formatDistance(distance) {
         distance = parseInt(distance, 10);
         // Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
-        distance = imperialFlag ? MetersToFeet(distance) : distance;
+        distance = imperialFlag ? metersToFeet(distance) : distance;
         distance = distance.toLocaleString();
 
         return distance;
@@ -114,7 +109,7 @@
         return false;
     }
 
-    function IsSettingEnabled(setting) {
+    function isSettingEnabled(setting) {
         return settings[setting];
     }
 
@@ -126,7 +121,7 @@
         return $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoCode').html();
     }
 
-    function GetSettingsItems() {
+    function getSettingsItems() {
         return {
             showVGPS: {
                 title: i18next.t('menu.showvpgs'),
@@ -240,11 +235,11 @@
         };
     }
 
-    function SaveSettings(e) {
+    function saveSettings(e) {
         e.preventDefault();
         settings = {};
 
-        for (let item in GetSettingsItems()) {
+        for (let item in getSettingsItems()) {
             settings[item] = Boolean($('#pgcUserMenuForm input[name="' + item + '"]').is(':checked'));
         }
 
@@ -254,7 +249,7 @@
         $('#pgcUserMenuWarning').css('display', 'inherit');
     }
 
-    async function ReadSettings() {
+    async function readSettings() {
         settings = await GM.getValue('settings');
         if (typeof(settings) !== 'undefined') {
             settings = JSON.parse(settings);
@@ -265,7 +260,7 @@
             settings = [];
         }
 
-        const items = GetSettingsItems();
+        const items = getSettingsItems();
         for (let item in items) {
             if (typeof(settings[item]) === 'undefined') {
                 settings[item] = items[item].default;
@@ -344,7 +339,7 @@
         });
     }
 
-    function Page_PrintCachePage() {
+    function pagePrintCachePage() {
         // Remove the disclaimer
         $('div.TermsWidget').css('display', 'none');
 
@@ -360,14 +355,14 @@
         }
 
 
-        if(IsSettingEnabled('hideMapFromPrintCachePage')) {
+        if(isSettingEnabled('hideMapFromPrintCachePage')) {
             $('#map').parent().parent().addClass('no-print');
             $('#map').parent().prev().children('span.ui-icon').removeClass('ui-icon-minusthick').addClass('ui-icon-plusthick');
             $('#map').parent().css('display', 'none');
         }
     }
 
-    function Page_Messagecenter() {
+    function pageMessagecenter() {
         const target = document.getElementById('currentMessage');
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
@@ -382,18 +377,18 @@
         observer.observe(target, config);
     }
 
-    function Draft(jNode) {
+    function draft(jNode) {
         $(jNode).find(".draft-content > a").removeAttr('target');
     }
 
-    function Page_Drafts() {
-        if (IsSettingEnabled("openDraftLogInSameWindow")) {
-          waitForKeyElements('#draftsHub > ul.draft-list > li.draft-item', Draft);
+    function pageDrafts() {
+        if (isSettingEnabled("openDraftLogInSameWindow")) {
+          waitForKeyElements('#draftsHub > ul.draft-list > li.draft-item', draft);
         }
     }
 
     // Deprecated page. Needs to be updated and adjusted to https://www.geocaching.com/plan/lists .
-    function Page_Bookmarks() {
+    function pageBookmarks() {
         const ownerName = $("#ctl00_ContentBody_ListInfo_uxListOwner").text();
 
         const search = window.location.search;
@@ -421,8 +416,8 @@
         $("#ctl00_ContentBody_ListInfo_btnDownload").parent().before(html2);
     }
 
-    function Page_Map() {
-        if (IsSettingEnabled('showVGPS')) {
+    function pageMap() {
+        if (isSettingEnabled('showVGPS')) {
 
             setTimeout(function() {
                 $('#map_canvas div.leaflet-popup-pane').bind('DOMSubtreeModified', function(event) {
@@ -493,9 +488,9 @@
 
     }
 
-    function Logbook(jNode) {
+    function logbook(jNode) {
         // Add Profile stats and gallery links after each user
-        if (IsSettingEnabled('profileStatsLinks')) {
+        if (isSettingEnabled('profileStatsLinks')) {
             const profileNameElm = $(jNode).find('a.h5');
             let profileName = profileNameElm.html();
 
@@ -505,7 +500,7 @@
             }
         }
 
-        if(IsSettingEnabled('addCachedChallengeCheckerResults') && typeof(challengeCheckerResults) !== 'undefined' && challengeCheckerResults !== null) {
+        if(isSettingEnabled('addCachedChallengeCheckerResults') && typeof(challengeCheckerResults) !== 'undefined' && challengeCheckerResults !== null) {
             const classes = $(jNode).attr('class');
             const logId = classes.match(/l-[0-9]+/)[0].replace('l-', '');
             if(typeof(challengeCheckerResults[logId]) !== 'undefined') {
@@ -518,7 +513,7 @@
             }
         }
 
-        if(IsSettingEnabled('hideLogVoting')) {
+        if(isSettingEnabled('hideLogVoting')) {
             $('div.upvotes').css('display','none');
             $('div.sort-logs').css('display','none');
         }
@@ -553,7 +548,7 @@
 
             // Show latest logs
             // Enhanced Nov 2016 to show icons for up to 5 of the latest logs
-            if (IsSettingEnabled('addLatestLogs') && latestLogs.length <= 5) {
+            if (isSettingEnabled('addLatestLogs') && latestLogs.length <= 5) {
                 const images = latestLogs.join('');
 
                 $('#latestLogIcons').remove();
@@ -568,14 +563,14 @@
         }
     }
 
-    function Page_Logbook() {
+    function pageLogbook() {
         // Since everything in the logbook is ajax, we need to wait for the elements
-        waitForKeyElements('#AllLogs tr', Logbook);
-        waitForKeyElements('#PersonalLogs tr', Logbook);
-        waitForKeyElements('#FriendLogs tr', Logbook);
+        waitForKeyElements('#AllLogs tr', logbook);
+        waitForKeyElements('#PersonalLogs tr', logbook);
+        waitForKeyElements('#FriendLogs tr', logbook);
     }
 
-    function Page_Profile() {
+    function pageProfile() {
         // Override gc.com function on alerting for external links to not alert for Project-GC URLs
         const gcAlertOverride = document.createElement('script');
         gcAlertOverride.type = "text/javascript";
@@ -591,9 +586,9 @@
     }
 
     // ==========================================
-    // Page_CachePage
+    // pageCachePage
     // ==========================================
-    function Page_CachePage() {
+    function pageCachePage() {
         let gccode = getGcCodeFromPage(),
             placedBy = $('#ctl00_ContentBody_mcd1 a').html(),
             lastUpdated = $('#ctl00_ContentBody_bottomSection p small time').get(1),
@@ -669,12 +664,12 @@
 
                         // Append link to Profile Stats for the cache owner
                         // Need to real cache owner name from PGC since the web only has placed by
-                        if (IsSettingEnabled('profileStatsLinks')) {
+                        if (isSettingEnabled('profileStatsLinks')) {
                             $('#ctl00_ContentBody_mcd1 span.message__owner').before('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(cacheOwner) + '"><img src="' + externalLinkIcon + '" title="' + i18next.t('cpage.stats') +'"></a>');
                         }
 
                         // Add FP/FP%/FPW below the current FP + mouseover for FP% and FPW with decimals
-                        if (IsSettingEnabled('addPgcFp')) {
+                        if (isSettingEnabled('addPgcFp')) {
                             fp = (+cacheData.favorite_points),
                                 fpp = (+cacheData.favorite_points_pct),
                                 fpw = (+cacheData.favorite_points_wilson);
@@ -686,8 +681,8 @@
                         }
 
                         // Add elevation (Metres above mean sea level = mamsl)
-                        if (IsSettingEnabled('addElevation')) {
-                            const formattedElevation = FormatDistance(cacheData.elevation),
+                        if (isSettingEnabled('addElevation')) {
+                            const formattedElevation = formatDistance(cacheData.elevation),
                                 // Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
                                 elevationUnit = imperialFlag ? 'ft' : 'm',
                                 elevationArrow = (cacheData.elevation >= 0) ? '&#x21a5;' : '&#x21a7;';
@@ -703,7 +698,7 @@
                         }
 
                         // Add PGC location
-                        if (IsSettingEnabled('addPGCLocation')) {
+                        if (isSettingEnabled('addPGCLocation')) {
                             if (cacheData.country.length > 0) {
                                 location.push(cacheData.country);
                             }
@@ -723,7 +718,7 @@
                         $('#lblDistFromHome').append(' <span>(' + Math.round(bearing*10)/10 + '&deg;)</span>');
 
                         // Add challenge checkers
-                        if (IsSettingEnabled('addChallengeCheckers') && challengeCheckerTagIds.length > 0) {
+                        if (isSettingEnabled('addChallengeCheckers') && challengeCheckerTagIds.length > 0) {
                             html = '<div id="checkerWidget" class="CacheDetailNavigationWidget TopSpacing BottomSpacing"><h3 class="WidgetHeader">' + i18next.t('cpage.checkers') +'' + i18next.t('cpage.plural') +'</h3><div class="WidgetBody" id="PGC_ChallengeCheckers">';
                             for (let i = 0; i < challengeCheckerTagIds.length; i++) {
                                 html += '<a href="https://project-gc.com/Challenges/' + gccode + '/' + challengeCheckerTagIds[i] + '" style="display: block; width: 200px; margin: 0 auto;"><img src="https://project-gc.com/Images/Checker/' + challengeCheckerTagIds[i] + '" title="' + i18next.t('vpgs.title') +'" alt=' + i18next.t('vpgs.alt') +'></a>';
@@ -738,7 +733,7 @@
                         }
 
                         // Add geocache logs per profile country table
-                        if (IsSettingEnabled('addGeocacheLogsPerProfileCountry')) {
+                        if (isSettingEnabled('addGeocacheLogsPerProfileCountry')) {
                             html = '<div id="geocacheLogsPerCountry" style="border: dashed; border-color: #aaa; border-width: thin;">';
 
                             if(typeof(geocacheLogsPerCountry['willAttend']) !== 'undefined' && geocacheLogsPerCountry['willAttend'].length > 0) {
@@ -784,12 +779,12 @@
                         }
 
                         // Add my number of logs above the log button
-                        if (IsSettingEnabled('addMyNumberOfLogs')) {
+                        if (isSettingEnabled('addMyNumberOfLogs')) {
                             $('<p style="margin: 0;"><small>' + i18next.t('other.have')+' ' + myNumberOfLogs + ' ' + i18next.t('other.accordpgc')+'</small></p>').insertBefore('#ctl00_ContentBody_GeoNav_logButton');
                         }
 
                         // Append the same number to the added logbook link
-                        if (IsSettingEnabled('logbookLinks')) {
+                        if (isSettingEnabled('logbookLinks')) {
                             $('#pgc-logbook-yours').html('' + i18next.t('other.yours')+' (' + myNumberOfLogs + ')')
 
                         }
@@ -798,14 +793,14 @@
 
                     // Since everything in the logbook is ajax, we need to wait for the elements
                     // We also want to wait on challengeCheckerResults
-                    waitForKeyElements('#cache_logs_table tbody tr', Logbook);
+                    waitForKeyElements('#cache_logs_table tbody tr', logbook);
                 }
 
             });
         }
 
         // Add weekday of place date
-        if (IsSettingEnabled('showWeekday')) {
+        if (isSettingEnabled('showWeekday')) {
             const match = $('meta[name="description"]')[1].content.match(/([0-9]{2})\/([0-9]{2})\/([0-9]{4})/);
             if (match) {
                 const date = new Date(match[3], match[1]-1, match[2]);
@@ -821,7 +816,7 @@
         }
 
         // Tidy the web
-        if (IsSettingEnabled('tidy')) {
+        if (isSettingEnabled('tidy')) {
             $('#ctl00_divContentMain p.Clear').css('margin', '0');
             $('div.Note.PersonalCacheNote').css('margin', '0');
             $('h3.CacheDescriptionHeader').remove();
@@ -830,7 +825,7 @@
         }
 
         // Make it easier to copy the gccode
-        if (IsSettingEnabled('makeCopyFriendly')) {
+        if (isSettingEnabled('makeCopyFriendly')) {
             $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').
             html('<div style="margin-right: 15px; margin-bottom: 10px;"><p style="font-size: 125%; margin-bottom: 0"><span id="ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoCode">' + gccode + '</span></p>' +
                 '<input size="25" type="text" value="https://coord.info/' + encodeURIComponent(gccode) + '" onclick="this.setSelectionRange(0, this.value.length);"></div>');
@@ -841,7 +836,7 @@
         }
 
         // Add PGC Map links
-        if (IsSettingEnabled('addPgcMapLinks')) {
+        if (isSettingEnabled('addPgcMapLinks')) {
             coordinates = $('#ctl00_ContentBody_MapLinks_MapLinks li a').attr('href'),
                 latitude = coordinates.replace(/.*lat=([^&]*)&lng=.*/, "$1"),
                 longitude = coordinates.replace(/.*&lng=(.*)$/, "$1");
@@ -860,7 +855,7 @@
 
         // Remove the UTM coordinates
         // $('#ctl00_ContentBody_CacheInformationTable div.LocationData div.span-9 p.NoBottomSpacing br').remove();
-        if (IsSettingEnabled('removeUTM')) {
+        if (isSettingEnabled('removeUTM')) {
             $('#ctl00_ContentBody_LocationSubPanel').html('');
 
             // And move the "N 248.3 km from your home location"
@@ -872,7 +867,7 @@
         // $('#ctl00_ContentBody_uxBanManWidget').remove();
 
         // Remove disclaimer
-        if (IsSettingEnabled('removeDisclaimer')) {
+        if (isSettingEnabled('removeDisclaimer')) {
             $('#divContentMain div.span-17 div.Note.Disclaimer').remove();
         }
 
@@ -888,13 +883,13 @@
 
         // Collapse download links
         // http://www.w3schools.com/charsets/ref_utf_geometric.asp (x25BA, x25BC)
-        if (IsSettingEnabled('collapseDownloads')) {
+        if (isSettingEnabled('collapseDownloads')) {
             $('<p style="cursor: pointer; margin: 0;" id="DownloadLinksToggle" onclick="$(\'#divContentMain div.DownloadLinks, #DownloadLinksToggle .arrow\').toggle();"><span class="arrow">&#x25BA;</span><span class="arrow open">&#x25BC;</span>' + i18next.t('other.print')+'</p>').insertBefore('#divContentMain div.DownloadLinks');
             $('#divContentMain div.DownloadLinks, #DownloadLinksToggle .arrow.open').hide();
         }
 
         // Resolve the coordinates into an address
-        if (IsSettingEnabled('addAddress')) {
+        if (isSettingEnabled('addAddress')) {
             coordinates = $('#ctl00_ContentBody_MapLinks_MapLinks li a').attr('href'),
                 latitude = coordinates.replace(/.*lat=([^&]*)&lng=.*/, "$1"),
                 longitude = coordinates.replace(/.*&lng=(.*)$/, "$1"),
@@ -921,18 +916,18 @@
         }
 
         // Add number of finds per type to the top
-        if (IsSettingEnabled('cloneLogsPerType') && typeof $('#ctl00_ContentBody_lblFindCounts').html() !== 'undefined') {
+        if (isSettingEnabled('cloneLogsPerType') && typeof $('#ctl00_ContentBody_lblFindCounts').html() !== 'undefined') {
             $('#ctl00_ContentBody_CacheInformationTable').before('<div>' + $('#ctl00_ContentBody_lblFindCounts').html() + '</div>');
         }
 
         // Add link to PGC gallery
-        if (subscription && IsSettingEnabled('addPgcGalleryLinks')) {
+        if (subscription && isSettingEnabled('addPgcGalleryLinks')) {
             const html = '<a href="' + pgcUrl + 'Tools/Gallery?filter_gc_val=' + gccode + '&submit=Filter"><img src="' + galleryLinkIcon + '" title="' + i18next.t('other.gallery')+'"></a> ';
             $('.CacheDetailNavigation ul li:first').append(html);
         }
 
         // Add map links for each bookmarklist
-        if (IsSettingEnabled('addMapBookmarkListLinks')) {
+        if (isSettingEnabled('addMapBookmarkListLinks')) {
             $('ul.BookmarkList li').each(function() {
                 const bmlCode = $(this).children(':nth-child(1)').attr('href').replace(/.*\/lists\/(.*)/, "$1");
                 const owner = $(this).children(':nth-child(3)').text();
@@ -952,12 +947,12 @@
         }
 
         // Decrypt the hint
-        if (IsSettingEnabled('decryptHints') && $('#ctl00_ContentBody_lnkDH')[0].title === i18next.t('other.decrypt')) {
+        if (isSettingEnabled('decryptHints') && $('#ctl00_ContentBody_lnkDH')[0].title === i18next.t('other.decrypt')) {
             $('#ctl00_ContentBody_lnkDH')[0].click();
         }
 
         // VGPS form
-        if (IsSettingEnabled('showVGPS')) {
+        if (isSettingEnabled('showVGPS')) {
             GM.xmlHttpRequest({
                 method: "GET",
                 url: pgcApiUrl + 'GetExistingVGPSLists?gccode=' + gccode,
@@ -1021,7 +1016,7 @@
         }
 
         // Change font in personal cache note to monospaced
-        if (IsSettingEnabled('cachenoteFont')) {
+        if (isSettingEnabled('cachenoteFont')) {
             $("#viewCacheNote,#cacheNoteText").css("font-family", "monospace").css("font-size", "12px");
             $("#viewCacheNote").on("DOMSubtreeModified", function() {
                 $(".inplace_field").css("font-family", "monospace").css("font-size", "12px");
@@ -1029,7 +1024,7 @@
         }
 
 
-        if (IsSettingEnabled('logbookLinks')) {
+        if (isSettingEnabled('logbookLinks')) {
             // 2022-08-24, fixes #112: Extra single quote showing up in LogBookLinks near "Friends".
             $('\
                 <span>&nbsp;|&nbsp;</span><a id="pgc-logbook-yours" href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-2">Yours</a>\
@@ -1038,29 +1033,29 @@
         }
     }
 
-    function Router() {
+    function router() {
         if (path.match(/^\/geocache\/.*/) !== null) {
-            Page_CachePage();
+            pageCachePage();
         } else if (path.match(/^\/seek\/cache_details\.aspx.*/) !== null) {
-            Page_CachePage();
+            pageCachePage();
         } else if (path.match(/^\/seek\/cache_logbook\.aspx.*/) !== null) {
-            Page_Logbook();
+            pageLogbook();
         //} else if (path.match(/^\/bookmarks\/.*/) !== null) {
-        //    Page_Bookmarks();
+        //    pageBookmarks();
         } else if (path.match(/^\/map\/.*/) !== null) {
-            Page_Map();
+            pageMap();
         } else if(path.match(/^\/profile\/.*/) !== null) {
-            Page_Profile();
+            pageProfile();
         } else if (path.match(/^\/account\/drafts/) !== null) {
-            Page_Drafts();
+            pageDrafts();
         } else if (path.match(/^\/account\/messagecenter/) !== null) {
-            Page_Messagecenter();
+            pageMessagecenter();
         } else if (path.match(/^\/seek\/cdpf\.aspx/) !== null) {
-            Page_PrintCachePage();
+            pagePrintCachePage();
         }
     }
 
-    function BuildPGCUserMenu() {
+    function buildPGCUserMenu() {
         let loggedInContent, subscriptionContent = '';
 
         gccomUsername = false;
@@ -1076,7 +1071,7 @@
         }
 
         // Issue 113; fixed 2022-08-30
-        GM_addStyle('\
+        GM.addStyle('\
         #pgc .player-profile, #pgc_gclh .li-user-info {width: auto;}\
         #pgc .player-profile:hover {text-decoration: none;}\
         #pgc .player-profile a:hover {text-decoration: underline;}\
@@ -1095,9 +1090,9 @@
 
         let settings = '<ul id="pgcUserMenu" class="dropdown-menu menu-user submenu" style="display:none; z-index: 1005;"><form id="pgcUserMenuForm" style="display: block; columns: 2; font-size: 14px; background-color: #fff !important;">';
 
-        const items = GetSettingsItems();
+        const items = getSettingsItems();
         for (let item in items) {
-            const isChecked = IsSettingEnabled(item) ? ' checked="checked"' : '';
+            const isChecked = isSettingEnabled(item) ? ' checked="checked"' : '';
             // Explicitly set the styles as some pages (i.e. https://www.geocaching.com/account/settings/profile) are missing the required css.
             settings += '<li style="margin: .2em 1em; white-space: nowrap; display: flex;"><label style="font-weight: inherit; margin-bottom: 0" for="' + item + '"><input type="checkbox" id="' + item + '" name="' + item + '"' + isChecked + ' >&nbsp;' + items[item].title + '</label>&nbsp;<small>(default: ' + items[item].default + ')</small></li>';
         }
@@ -1144,7 +1139,7 @@
         })
 
         $('#pgcUserMenuSave').click(function(e) {
-            SaveSettings(e);
+            saveSettings(e);
         });
 
         // Workaround for users that also use the GClh
@@ -1176,7 +1171,7 @@
                 })
 
                 $('#pgcUserMenuSave_gclh').click(function(e) {
-                    SaveSettings(e);
+                    saveSettings(e);
                 });
 
             }
@@ -1195,7 +1190,7 @@
     /**
      * Check that we are authenticated at Project-GC.com, and that it's with the same username
      */
-    function CheckPGCLogin() {
+    function checkPGCLogin() {
         GM.xmlHttpRequest({
             method: "GET",
             url: pgcApiUrl + 'GetMyUsername',
@@ -1216,7 +1211,7 @@
 
                 function waitForHeader(waitCount) {
                     if ($('.user-menu')[0]) {
-                        BuildPGCUserMenu();
+                        buildPGCUserMenu();
                     }
                     else {
                         waitCount++;
@@ -1228,7 +1223,7 @@
                     }
                 }
                 waitForHeader(0);
-                Router();
+                router();
             },
             onerror: function(response) {
                 alert(response);
@@ -1238,8 +1233,8 @@
     }
 
     function run() {
-        ReadSettings();
-        CheckPGCLogin();
+        readSettings();
+        checkPGCLogin();
     }
 
     function loadTranslations() {
