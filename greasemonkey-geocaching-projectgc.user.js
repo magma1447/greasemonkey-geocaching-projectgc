@@ -796,11 +796,28 @@
 
         // Make it easier to copy the gccode
         if (isSettingEnabled('makeCopyFriendly')) {
-            $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').
-            html('<div style="margin-right: 15px; margin-bottom: 10px;"><p style="font-size: 125%; margin-bottom: 0"><span id="ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoCode">' + gccode + '</span></p>' +
-                '<input size="25" type="text" value="https://coord.info/' + encodeURIComponent(gccode) + '" onclick="this.setSelectionRange(0, this.value.length);"></div>');
-            $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').css('font-weight', 'inherit').css('margin-right', '27px');
-            $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel div input').css('padding', '0');
+            const url = 'https://coord.info/' + encodeURIComponent(gccode);
+            const clipboardSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+
+            $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').html(
+                '<div style="margin-right: 15px; margin-bottom: 10px;">' +
+                '<p style="font-size: 125%; margin-bottom: 0"><span id="ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoCode">' + gccode + '</span></p>' +
+                '<div style="display: inline-flex; align-items: center; gap: 4px;">' +
+                '<input id="coordInfoUrl" size="25" type="text" value="' + url + '" onclick="this.setSelectionRange(0, this.value.length);" readonly>' +
+                '<button id="btnCopyCoordInfoUrl" type="button" title="Copy to clipboard" style="cursor:pointer; border:1px solid #ccc; background:#f5f5f5; border-radius:3px; padding:3px 6px; height: 40px; margin-bottom: 4px; display:inline-flex; align-items:center;">' + clipboardSVG + '</button>' +
+                '</div>' +
+                '</div>'
+            );
+
+            $('#btnCopyCoordInfoUrl').on('click', function (e) {
+                e.preventDefault();
+                navigator.clipboard.writeText(url).then(() => {
+                    $(this).html('✓').css('color', 'green');
+                    setTimeout(() => { $(this).html(clipboardSVG).css('color', ''); }, 1500);
+                });
+            });
+
+            $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').css('font-weight', 'inherit');
             $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel div').css('margin', '0 0 5px 0');
             $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel div p').css('font-weight', 'bold');
         }
@@ -938,10 +955,10 @@
                         existsIn = result.data.existsIn,
                         selectedContent,
                         existsContent,
-                        html = '<li><img width="16" height="16" src="https://project-gc.com/images/mobile_telephone_32.png"> <strong> ' + i18next.t('vpgs.send') + ' </strong><br />',
+                        html = '<li style="border: 1px dashed lightgray;"><img width="16" height="16" src="https://project-gc.com/images/mobile_telephone_32.png"> <strong> ' + i18next.t('vpgs.send') + ' </strong><br />',
                         listId;
 
-                    html += '<select id="comboVGPS" style="width: 138px;">';
+                    html += '<select id="comboVGPS" style="width: 164px; display: inline-block;">';
                     for (let k in vgpsLists) {
                         listId = vgpsLists[k].id;
 
@@ -957,13 +974,14 @@
                         html += '<option value="' + listId + '"' + selectedContent + existsContent + '>' + vgpsLists[k].name + '</option>';
                     }
                     html += '</select>';
+                    html += '&nbsp;';
                     if (existsIn.indexOf(selected) === -1) {
-                        html += '&nbsp;<button id="btnAddToVGPS">+</button>';
-                        html += '&nbsp;<button id="btnRemoveFromVGPS" style="display: none;">-</button>';
+                        html += '<input id="btnAddToVGPS" type="button" value="+">';
+                        html += '<input id="btnRemoveFromVGPS" type="button" value="-" style="display: none;">';
                     }
                     else {
-                        html += '&nbsp;<button id="btnAddToVGPS" style="display: none;">+</button>';
-                        html += '&nbsp;<button id="btnRemoveFromVGPS">-</button>';
+                        html += '<input id="btnAddToVGPS" type="button" value="+" style="display: none;">';
+                        html += '<input id="btnRemoveFromVGPS" type="button" value="-">';
                     }
                     html += '</li>';
 
