@@ -208,8 +208,8 @@
                 title: i18next.t('menu.openDraftLogInSameWindow'),
                 default: true
             },
-            cachenoteFont: {
-                title: i18next.t('menu.cachenoteFont'),
+            geocacheNoteFont: {
+                title: i18next.t('menu.geocacheNoteFont'),
                 default: true
             },
             logbookLinks: {
@@ -220,8 +220,8 @@
                 title: i18next.t('menu.addMyNumberOfLogs'),
                 default: true
             },
-            hideMapFromPrintCachePage: {
-                title: i18next.t('menu.hideMapFromPrintCachePage'),
+            hideMapFromPrintGeocachePage: {
+                title: i18next.t('menu.hideMapFromPrintGeocachePage'),
                 default: true
             },
             addCachedChallengeCheckerResults: {
@@ -339,7 +339,7 @@
         });
     }
 
-    function pagePrintCachePage() {
+    function pagePrintGeocachePage() {
         // Remove the disclaimer
         $('div.TermsWidget').css('display', 'none');
 
@@ -355,7 +355,7 @@
         }
 
 
-        if(isSettingEnabled('hideMapFromPrintCachePage')) {
+        if(isSettingEnabled('hideMapFromPrintGeocachePage')) {
             $('#map').parent().parent().addClass('no-print');
             $('#map').parent().prev().children('span.ui-icon').removeClass('ui-icon-minusthick').addClass('ui-icon-plusthick');
             $('#map').parent().css('display', 'none');
@@ -586,9 +586,9 @@
     }
 
     // ==========================================
-    // pageCachePage
+    // pageGeocachePage
     // ==========================================
-    function pageCachePage() {
+    function pageGeocachePage() {
         let gccode = getGcCodeFromPage(),
             placedBy = $('#ctl00_ContentBody_mcd1 a').html(),
             lastUpdated = $('#ctl00_ContentBody_bottomSection p small time').get(1),
@@ -614,9 +614,9 @@
                 url: url,
                 onload: function(response) {
                     let result = JSON.parse(response.responseText),
-                        cacheData = result.data.cacheData,
+                        geocacheData = result.data.cacheData,
                         bearing = result.data.bearing,
-                        cacheOwner = result.data.owner,
+                        geocacheOwner = result.data.owner,
                         challengeCheckerTagIds = result.data.challengeCheckerTagIds,
                         geocacheLogsPerCountry = result.data.geocacheLogsPerCountry,
                         myNumberOfLogs = result.data.myNumberOfLogs,
@@ -655,24 +655,24 @@
                     //--
 
 
-                    if (result.status === 'OK' && typeof cacheData !== 'undefined') {
+                    if (result.status === 'OK' && typeof geocacheData !== 'undefined') {
 
                         // If placed by != owner, show the real owner as well.
-                        if (placedBy !== cacheOwner) {
-                            $('#ctl00_ContentBody_mcd1 span.message__owner').before(' (' + cacheOwner + ')');
+                        if (placedBy !== geocacheOwner) {
+                            $('#ctl00_ContentBody_mcd1 span.message__owner').before(' (' + geocacheOwner + ')');
                         }
 
                         // Append link to Profile Stats for the cache owner
                         // Need to real cache owner name from PGC since the web only has placed by
                         if (isSettingEnabled('profileStatsLinks')) {
-                            $('#ctl00_ContentBody_mcd1 span.message__owner').before('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(cacheOwner) + '"><img src="' + externalLinkIcon + '" title="' + i18next.t('cpage.stats') +'"></a>');
+                            $('#ctl00_ContentBody_mcd1 span.message__owner').before('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(geocacheOwner) + '"><img src="' + externalLinkIcon + '" title="' + i18next.t('cpage.stats') +'"></a>');
                         }
 
                         // Add FP/FP%/FPW below the current FP + mouseover for FP% and FPW with decimals
                         if (isSettingEnabled('addPgcFp')) {
-                            fp = (+cacheData.favorite_points),
-                                fpp = (+cacheData.favorite_points_pct),
-                                fpw = (+cacheData.favorite_points_wilson);
+                            fp = (+geocacheData.favorite_points),
+                                fpp = (+geocacheData.favorite_points_pct),
+                                fpw = (+geocacheData.favorite_points_wilson);
                             $('#uxFavContainerLink').append('<p title= "' + parseFloat(fpp) + '%, ' + parseFloat(fpw) + 'W" style="text-align: center; background-color: #f0edeb;border-bottom-left-radius: 5px;border-bottom-right-radius:5px;">PGC: ' + parseInt(fp) + ' FP, ' + Math.round(fpp) + '%, ' + Math.round(fpw) + 'W</p>');
                             $('.favorite-container').css({
                                 "border-bottom-left-radius": "0",
@@ -682,13 +682,13 @@
 
                         // Add elevation (Metres above mean sea level = mamsl)
                         if (isSettingEnabled('addElevation')) {
-                            const formattedElevation = formatDistance(cacheData.elevation),
+                            const formattedElevation = formatDistance(geocacheData.elevation),
                                 // Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
                                 elevationUnit = imperialFlag ? 'ft' : 'm',
-                                elevationArrow = (cacheData.elevation >= 0) ? '&#x21a5;' : '&#x21a7;';
+                                elevationArrow = (geocacheData.elevation >= 0) ? '&#x21a5;' : '&#x21a7;';
                                 elevation = formattedElevation + ' ' + elevationUnit + ' ' + elevationArrow;
 
-                            if (cacheData.elevation >= 0) {
+                            if (geocacheData.elevation >= 0) {
                                 html = '<span> (' + elevation + ')</span>';
                             } else {
                                 html = '<span class="OldWarning"> (' + elevation + ')</span>';
@@ -699,14 +699,14 @@
 
                         // Add PGC location
                         if (isSettingEnabled('addPGCLocation')) {
-                            if (cacheData.country.length > 0) {
-                                location.push(cacheData.country);
+                            if (geocacheData.country.length > 0) {
+                                location.push(geocacheData.country);
                             }
-                            if (cacheData.region !== null && cacheData.region.length > 0) {
-                                location.push(cacheData.region);
+                            if (geocacheData.region !== null && geocacheData.region.length > 0) {
+                                location.push(geocacheData.region);
                             }
-                            if (cacheData.county !== null && cacheData.county.length > 0) {
-                                location.push(cacheData.county);
+                            if (geocacheData.county !== null && geocacheData.county.length > 0) {
+                                location.push(geocacheData.county);
                             }
                             location = location.join(' / ');
 
@@ -728,7 +728,7 @@
                         }
 
                         // Display warning message if cache is logged and no longer be logged
-                        if (cacheData.locked) {
+                        if (geocacheData.locked) {
                             $('ul.OldWarning').append('<li>' + i18next.t('cpage.locked') +'</li>');
                         }
 
@@ -1016,7 +1016,7 @@
         }
 
         // Change font in personal cache note to monospaced
-        if (isSettingEnabled('cachenoteFont')) {
+        if (isSettingEnabled('geocacheNoteFont')) {
             $("#viewCacheNote,#cacheNoteText").css("font-family", "monospace").css("font-size", "12px");
             $("#viewCacheNote").on("DOMSubtreeModified", function() {
                 $(".inplace_field").css("font-family", "monospace").css("font-size", "12px");
@@ -1035,9 +1035,9 @@
 
     function router() {
         if (path.match(/^\/geocache\/.*/) !== null) {
-            pageCachePage();
+            pageGeocachePage();
         } else if (path.match(/^\/seek\/cache_details\.aspx.*/) !== null) {
-            pageCachePage();
+            pageGeocachePage();
         } else if (path.match(/^\/seek\/cache_logbook\.aspx.*/) !== null) {
             pageLogbook();
         //} else if (path.match(/^\/bookmarks\/.*/) !== null) {
@@ -1051,7 +1051,7 @@
         } else if (path.match(/^\/account\/messagecenter/) !== null) {
             pageMessagecenter();
         } else if (path.match(/^\/seek\/cdpf\.aspx/) !== null) {
-            pagePrintCachePage();
+            pagePrintGeocachePage();
         }
     }
 

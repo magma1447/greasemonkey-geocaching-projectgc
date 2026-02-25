@@ -28,10 +28,10 @@
     "parseExifLocation": "Display EXIF location info on old log photos that have it",
     "addGeocacheLogsPerProfileCountry": "Add found logs per country",
     "openDraftLogInSameWindow": "Open <em>Compose Log</em> entries in <em>Drafts</em> in same window",
-    "cachenoteFont": "Change personal cache note font to monospaced",
+    "geocacheNoteFont": "Change personal geocache note font to monospaced",
     "logbookLinks": "Add links to logbook tabs",
     "addMyNumberOfLogs": "Add my number of logs above log button",
-    "hideMapFromPrintCachePage": "Hide map from print cache page",
+    "hideMapFromPrintGeocachePage": "Hide map from print geocache page",
     "addCachedChallengeCheckerResults": "Add icons for cached Challenge checker results",
     "hideLogVoting": "Hide log upvote buttons and sorting options",
     "Cancel": "Cancel",
@@ -46,7 +46,7 @@
     "notadded": "Geocache not added to Virtual-GPS :(",
     "removed": "Geocache removed from Virtual-GPS!",
     "notre": "Geocache not removed from Virtual-GPS :(",
-    "issue": "Cache Issues:",
+    "issue": "Geocache Issues:",
     "notfull": "The following Found it logs might not fulfill the requirements:",
     "title": "Project-GC Challenge checker",
     "alt": "PGC Checker"
@@ -58,7 +58,7 @@
     "pgc": "according to Project-GC.com",
     "checkers": "Challenge checker",
     "plural": "(s)",
-    "locked": "This cache has been locked and can no longer be logged."
+    "locked": "This geocache has been locked and can no longer be logged."
   },
   "other": {
     "prcouuntry": "Found logs per country",
@@ -67,8 +67,8 @@
     "unique": "unique countries",
     "accordpgc": "logs according to Project-GC",
     "live": "Project-GC Live map",
-    "issue": "Cache Issues:",
-    "latest": "The latest log for this cache is a DNF,",
+    "issue": "Geocache Issues:",
+    "latest": "The latest log for this geocache is a DNF,",
     "please": "please read the log",
     "before": "before your own search.",
     "print": "Print and Downloads",
