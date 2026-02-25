@@ -256,7 +256,7 @@
 
     async function ReadSettings() {
         settings = await GM.getValue('settings');
-        if (typeof(settings) != 'undefined') {
+        if (typeof(settings) !== 'undefined') {
             settings = JSON.parse(settings);
             if (settings === null) {
                 settings = [];
@@ -267,7 +267,7 @@
 
         const items = GetSettingsItems();
         for (let item in items) {
-            if (typeof(settings[item]) == 'undefined') {
+            if (typeof(settings[item]) === 'undefined') {
                 settings[item] = items[item].default;
             }
         }
@@ -352,7 +352,7 @@
         // Get rid of the Logs section if it's not asked for. But keep it if we asked for it, even though there are 0 logs.
         if( getUrlParameter('lc') === false ) {
             $('div.item.ui-widget > div.item-header > h2.ui-sortable-handle').each(function() {
-                if( $(this).html() == 'Logs' ) {    // Will only work with English
+                if( $(this).html() === 'Logs' ) {    // Will only work with English
                     $(this).parent().parent().addClass('no-print').css('display', 'none');
                     return false;   // Break .each loop
                 }
@@ -509,10 +509,10 @@
             const classes = $(jNode).attr('class');
             const logId = classes.match(/l-[0-9]+/)[0].replace('l-', '');
             if(typeof(challengeCheckerResults[logId]) !== 'undefined') {
-                if(challengeCheckerResults[logId]['status'] == 'success') {
+                if(challengeCheckerResults[logId]['status'] === 'success') {
                     $(jNode).find('div.LogDisplayLeft').first().append('<hr style="margin-top: 12px; margin-bottom: 12px;"><p><br>' + challengeCheckerResults[logId]['lastRun'] + ' UTC: <img src="' + challengeCheckerSuccessIcon + '"></p>');
                 }
-                else if(challengeCheckerResults[logId]['status'] == 'fail') {
+                else if(challengeCheckerResults[logId]['status'] === 'fail') {
                     $(jNode).find('div.LogDisplayLeft').first().append('<hr style="margin-top: 12px; margin-bottom: 12px;"><p>' + i18next.t("other.checker")+'<br>' + challengeCheckerResults[logId]['lastRun'] + ' UTC: <img src="' + challengeCheckerFailIcon + '"></p>');
                 }
             }
@@ -639,7 +639,7 @@
                     if(challengeCheckerResults !== false) {
                         const suspiciousFoundItLogs = [];
                         for(let logId in challengeCheckerResults) {
-                            if(typeof challengeCheckerResults[logId] !== 'undefined' && challengeCheckerResults[logId]['status'] == 'fail') {
+                            if(typeof challengeCheckerResults[logId] !== 'undefined' && challengeCheckerResults[logId]['status'] === 'fail') {
                                 suspiciousFoundItLogs.push(logId);
                             }
                         }
@@ -741,7 +741,7 @@
                         if (IsSettingEnabled('addGeocacheLogsPerProfileCountry')) {
                             html = '<div id="geocacheLogsPerCountry" style="border: dashed; border-color: #aaa; border-width: thin;">';
 
-                            if(typeof(geocacheLogsPerCountry['willAttend']) != 'undefined' && geocacheLogsPerCountry['willAttend'].length > 0) {
+                            if(typeof(geocacheLogsPerCountry['willAttend']) !== 'undefined' && geocacheLogsPerCountry['willAttend'].length > 0) {
                                 html += '<p style="margin-left: 10px; margin-bottom: 0;"><strong>' + i18next.t('cpage.prcountry') +'</strong> <small>' + i18next.t('cpage.pgc') +'</small></p>';
                                 html += '<ul style="list-style: none; margin-left: 0; margin-bottom: 0;">';
                                 let unknowns = null;
@@ -760,7 +760,7 @@
                                 html += '<span style="display: block; text-align: right; padding-right: 10px;"><small><a href="https://project-gc.com/Tools/EventStatistics?gccode=' + encodeURIComponent(gccode) + '">Event statistics</a></small></span>';
                             }
 
-                            if(typeof(geocacheLogsPerCountry['found']) != 'undefined' && geocacheLogsPerCountry['found'].length > 0) {
+                            if(typeof(geocacheLogsPerCountry['found']) !== 'undefined' && geocacheLogsPerCountry['found'].length > 0) {
                                 html += '<p style="margin-left: 10px; margin-bottom: 0;"><strong> ' + i18next.t('other.prcouuntry')+'</strong> <small>' + i18next.t('other.accord')+'</small></p>';
                                 html += '<ul style="list-style: none; margin-left: 0; margin-bottom: 0;">';
                                 let unknowns = null;
@@ -952,7 +952,7 @@
         }
 
         // Decrypt the hint
-        if (IsSettingEnabled('decryptHints') && $('#ctl00_ContentBody_lnkDH')[0].title == i18next.t('other.decrypt')) {
+        if (IsSettingEnabled('decryptHints') && $('#ctl00_ContentBody_lnkDH')[0].title === i18next.t('other.decrypt')) {
             $('#ctl00_ContentBody_lnkDH')[0].click();
         }
 
@@ -1138,7 +1138,7 @@
             e.preventDefault();
         })
         $('body').click(function(e) {
-            if (!$(e.target).parents('#pgcUserMenu')[0] && (!$(e.target).parents('#pgcButton')[0] && $("#pgcUserMenu").css('display') != 'none')) {
+            if (!$(e.target).parents('#pgcUserMenu')[0] && (!$(e.target).parents('#pgcButton')[0] && $("#pgcUserMenu").css('display') !== 'none')) {
                 $("#pgcUserMenu").hide();
             }
         })
