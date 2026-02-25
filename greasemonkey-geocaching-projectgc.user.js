@@ -387,35 +387,6 @@
         }
     }
 
-    // Deprecated page. Needs to be updated and adjusted to https://www.geocaching.com/plan/lists .
-    function pageBookmarks() {
-        const ownerName = $("#ctl00_ContentBody_ListInfo_uxListOwner").text();
-
-        const search = window.location.search;
-        const guidStart = search.indexOf("guid=");
-        if (guidStart === -1) {
-            /* the guid= not found in URL
-             * something is wrong so we will not generate bad URL
-             */
-            return;
-        }
-        // const guid = search.substr(guidStart + 5/*, eof */);
-
-        //const url = "https://project-gc.com/Tools/MapBookmarklist?ownerName=" + ownerName + "&guid=" + guid;
-        const url = 'https://project-gc.com/Tools/MapBookmarklist?filters_pr_profileName=' + encodeURIComponent(pgcUsername) + '&filters_bml_ownerProfileName=' + encodeURIComponent(ownerName) + '&filters_bml_bmlReferenceCode=bmlcode&submit=Filter';
-        const icon = "https://project-gc.com/images/map_app_16.png";
-
-        /* Heading link */
-        const html = ' <a href="' + url + '" title="' + i18next.t("other.map3")+'"><img src="' + icon + '" />' + i18next.t("other.map2")+' </a>';
-
-        $("#ctl00_ContentBody_lbHeading").after(html);
-
-        /* Footer button */
-        const html2 = '<p><input type="button" onclick="window.location.href= \'' + url + '\'" value=' + i18next.t("other.map4")+' /></p>';
-
-        $("#ctl00_ContentBody_ListInfo_btnDownload").parent().before(html2);
-    }
-
     function pageMap() {
         if (isSettingEnabled('showVGPS')) {
 
@@ -623,7 +594,7 @@
                         location = [],
                         fp = 0,
                         fpp = 0,
-                        fpw = 0,
+                        fpw,
                         elevation = '',
                         html = '';
 
@@ -669,11 +640,14 @@
                         }
 
                         // Add FP/FP%/FPW below the current FP + mouseover for FP% and FPW with decimals
-                        if (isSettingEnabled('addPgcFp')) {
-                            fp = (+geocacheData.favorite_points),
-                                fpp = (+geocacheData.favorite_points_pct),
-                                fpw = (+geocacheData.favorite_points_wilson);
-                            $('#uxFavContainerLink').append('<p title= "' + parseFloat(fpp) + '%, ' + parseFloat(fpw) + 'W" style="text-align: center; background-color: #f0edeb;border-bottom-left-radius: 5px;border-bottom-right-radius:5px;">PGC: ' + parseInt(fp) + ' FP, ' + Math.round(fpp) + '%, ' + Math.round(fpw) + 'W</p>');
+                        if (isSettingEnabled('addPgcFp') &&
+                                geocacheData.favorite_points !== null &&
+                                geocacheData.favorite_points_pct !== null &&
+                                geocacheData.favorite_points_wilson !== null) {
+                            fp  = +geocacheData.favorite_points;
+                            fpp = +geocacheData.favorite_points_pct;
+                            fpw = +geocacheData.favorite_points_wilson;
+                            $('#uxFavContainerLink').append('<p title="' + fpp + '%, ' + fpw + 'W" style="text-align: center; background-color: #f0edeb;border-bottom-left-radius: 5px;border-bottom-right-radius:5px;">PGC: ' + fp + ' FP, ' + Math.round(fpp) + '%, ' + Math.round(fpw) + 'W</p>');
                             $('.favorite-container').css({
                                 "border-bottom-left-radius": "0",
                                 "border-bottom-right-radius": "0"
