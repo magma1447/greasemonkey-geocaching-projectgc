@@ -57,7 +57,7 @@
 
     'use strict';
 
-    const pgcUrl    = 'https://dev-03.project-gc.com',
+    const pgcUrl    = 'https://project-gc.com',
           pgcApiUrl = pgcUrl + '/api/v1',
           path      = window.location.pathname,
           icons     = {
@@ -1110,7 +1110,7 @@
             </form>\
         </ul>';
 
-        const pgc = '<li id="pgc"><div class="player-profile">' + $('#gc-header .player-profile').html() + '</div></li>';
+        const pgc = '<li id="pgc"><div class="player-profile flex items-center gap-2">' + $('#gc-header .player-profile').html() + '</div></li>';
         $('.user-menu').prepend(pgc);
         // Icon
         $('#pgc div').prepend('<a href="' + pgcUrl + '"></a>');
