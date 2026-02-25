@@ -57,26 +57,27 @@
 
     'use strict';
 
-    let pgcUrl = 'https://project-gc.com/',
-        cdnDomain = 'https://project-gc.com/',
-        pgcApiUrl = pgcUrl + 'api/gm/v1/',
-        externalLinkIcon = 'https://project-gc.com/images/external_small.png',
-        galleryLinkIcon = 'https://project-gc.com/images/pictures_16.png',
-        challengeCheckerSuccessIcon = 'https://project-gc.com/images/check16.png',
-        challengeCheckerFailIcon = 'https://project-gc.com/images/cancel16.png',
-        mapLinkIcon = 'https://project-gc.com/images/map_app_16.png',
-        loggedIn = null,
-        subscription = null,
-        pgcUsername = null,
-        // Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
-        imperialFlag = null,
-        gccomUsername = null,
-        latestLogs = [],
-        latestLogsAlert = false,
-        settings = {},
-        path = window.location.pathname,
+    const pgcUrl    = 'https://dev-03.project-gc.com',
+          pgcApiUrl = pgcUrl + '/api/v1',
+          path      = window.location.pathname,
+          icons     = {
+              externalLink:            pgcUrl + '/images/external_small.png',
+              galleryLink:             pgcUrl + '/images/pictures_16.png',
+              challengeCheckerSuccess: pgcUrl + '/images/check16.png',
+              challengeCheckerFail:    pgcUrl + '/images/cancel16.png',
+              mapLink:                 pgcUrl + '/images/map_app_16.png',
+          };
+
+    let loggedIn               = null,
+        subscription           = null,
+        pgcUsername            = null,
+        imperialFlag           = null,
+        gccomUsername          = null,
+        latestLogs            = [],
+        latestLogsAlert     = false,
+        settings                 = {},
         challengeCheckerResults = null,
-        _language = "";
+        _language             = '';
 
 
     function metersToFeet(meters) {
@@ -85,7 +86,6 @@
 
     function formatDistance(distance) {
         distance = parseInt(distance, 10);
-        // Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
         distance = imperialFlag ? metersToFeet(distance) : distance;
         distance = distance.toLocaleString();
 
@@ -195,7 +195,6 @@
                 title: i18next.t('menu.addElevation'),
                 default: true
             },
-            // Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
             removeDisclaimer: {
                 title: i18next.t('menu.removeDisclaimer'),
                 default: true
@@ -256,7 +255,8 @@
             if (settings === null) {
                 settings = [];
             }
-        } else {
+        }
+        else {
             settings = [];
         }
 
@@ -272,22 +272,20 @@
      * addToVGPS
      */
     function addToVGPS(gccode) {
-        let listId = $('#comboVGPS').val(),
-            url = null;
+        const listId = $('#comboVGPS').val();
 
         if (typeof(gccode) === 'undefined') { // The map provides the gccode itself
             gccode = getGcCodeFromPage();
         }
 
-        url = pgcApiUrl + 'AddToVGPSList?listId=' + listId + '&gccode=' + gccode + '&sectionName=GM-script';
-
-
         GM.xmlHttpRequest({
-            method: "GET",
-            url: url,
+            method: "PUT",
+            url: pgcApiUrl + '/virtual-gps/vgpsid:' + listId + '/geocaches',
+            headers: { 'Content-Type': 'application/json', 'X-App-ID': '10' },
+            data: JSON.stringify({ gccodes: [gccode] }),
             onload: function(response) {
                 const result = JSON.parse(response.responseText),
-                    msg = (result.status === 'OK') ? i18next.t('vpgs.added') : i18next.t('vpgs.notadded');
+                    msg = (result.status.message === 'ok') ? i18next.t('vpgs.added') : i18next.t('vpgs.notadded');
 
                 $('#btnAddToVGPS').css('display', 'none');
                 $('#btnRemoveFromVGPS').css('display', '');
@@ -308,22 +306,20 @@
      * removeFromVGPS
      */
     function removeFromVGPS(gccode) {
-        let listId = $('#comboVGPS').val(),
-            url = null;
+        const listId = $('#comboVGPS').val();
 
         if (typeof(gccode) === 'undefined') { // The map provides the gccode itself
             gccode = getGcCodeFromPage();
         }
 
-        url = pgcApiUrl + 'RemoveFromVGPSList?listId=' + listId + '&gccode=' + gccode;
-
-
         GM.xmlHttpRequest({
-            method: "GET",
-            url: url,
+            method: "DELETE",
+            url: pgcApiUrl + '/virtual-gps/vgpsid:' + listId + '/geocaches',
+            headers: { 'Content-Type': 'application/json', 'X-App-ID': '10' },
+            data: JSON.stringify({ gccodes: [gccode] }),
             onload: function(response) {
                 const result = JSON.parse(response.responseText),
-                    msg = (result.status === 'OK') ? i18next.t('vpgs.removed') : i18next.t('vpgs.notre');
+                    msg = (result.status.message === 'ok') ? i18next.t('vpgs.removed') : i18next.t('vpgs.notre');
 
                 $('#btnAddToVGPS').css('display', '');
                 $('#btnRemoveFromVGPS').css('display', 'none');
@@ -331,7 +327,7 @@
                 alert(msg);
 
                 return true;
-        },
+            },
             onerror: function(response) {
                 console.log(response);
                 return false;
@@ -399,11 +395,15 @@
 
                         GM.xmlHttpRequest({
                             method: "GET",
-                            url: pgcApiUrl + 'GetExistingVGPSLists?gccode=' + gccode,
+                            url: pgcApiUrl + '/virtual-gps?gccode=' + gccode,
+                            headers: { 'X-App-ID': '10' },
                             onload: function(response) {
+                                const result = JSON.parse(response.responseText);
+                                if (result.status.message !== 'ok') {
+                                    return;
+                                }
 
-                                let result = JSON.parse(response.responseText),
-                                    vgpsLists = result.data.lists,
+                                let vgpsLists = result.data.lists,
                                     selected = result.data.selected,
                                     existsIn = result.data.existsIn,
                                     selectedContent,
@@ -431,10 +431,11 @@
                                 }
                                 html += '</select>';
 
-                                if (existsIn.indexOf(String(selected)) === -1) {
+                                if (existsIn.indexOf(selected) === -1) {
                                     html += '&nbsp;<button id="btnAddToVGPS">+</button>';
                                     html += '&nbsp;<button id="btnRemoveFromVGPS" style="display: none;">-</button>';
-                                } else {
+                                }
+                                else {
                                     html += '&nbsp;<button id="btnAddToVGPS" style="display: none;">+</button>';
                                     html += '&nbsp;<button id="btnRemoveFromVGPS">-</button>';
                                 }
@@ -466,8 +467,8 @@
             let profileName = profileNameElm.html();
 
             if (typeof profileName !== 'undefined') {
-                profileName = profileNameElm.append('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(profileName) + '"><img src="' + externalLinkIcon + '" title="' + i18next.t("other.prostats")+'"></a>')
-                    .append('<a href="' + pgcUrl + 'Tools/Gallery?filter_pr_profileName=' + encodeURIComponent(profileName) + '&submit=Filter"><img src="' + galleryLinkIcon + '" title="' + i18next.t("other.gallery")+'"></a>');
+                profileName = profileNameElm.append('<a href="' + pgcUrl + '/ProfileStats/' + encodeURIComponent(profileName) + '"><img src="' + icons.externalLink + '" title="' + i18next.t("other.prostats")+'"></a>')
+                    .append('<a href="' + pgcUrl + '/Tools/Gallery?filter_pr_profileName=' + encodeURIComponent(profileName) + '&submit=Filter"><img src="' + icons.galleryLink + '" title="' + i18next.t("other.gallery")+'"></a>');
             }
         }
 
@@ -476,10 +477,10 @@
             const logId = classes.match(/l-[0-9]+/)[0].replace('l-', '');
             if(typeof(challengeCheckerResults[logId]) !== 'undefined') {
                 if(challengeCheckerResults[logId]['status'] === 'success') {
-                    $(jNode).find('div.LogDisplayLeft').first().append('<hr style="margin-top: 12px; margin-bottom: 12px;"><p><br>' + challengeCheckerResults[logId]['lastRun'] + ' UTC: <img src="' + challengeCheckerSuccessIcon + '"></p>');
+                    $(jNode).find('div.LogDisplayLeft').first().append('<hr style="margin-top: 12px; margin-bottom: 12px;"><p><br>' + challengeCheckerResults[logId]['lastRun'] + ' UTC: <img src="' + icons.challengeCheckerSuccess + '"></p>');
                 }
                 else if(challengeCheckerResults[logId]['status'] === 'fail') {
-                    $(jNode).find('div.LogDisplayLeft').first().append('<hr style="margin-top: 12px; margin-bottom: 12px;"><p>' + i18next.t("other.checker")+'<br>' + challengeCheckerResults[logId]['lastRun'] + ' UTC: <img src="' + challengeCheckerFailIcon + '"></p>');
+                    $(jNode).find('div.LogDisplayLeft').first().append('<hr style="margin-top: 12px; margin-bottom: 12px;"><p>' + i18next.t("other.checker")+'<br>' + challengeCheckerResults[logId]['lastRun'] + ' UTC: <img src="' + icons.challengeCheckerFail + '"></p>');
                 }
             }
         }
@@ -527,7 +528,8 @@
 
                 if (latestLogsAlert) {
                     $('#ctl00_ContentBody_size').append('<p class="NoBottomSpacing OldWarning" id="latestLogIcons"><strong>' + i18next.t("other.latest2")+'</strong> <span>' + images + '</span></p>');
-                } else {
+                }
+                else {
                     $('#ctl00_ContentBody_size').append('<p class="NoBottomSpacing" id="latestLogIcons">' + i18next.t("other.latest2")+' <span>' + images + '</span></p>');
                 }
             }
@@ -562,35 +564,29 @@
     function pageGeocachePage() {
         let gccode = getGcCodeFromPage(),
             placedBy = $('#ctl00_ContentBody_mcd1 a').html(),
-            lastUpdated = $('#ctl00_ContentBody_bottomSection p small time').get(1),
-            lastFound = $('#ctl00_ContentBody_bottomSection p small time').get(2),
             coordinates, latitude, longitude, url;
-
-        lastUpdated = (lastUpdated) ? lastUpdated.dateTime : false;
-        lastFound = (lastFound) ? lastFound.dateTime : false;
 
         if (subscription) {
 
             // Get geocache data from Project-GC
-            url = pgcApiUrl + 'GetCacheDataFromGccode&gccode=' + gccode;
-            if (lastUpdated) {
-                url += '&lastUpdated=' + lastUpdated;
-            }
-            if (lastFound) {
-                url += '&lastFound=' + lastFound;
-            }
-
             GM.xmlHttpRequest({
                 method: "GET",
-                url: url,
+                url: pgcApiUrl + '/userscript/geocache/gccode:' + gccode,
+                headers: { 'X-App-ID': '10' },
                 onload: function(response) {
-                    let result = JSON.parse(response.responseText),
-                        geocacheData = result.data.cacheData,
+                    if (response.status === 404) {
+                        return;
+                    }
+                    const result = JSON.parse(response.responseText);
+                    if (result.status.message !== 'ok') {
+                        return;
+                    }
+                    let geocacheData = result.data.geocache,
                         bearing = result.data.bearing,
                         geocacheOwner = result.data.owner,
                         challengeCheckerTagIds = result.data.challengeCheckerTagIds,
                         geocacheLogsPerCountry = result.data.geocacheLogsPerCountry,
-                        myNumberOfLogs = result.data.myNumberOfLogs,
+                        myNumberOfLogs = result.data.myLogCount,
                         location = [],
                         fp = 0,
                         fpp = 0,
@@ -605,7 +601,7 @@
                     if(challengeCheckerResults !== false) {
                         const suspiciousFoundItLogs = [];
                         for(let logId in challengeCheckerResults) {
-                            if(typeof challengeCheckerResults[logId] !== 'undefined' && challengeCheckerResults[logId]['status'] === 'fail') {
+                            if(typeof challengeCheckerResults[logId] !== 'undefined' && !challengeCheckerResults[logId]['status']) {
                                 suspiciousFoundItLogs.push(logId);
                             }
                         }
@@ -626,7 +622,7 @@
                     //--
 
 
-                    if (result.status === 'OK' && typeof geocacheData !== 'undefined') {
+                    if (geocacheData) {
 
                         // If placed by != owner, show the real owner as well.
                         if (placedBy !== geocacheOwner) {
@@ -636,17 +632,17 @@
                         // Append link to Profile Stats for the cache owner
                         // Need to real cache owner name from PGC since the web only has placed by
                         if (isSettingEnabled('profileStatsLinks')) {
-                            $('#ctl00_ContentBody_mcd1 span.message__owner').before('<a href="' + pgcUrl + 'ProfileStats/' + encodeURIComponent(geocacheOwner) + '"><img src="' + externalLinkIcon + '" title="' + i18next.t('cpage.stats') +'"></a>');
+                            $('#ctl00_ContentBody_mcd1 span.message__owner').before('<a href="' + pgcUrl + '/ProfileStats/' + encodeURIComponent(geocacheOwner) + '"><img src="' + icons.externalLink + '" title="' + i18next.t('cpage.stats') +'"></a>');
                         }
 
                         // Add FP/FP%/FPW below the current FP + mouseover for FP% and FPW with decimals
                         if (isSettingEnabled('addPgcFp') &&
-                                geocacheData.favorite_points !== null &&
-                                geocacheData.favorite_points_pct !== null &&
-                                geocacheData.favorite_points_wilson !== null) {
-                            fp  = +geocacheData.favorite_points;
-                            fpp = +geocacheData.favorite_points_pct;
-                            fpw = +geocacheData.favorite_points_wilson;
+                                geocacheData.favoritePoints !== null &&
+                                geocacheData.favoritePointsPct !== null &&
+                                geocacheData.favoritePointsWilson !== null) {
+                            fp  = +geocacheData.favoritePoints;
+                            fpp = +geocacheData.favoritePointsPct;
+                            fpw = +geocacheData.favoritePointsWilson;
                             $('#uxFavContainerLink').append('<p title="' + fpp + '%, ' + fpw + 'W" style="text-align: center; background-color: #f0edeb;border-bottom-left-radius: 5px;border-bottom-right-radius:5px;">PGC: ' + fp + ' FP, ' + Math.round(fpp) + '%, ' + Math.round(fpw) + 'W</p>');
                             $('.favorite-container').css({
                                 "border-bottom-left-radius": "0",
@@ -657,14 +653,14 @@
                         // Add elevation (Metres above mean sea level = mamsl)
                         if (isSettingEnabled('addElevation')) {
                             const formattedElevation = formatDistance(geocacheData.elevation),
-                                // Issue 113; fixed 2022-08-30 (Units of elevation obtained from Project-GC)
                                 elevationUnit = imperialFlag ? 'ft' : 'm',
                                 elevationArrow = (geocacheData.elevation >= 0) ? '&#x21a5;' : '&#x21a7;';
                                 elevation = formattedElevation + ' ' + elevationUnit + ' ' + elevationArrow;
 
                             if (geocacheData.elevation >= 0) {
                                 html = '<span> (' + elevation + ')</span>';
-                            } else {
+                            }
+                            else {
                                 html = '<span class="OldWarning"> (' + elevation + ')</span>';
                             }
 
@@ -715,11 +711,11 @@
                                 html += '<ul style="list-style: none; margin-left: 0; margin-bottom: 0;">';
                                 let unknowns = null;
                                 for (let i = 0; i < geocacheLogsPerCountry['willAttend'].length; i++) {
-                                    if(geocacheLogsPerCountry['willAttend'][i].flagIcon.endsWith('blank.gif')) {
-                                        unknowns = geocacheLogsPerCountry['willAttend'][i].cnt;
+                                    if(geocacheLogsPerCountry['willAttend'][i].flagPath === null) {
+                                        unknowns = geocacheLogsPerCountry['willAttend'][i].count;
                                         continue;
                                     }
-                                    html += '<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;"><img src="' + cdnDomain + geocacheLogsPerCountry['willAttend'][i].flagIcon + '" alt="' + $('<div/>').text(geocacheLogsPerCountry['willAttend'][i].country).html() + '" title="' + $('<div/>').text(geocacheLogsPerCountry['willAttend'][i].country).html() + '"> ' + geocacheLogsPerCountry['willAttend'][i].cnt + '</span></li>';
+                                    html += '<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;"><img src="' + pgcUrl + geocacheLogsPerCountry['willAttend'][i].flagPath + '" alt="' + $('<div/>').text(geocacheLogsPerCountry['willAttend'][i].country).html() + '" title="' + $('<div/>').text(geocacheLogsPerCountry['willAttend'][i].country).html() + '"> ' + geocacheLogsPerCountry['willAttend'][i].count + '</span></li>';
                                 }
                                 if(unknowns !== null) {
                                     html += '<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;">(plus ' + unknowns + ' undetermined)</span></li>';
@@ -734,11 +730,11 @@
                                 html += '<ul style="list-style: none; margin-left: 0; margin-bottom: 0;">';
                                 let unknowns = null;
                                 for (let i = 0; i < geocacheLogsPerCountry['found'].length; i++) {
-                                    if(geocacheLogsPerCountry['found'][i].flagIcon.endsWith('blank.gif')) {
-                                        unknowns = geocacheLogsPerCountry['found'][i].cnt;
+                                    if(geocacheLogsPerCountry['found'][i].flagPath === null) {
+                                        unknowns = geocacheLogsPerCountry['found'][i].count;
                                         continue;
                                     }
-                                    html += '<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;"><img src="' + cdnDomain + geocacheLogsPerCountry['found'][i].flagIcon + '" alt="' + $('<div/>').text(geocacheLogsPerCountry['found'][i].country).html() + '" title="' + $('<div/>').text(geocacheLogsPerCountry['found'][i].country).html() + '"> ' + geocacheLogsPerCountry['found'][i].cnt + '</span></li>';
+                                    html += '<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;"><img src="' + pgcUrl + geocacheLogsPerCountry['found'][i].flagPath + '" alt="' + $('<div/>').text(geocacheLogsPerCountry['found'][i].country).html() + '" title="' + $('<div/>').text(geocacheLogsPerCountry['found'][i].country).html() + '"> ' + geocacheLogsPerCountry['found'][i].count + '</span></li>';
                                 }
                                 if(unknowns !== null) {
                                     html += '<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;">(plus ' + unknowns + ' undetermined)</span></li>';
@@ -817,7 +813,7 @@
             // let mapUrl = pgcUrl + 'Maps/mapcompare/?profile_name=' + gccomUsername +
             //     '&nonefound=on&ownfound=on&location=' + latitude + ',' + longitude +
             //     '&max_distance=5&submit=Filter';
-            const mapUrl = pgcUrl + 'LiveMap/#c=' + latitude + ',' + longitude + ';z=14';
+            const mapUrl = pgcUrl + '/LiveMap/#c=' + latitude + ',' + longitude + ';z=14';
 
             // $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').append(
             //     '<div style="margin-bottom: 8px;"><a target="_blank" href="' + mapUrl + '">Project-GC map</a> (<a target="_blank" href="' + mapUrl + '&onefound=on">incl found</a>)</div>'
@@ -896,7 +892,7 @@
 
         // Add link to PGC gallery
         if (subscription && isSettingEnabled('addPgcGalleryLinks')) {
-            const html = '<a href="' + pgcUrl + 'Tools/Gallery?filter_gc_val=' + gccode + '&submit=Filter"><img src="' + galleryLinkIcon + '" title="' + i18next.t('other.gallery')+'"></a> ';
+            const html = '<a href="' + pgcUrl + '/Tools/Gallery?filter_gc_val=' + gccode + '&submit=Filter"><img src="' + icons.galleryLink + '" title="' + i18next.t('other.gallery')+'"></a> ';
             $('.CacheDetailNavigation ul li:first').append(html);
         }
 
@@ -908,15 +904,15 @@
 
                 // Add the map link
                 url = 'https://project-gc.com/Tools/MapBookmarklist?filters_pr_profileName=' + encodeURIComponent(pgcUsername) + '&filters_bml_ownerProfileName=' + encodeURIComponent(owner) + '&filters_bml_bmlReferenceCode=' + encodeURIComponent(bmlCode) + '&submit=Filter';
-                $(this).children(':nth-child(1)').append('&nbsp;<a href="' + url + '"><img src="' + mapLinkIcon + '" title="' + i18next.t('other.map')+'"></a>');
+                $(this).children(':nth-child(1)').append('&nbsp;<a href="' + url + '"><img src="' + icons.mapLink + '" title="' + i18next.t('other.map')+'"></a>');
 
                 // Add gallery link for the bookmark list
                 url = 'https://project-gc.com/Tools/Gallery?filter_bml_ownerProfileName=' + encodeURIComponent(owner) + '&filter_bml_bmlReferenceCode=' + encodeURIComponent(bmlCode) + '&submit=Filter';
-                $(this).children(':nth-child(1)').append('&nbsp;<a href="' + url + '"><img src="' + galleryLinkIcon + '" title="' + i18next.t('other.gallery')+'"></a>');
+                $(this).children(':nth-child(1)').append('&nbsp;<a href="' + url + '"><img src="' + icons.galleryLink + '" title="' + i18next.t('other.gallery')+'"></a>');
 
                 // Add profile stats link to the owner
                 url = 'https://project-gc.com/ProfileStats/' + encodeURIComponent(owner);
-                $(this).children(':nth-child(3)').append('&nbsp;<a href="' + url + '"><img src="' + externalLinkIcon + '" title="' + i18next.t('other.prostats')+'"></a>');
+                $(this).children(':nth-child(3)').append('&nbsp;<a href="' + url + '"><img src="' + icons.externalLink + '" title="' + i18next.t('other.prostats')+'"></a>');
             });
         }
 
@@ -929,10 +925,15 @@
         if (isSettingEnabled('showVGPS')) {
             GM.xmlHttpRequest({
                 method: "GET",
-                url: pgcApiUrl + 'GetExistingVGPSLists?gccode=' + gccode,
+                url: pgcApiUrl + '/virtual-gps?gccode=' + gccode,
+                headers: { 'X-App-ID': '10' },
                 onload: function(response) {
-                    let result = JSON.parse(response.responseText),
-                        vgpsLists = result.data.lists,
+                    const result = JSON.parse(response.responseText);
+                    if (result.status.message !== 'ok') {
+                        return;
+                    }
+
+                    let vgpsLists = result.data.lists,
                         selected = result.data.selected,
                         existsIn = result.data.existsIn,
                         selectedContent,
@@ -956,10 +957,11 @@
                         html += '<option value="' + listId + '"' + selectedContent + existsContent + '>' + vgpsLists[k].name + '</option>';
                     }
                     html += '</select>';
-                    if (existsIn.indexOf(String(selected)) === -1) {
+                    if (existsIn.indexOf(selected) === -1) {
                         html += '&nbsp;<button id="btnAddToVGPS">+</button>';
                         html += '&nbsp;<button id="btnRemoveFromVGPS" style="display: none;">-</button>';
-                    } else {
+                    }
+                    else {
                         html += '&nbsp;<button id="btnAddToVGPS" style="display: none;">+</button>';
                         html += '&nbsp;<button id="btnRemoveFromVGPS">-</button>';
                     }
@@ -968,11 +970,12 @@
                     $('div.CacheDetailNavigation ul:first').append(html);
 
                     $('#comboVGPS').change(function() {
-                        selected = $(this).find(':selected').val();
-                        if (existsIn.indexOf(String(selected)) === -1) {
+                        selected = +$(this).find(':selected').val();
+                        if (existsIn.indexOf(selected) === -1) {
                             $('#btnAddToVGPS').css('display', '');
                             $('#btnRemoveFromVGPS').css('display', 'none');
-                        } else {
+                        }
+                        else {
                             $('#btnAddToVGPS').css('display', 'none');
                             $('#btnRemoveFromVGPS').css('display', '');
                         }
@@ -1010,21 +1013,29 @@
     function router() {
         if (path.match(/^\/geocache\/.*/) !== null) {
             pageGeocachePage();
-        } else if (path.match(/^\/seek\/cache_details\.aspx.*/) !== null) {
+        }
+        else if (path.match(/^\/seek\/cache_details\.aspx.*/) !== null) {
             pageGeocachePage();
-        } else if (path.match(/^\/seek\/cache_logbook\.aspx.*/) !== null) {
+        }
+        else if (path.match(/^\/seek\/cache_logbook\.aspx.*/) !== null) {
             pageLogbook();
-        //} else if (path.match(/^\/bookmarks\/.*/) !== null) {
+        }
+        // else if (path.match(/^\/bookmarks\/.*/) !== null) {
         //    pageBookmarks();
-        } else if (path.match(/^\/map\/.*/) !== null) {
+        // }
+        else if (path.match(/^\/map\/.*/) !== null) {
             pageMap();
-        } else if(path.match(/^\/profile\/.*/) !== null) {
+        }
+        else if(path.match(/^\/profile\/.*/) !== null) {
             pageProfile();
-        } else if (path.match(/^\/account\/drafts/) !== null) {
+        }
+        else if (path.match(/^\/account\/drafts/) !== null) {
             pageDrafts();
-        } else if (path.match(/^\/account\/messagecenter/) !== null) {
+        }
+        else if (path.match(/^\/account\/messagecenter/) !== null) {
             pageMessagecenter();
-        } else if (path.match(/^\/seek\/cdpf\.aspx/) !== null) {
+        }
+        else if (path.match(/^\/seek\/cdpf\.aspx/) !== null) {
             pagePrintGeocachePage();
         }
     }
@@ -1038,28 +1049,28 @@
         }
 
         if (loggedIn === false) {
-            loggedInContent = '<a href="' + pgcUrl + 'User/Login" target="_blank">' + i18next.t("header.not") + '</a>';
-        } else {
-            loggedInContent = '<a href="' + pgcUrl + 'ProfileStats/' + pgcUsername + '"><strong' + (pgcUsername !== gccomUsername ? ' style="color: red;"' : '') + '>' + pgcUsername + '</strong></a>';
+            loggedInContent = '<a href="' + pgcUrl + '/User/Login" target="_blank">' + i18next.t("header.not") + '</a>';
+        }
+        else {
+            loggedInContent = '<a href="' + pgcUrl + '/ProfileStats/' + pgcUsername + '"><strong' + (pgcUsername !== gccomUsername ? ' style="color: red;"' : '') + '>' + pgcUsername + '</strong></a>';
             subscriptionContent = '<a href="https://project-gc.com/Home/Membership" target="_blank">' + (subscription ? i18next.t("header.Paid") : i18next.t("header.Missing")) + ' ' + i18next.t("header.membership") + '</a>';
         }
 
-        // Issue 113; fixed 2022-08-30
         GM.addStyle('\
-        #pgc .player-profile, #pgc_gclh .li-user-info {width: auto;}\
-        #pgc .player-profile:hover {text-decoration: none;}\
-        #pgc .player-profile a:hover {text-decoration: underline;}\
-        #pgc .player-profile a {text-decoration: none;color: white;}\
-        #pgc_gclh img:hover {cursor:pointer;}\
-        #pgc_gclh .draft-indicator {display: none;}\
-        #pgcUserMenuForm > li:hover, #pgcUserMenuForm_gclh > li:hover { background-color: #e3dfc9; }\
-        #pgcUserMenuForm > li, #pgcUserMenuForm_gclh > li { display: block; }\
-        #pgcUserMenuForm input[type="checkbox"], #pgcUserMenuForm_gclh input[type="checkbox"] { opacity: inherit; width: inherit; height:inherit; overflow:inherit; position:inherit; }\
-        #pgcUserMenuForm button, #pgcUserMenuForm_gclh button { display: inline-block !important; background: #ede5dc url(images/ui-bg_flat_100_ede5dc_40x100.png) 50% 50% repeat-x !important; border: 1px solid #cab6a3 !important; border-radius: 4px; color: #584528 !important; text-decoration: none; width: auto !important; font-size: 14px; padding: 4px 6px !important;}\
-        #pgcUserMenuForm button:hover, #pgcUserMenuForm_gclh button:hover { background: #e4d8cb url(images/ui-bgflag_100_e4d8cb_40x100.png) 50% 50% repeat-x !important; }\
-        #pgcUserMenu, #pgcUserMenu_gclh { right: 1rem;  }\
-        #pgcUserMenu > form, #pgcUserMenu_gclh > form { background-color: white; color: #5f452a; }\
-        .profile-panel .li-user-info {min-width: 160px;}\
+            #pgc .player-profile, #pgc_gclh .li-user-info {width: auto;}\
+            #pgc .player-profile:hover {text-decoration: none;}\
+            #pgc .player-profile a:hover {text-decoration: underline;}\
+            #pgc .player-profile a {text-decoration: none;color: white;}\
+            #pgc_gclh img:hover {cursor:pointer;}\
+            #pgc_gclh .draft-indicator {display: none;}\
+            #pgcUserMenuForm > li:hover, #pgcUserMenuForm_gclh > li:hover { background-color: #e3dfc9; }\
+            #pgcUserMenuForm > li, #pgcUserMenuForm_gclh > li { display: block; }\
+            #pgcUserMenuForm input[type="checkbox"], #pgcUserMenuForm_gclh input[type="checkbox"] { opacity: inherit; width: inherit; height:inherit; overflow:inherit; position:inherit; }\
+            #pgcUserMenuForm button, #pgcUserMenuForm_gclh button { display: inline-block !important; background: #ede5dc url(images/ui-bg_flat_100_ede5dc_40x100.png) 50% 50% repeat-x !important; border: 1px solid #cab6a3 !important; border-radius: 4px; color: #584528 !important; text-decoration: none; width: auto !important; font-size: 14px; padding: 4px 6px !important;}\
+            #pgcUserMenuForm button:hover, #pgcUserMenuForm_gclh button:hover { background: #e4d8cb url(images/ui-bgflag_100_e4d8cb_40x100.png) 50% 50% repeat-x !important; }\
+            #pgcUserMenu, #pgcUserMenu_gclh { right: 1rem;  }\
+            #pgcUserMenu > form, #pgcUserMenu_gclh > form { background-color: white; color: #5f452a; }\
+            .profile-panel .li-user-info {min-width: 160px;}\
         ');
 
         let settings = '<ul id="pgcUserMenu" class="dropdown-menu menu-user submenu" style="display:none; z-index: 1005;"><form id="pgcUserMenuForm" style="display: block; columns: 2; font-size: 14px; background-color: #fff !important;">';
@@ -1103,7 +1114,6 @@
 
         $("#pgcUserMenuButton").click(function(e) {
             $('#pgcUserMenu').show();
-            // Issue 108; fixed 2022-09-05 (Settings menu now reloading page)
             e.preventDefault();
         })
         $('body').click(function(e) {
@@ -1167,21 +1177,30 @@
     function checkPGCLogin() {
         GM.xmlHttpRequest({
             method: "GET",
-            url: pgcApiUrl + 'GetMyUsername',
+            url: pgcApiUrl + '/user',
+            headers: { 'X-App-ID': '10' },
             onload: function(response) {
-                const result = JSON.parse(response.responseText);
-                if (result.status !== 'OK') {
-                    alert(response.responseText);
-                    return false;
+                if (response.status === 401) {
+                    loggedIn     = false;
+                    subscription = false;
+                    waitForHeader(0);
+                    router();
+                    return;
                 }
 
-                pgcUsername = result.data.username;
-                // Issue 113 & #133; fixed 2022-09-04 (Units of elevation obtained from Project-GC)
-                imperialFlag = result.data.imperialUnits;
-                loggedIn = Boolean(result.data.loggedIn);
-                subscription = Boolean(result.data.subscription);
-                _language = result.data.locale; //untested code
-                i18next.changeLanguage(_language);//untested code**
+                const result = JSON.parse(response.responseText);
+                if (result.status.message !== 'ok') {
+                    alert(response.responseText);
+                    return;
+                }
+
+                pgcUsername  = result.data.name;
+                imperialFlag = result.data.imperial;
+                loggedIn     = true;
+                subscription = result.data.pgcMembershipExpiresAt !== null &&
+                    new Date(result.data.pgcMembershipExpiresAt) > new Date();
+                _language    = result.data.locale;
+                i18next.changeLanguage(_language);
 
                 function waitForHeader(waitCount) {
                     if ($('.user-menu')[0]) {
@@ -1201,7 +1220,6 @@
             },
             onerror: function(response) {
                 alert(response);
-                return false;
             }
         });
     }
@@ -1232,7 +1250,7 @@
                     ns: ['userscript'],
                     defaultNS: ['userscript'],
                     backend: {
-                        loadPath: pgcUrl + 'locale/{{ns}}.php?lng={{lng}}',
+                        loadPath: pgcUrl + '/locale/{{ns}}.php?lng={{lng}}',
                         crossDomain: true
                     }
                 }, (err) => {
