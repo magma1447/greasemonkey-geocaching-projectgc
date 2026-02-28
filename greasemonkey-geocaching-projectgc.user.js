@@ -284,13 +284,13 @@
             headers: { 'Content-Type': 'application/json', 'X-App-ID': '10' },
             data: JSON.stringify({ gccodes: [gccode] }),
             onload: function(response) {
-                const result = JSON.parse(response.responseText),
-                    msg = (result.status.message === 'ok') ? i18next.t('vpgs.added') : i18next.t('vpgs.notadded');
+                const result = JSON.parse(response.responseText);
+                const msg = (result.status.message === 'ok') ? i18next.t('vpgs.added') : i18next.t('vpgs.notadded');
 
                 $('#btnAddToVGPS').css('display', 'none');
                 $('#btnRemoveFromVGPS').css('display', '');
 
-                alert(msg);
+                alert("Project-GC:\n" + msg);
 
                 return true;
             },
@@ -324,7 +324,7 @@
                 $('#btnAddToVGPS').css('display', '');
                 $('#btnRemoveFromVGPS').css('display', 'none');
 
-                alert(msg);
+                alert("Project-GC:\n" + msg);
 
                 return true;
             },
@@ -1208,7 +1208,7 @@
 
                 const result = JSON.parse(response.responseText);
                 if (result.status.message !== 'ok') {
-                    alert(response.responseText);
+                    alert("Project-GC:\n" + response.responseText);
                     return;
                 }
 
@@ -1237,7 +1237,7 @@
                 router();
             },
             onerror: function(response) {
-                alert(response);
+                alert("Project-GC:\n" + response);
             }
         });
     }
