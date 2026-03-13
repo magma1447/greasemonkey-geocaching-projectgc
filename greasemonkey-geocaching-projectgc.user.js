@@ -18,7 +18,7 @@
 // @match           https://www.geocaching.com/*
 // @exclude         https://www.geocaching.com/profile/profilecontent.html
 // @exclude         https://www.geocaching.com/help/*
-// @version         3.0.1
+// @version         3.0.2
 // @require         http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require         https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -278,19 +278,24 @@
             gccode = getGcCodeFromPage();
         }
 
+        const url = pgcApiUrl + '/virtual-gps/vgpsid:' + listId + '/geocaches';
+
         GM.xmlHttpRequest({
             method: "PUT",
-            url: pgcApiUrl + '/virtual-gps/vgpsid:' + listId + '/geocaches',
+            url: url,
             headers: { 'Content-Type': 'application/json', 'X-App-ID': '10' },
             data: JSON.stringify({ gccodes: [gccode] }),
             onload: function(response) {
+                if (response.status === 429) {
+                    return;
+                }
                 const result = JSON.parse(response.responseText);
                 const msg = (result.status.message === 'ok') ? i18next.t('vpgs.added') : i18next.t('vpgs.notadded');
 
                 $('#btnAddToVGPS').css('display', 'none');
                 $('#btnRemoveFromVGPS').css('display', '');
 
-                alert("Project-GC:\n" + msg);
+                alert("Project-GC Userscript:\n" + url + "\n" + msg);
 
                 return true;
             },
@@ -312,19 +317,24 @@
             gccode = getGcCodeFromPage();
         }
 
+        const url = pgcApiUrl + '/virtual-gps/vgpsid:' + listId + '/geocaches';
+
         GM.xmlHttpRequest({
             method: "DELETE",
-            url: pgcApiUrl + '/virtual-gps/vgpsid:' + listId + '/geocaches',
+            url: url,
             headers: { 'Content-Type': 'application/json', 'X-App-ID': '10' },
             data: JSON.stringify({ gccodes: [gccode] }),
             onload: function(response) {
+                if (response.status === 429) {
+                    return;
+                }
                 const result = JSON.parse(response.responseText),
                     msg = (result.status.message === 'ok') ? i18next.t('vpgs.removed') : i18next.t('vpgs.notre');
 
                 $('#btnAddToVGPS').css('display', '');
                 $('#btnRemoveFromVGPS').css('display', 'none');
 
-                alert("Project-GC:\n" + msg);
+                alert("Project-GC Userscript:\n" + url + "\n" + msg);
 
                 return true;
             },
@@ -398,6 +408,9 @@
                             url: pgcApiUrl + '/virtual-gps?gccode=' + gccode,
                             headers: { 'X-App-ID': '10' },
                             onload: function(response) {
+                                if (response.status === 429) {
+                                    return;
+                                }
                                 const result = JSON.parse(response.responseText);
                                 if (result.status.message !== 'ok') {
                                     return;
@@ -574,6 +587,9 @@
                 url: pgcApiUrl + '/userscript/geocache/gccode:' + gccode,
                 headers: { 'X-App-ID': '10' },
                 onload: function(response) {
+                    if (response.status === 429) {
+                        return;
+                    }
                     if (response.status === 404) {
                         return;
                     }
@@ -945,6 +961,9 @@
                 url: pgcApiUrl + '/virtual-gps?gccode=' + gccode,
                 headers: { 'X-App-ID': '10' },
                 onload: function(response) {
+                    if (response.status === 429) {
+                        return;
+                    }
                     const result = JSON.parse(response.responseText);
                     if (result.status.message !== 'ok') {
                         return;
@@ -1193,11 +1212,16 @@
      * Check that we are authenticated at Project-GC.com, and that it's with the same username
      */
     function checkPGCLogin() {
+        const url = pgcApiUrl + '/user';
+
         GM.xmlHttpRequest({
             method: "GET",
-            url: pgcApiUrl + '/user',
+            url: url,
             headers: { 'X-App-ID': '10' },
             onload: function(response) {
+                if (response.status === 429) {
+                    return;
+                }
                 if (response.status === 401) {
                     loggedIn     = false;
                     subscription = false;
@@ -1208,7 +1232,7 @@
 
                 const result = JSON.parse(response.responseText);
                 if (result.status.message !== 'ok') {
-                    alert("Project-GC:\n" + response.responseText);
+                    alert("Project-GC Userscript:\n" + url + "\n" + response.responseText);
                     return;
                 }
 
@@ -1237,7 +1261,7 @@
                 router();
             },
             onerror: function(response) {
-                alert("Project-GC:\n" + response);
+                alert("Project-GC Userscript:\n" + url + "\n" + response);
             }
         });
     }
