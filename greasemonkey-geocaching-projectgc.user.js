@@ -18,7 +18,7 @@
 // @match           https://www.geocaching.com/*
 // @exclude         https://www.geocaching.com/profile/profilecontent.html
 // @exclude         https://www.geocaching.com/help/*
-// @version         3.0.2
+// @version         3.0.3
 // @require         http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require         https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -295,7 +295,7 @@
                 $('#btnAddToVGPS').css('display', 'none');
                 $('#btnRemoveFromVGPS').css('display', '');
 
-                alert("Project-GC Userscript:\n" + url + "\n" + msg);
+                alert(msg);
 
                 return true;
             },
@@ -334,7 +334,7 @@
                 $('#btnAddToVGPS').css('display', '');
                 $('#btnRemoveFromVGPS').css('display', 'none');
 
-                alert("Project-GC Userscript:\n" + url + "\n" + msg);
+                alert(msg);
 
                 return true;
             },
