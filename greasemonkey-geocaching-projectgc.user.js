@@ -18,7 +18,7 @@
 // @match           https://www.geocaching.com/*
 // @exclude         https://www.geocaching.com/profile/profilecontent.html
 // @exclude         https://www.geocaching.com/help/*
-// @version         3.0.3
+// @version         3.0.4
 // @require         http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require         https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -1103,14 +1103,18 @@
             #pgcUserMenuForm > li:hover, #pgcUserMenuForm_gclh > li:hover { background-color: #e3dfc9; }\
             #pgcUserMenuForm > li, #pgcUserMenuForm_gclh > li { display: block; }\
             #pgcUserMenuForm input[type="checkbox"], #pgcUserMenuForm_gclh input[type="checkbox"] { opacity: inherit; width: inherit; height:inherit; overflow:inherit; position:inherit; }\
-            #pgcUserMenuForm button, #pgcUserMenuForm_gclh button { display: inline-block !important; background: #ede5dc url(images/ui-bg_flat_100_ede5dc_40x100.png) 50% 50% repeat-x !important; border: 1px solid #cab6a3 !important; border-radius: 4px; color: #584528 !important; text-decoration: none; width: auto !important; font-size: 14px; padding: 4px 6px !important;}\
+            #pgcUserMenuForm button, #pgcUserMenuForm_gclh button { display: inline-block !important; background: #ede5dc url(images/ui-bg_flat_100_ede5dc_40x100.png) 50% 50% repeat-x !important; border: 1px solid #cab6a3 !important; border-radius: 4px; color: #584528 !important; text-decoration: none; width: auto !important; font-size: 14px; padding: 4px 6px !important; cursor: pointer; }\
+            #pgcUserMenuForm label, #pgcUserMenuForm_gclh label, #pgcUserMenuForm input[type="checkbox"], #pgcUserMenuForm_gclh input[type="checkbox"] { cursor: pointer; }\
+            #pgcUserMenuForm > li, #pgcUserMenuForm_gclh > li { align-items: baseline; }\
             #pgcUserMenuForm button:hover, #pgcUserMenuForm_gclh button:hover { background: #e4d8cb url(images/ui-bgflag_100_e4d8cb_40x100.png) 50% 50% repeat-x !important; }\
-            #pgcUserMenu, #pgcUserMenu_gclh { right: 1rem;  }\
-            #pgcUserMenu > form, #pgcUserMenu_gclh > form { background-color: white; color: #5f452a; }\
+            #pgcButton { position: relative; }\
+            #pgcUserMenu, #pgcUserMenu_gclh { position: absolute; top: 58px; right: 0; background: white; border: 1px solid #e0e0e0; border-top: 0; box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px -1px rgba(0,0,0,.1); list-style: none; padding: 12px 0; margin: 0; z-index: 9000; }\
+            #pgcUserMenu::after, #pgcUserMenu_gclh::after { content: ""; display: block; position: absolute; top: -10px; right: 10px; border-left: 12px solid transparent; border-right: 12px solid transparent; border-bottom: 10px solid white; }\
+            #pgcUserMenu > form, #pgcUserMenu_gclh > form { background-color: white; color: #5f452a; margin: 0; }\
             .profile-panel .li-user-info {min-width: 160px;}\
         ');
 
-        let settings = '<ul id="pgcUserMenu" class="dropdown-menu menu-user submenu" style="display:none; z-index: 1005;"><form id="pgcUserMenuForm" style="display: block; columns: 2; font-size: 14px; background-color: #fff !important;">';
+        let settings = '<ul id="pgcUserMenu" class="dropdown-menu menu-user submenu" style="display:none;"><form id="pgcUserMenuForm" style="display: block; columns: 2; font-size: 14px; background-color: #fff !important;">';
 
         const items = getSettingsItems();
         for (let item in items) {
