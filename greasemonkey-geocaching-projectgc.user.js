@@ -18,7 +18,7 @@
 // @match           https://www.geocaching.com/*
 // @exclude         https://www.geocaching.com/profile/profilecontent.html
 // @exclude         https://www.geocaching.com/help/*
-// @version         3.0.4
+// @version         3.0.5
 // @require         http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require         https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -489,10 +489,10 @@
             const classes = $(jNode).attr('class');
             const logId = classes.match(/l-[0-9]+/)[0].replace('l-', '');
             if(typeof(challengeCheckerResults[logId]) !== 'undefined') {
-                if(challengeCheckerResults[logId]['status'] === 'success') {
+                if(challengeCheckerResults[logId]['status']) {
                     $(jNode).find('div.LogDisplayLeft').first().append('<hr style="margin-top: 12px; margin-bottom: 12px;"><p><br>' + challengeCheckerResults[logId]['lastRun'] + ' UTC: <img src="' + icons.challengeCheckerSuccess + '"></p>');
                 }
-                else if(challengeCheckerResults[logId]['status'] === 'fail') {
+                else {
                     $(jNode).find('div.LogDisplayLeft').first().append('<hr style="margin-top: 12px; margin-bottom: 12px;"><p>' + i18next.t("other.checker")+'<br>' + challengeCheckerResults[logId]['lastRun'] + ' UTC: <img src="' + icons.challengeCheckerFail + '"></p>');
                 }
             }
@@ -632,7 +632,7 @@
                             }
                             suspiciousFoundItLog = suspiciousFoundItLog + i18next.t('cpage.suspiciousFoundItLog') +'</li></ul>';
 
-                            $('div.span-6.right.last').last().next().after(suspiciousFoundItLog);
+                            $('#ctl00_ContentBody_CacheInformationTable').before(suspiciousFoundItLog);
                         }
                     }
                     //--
