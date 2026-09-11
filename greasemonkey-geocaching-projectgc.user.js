@@ -964,8 +964,11 @@
         }
 
         // Decrypt the hint
-        if (isSettingEnabled('decryptHints') && $('#ctl00_ContentBody_lnkDH')[0].title === i18next.t('other.decrypt')) {
-            $('#ctl00_ContentBody_lnkDH')[0].click();
+        if (isSettingEnabled('decryptHints')) {
+            const hintLink = $('#ctl00_ContentBody_hints button.toggle-clue')[0];
+            if (hintLink && hintLink.textContent.trim() === i18next.t('other.decrypt')) {
+                hintLink.click();
+            }
         }
 
         // VGPS form
