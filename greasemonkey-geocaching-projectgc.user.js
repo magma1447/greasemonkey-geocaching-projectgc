@@ -1058,10 +1058,10 @@
 
         if (isSettingEnabled('logbookLinks')) {
             // 2022-08-24, fixes #112: Extra single quote showing up in LogBookLinks near "Friends".
-            $('\
-                <span>&nbsp;|&nbsp;</span><a id="pgc-logbook-yours" href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-2">Yours</a>\
-                <span>&nbsp;|&nbsp;</span><a href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-3">' + i18next.t("other.Friends")+'</a>\
-                ').insertAfter( $('#ctl00_ContentBody_uxLogbookLink') );
+			// 2026-09-09: Small change in formatting as these links weren't showing up.
+            $('<span>&nbsp;|&nbsp;</span><a id="pgc-logbook-yours" href="' + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-2">Yours</a>\<span>&nbsp;|&nbsp;</span><a href="'
+                + $('#ctl00_ContentBody_uxLogbookLink').attr('href') + '#tabs-3">' + i18next.t("other.Friends")+ '</a>'
+            ).insertAfter($('#ctl00_ContentBody_uxLogbookLink'));
         }
     }
 
