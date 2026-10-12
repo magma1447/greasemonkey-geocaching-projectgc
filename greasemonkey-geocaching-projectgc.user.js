@@ -885,7 +885,7 @@
 
         // Remove disclaimer
         if (isSettingEnabled('removeDisclaimer')) {
-            $('#divContentMain div.span-17 div.Note.Disclaimer').remove();
+            $('.Note.Disclaimer').remove();
         }
 
         // If the first log is a DNF, display a blue warning on top of the page
